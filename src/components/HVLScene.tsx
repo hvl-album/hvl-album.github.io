@@ -3880,7 +3880,7 @@ export function HVLScene() {
                     onClick={() => handleSettingsDisplayModeChange("full")}
                     aria-pressed={pendingDisplayMode === "full"}
                   >
-                    <span>Full Album (30)</span>
+                    <span>FULL ALBUM (30)</span>
                   </button>
                   <button
                     className={`settings-modal__choice ${pendingDisplayMode === "pulled" ? "is-selected" : ""}`}
@@ -3888,7 +3888,7 @@ export function HVLScene() {
                     onClick={() => handleSettingsDisplayModeChange("pulled")}
                     aria-pressed={pendingDisplayMode === "pulled"}
                   >
-                    <span>Track Đã Gỡ (19)</span>
+                    <span>TRACK ĐÃ GỠ (19)</span>
                   </button>
                 </div>
               </div>
