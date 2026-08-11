@@ -975,6 +975,10 @@ body {
 	white-space: normal;
 }
 
+.lyrics-panel__empty {
+	color: #fff;
+}
+
 .lyrics-panel__line {
 	display: block;
 	line-height: 1.5;
@@ -1243,7 +1247,7 @@ body {
 .floating-player__repeat {
 	width: 26px;
 	height: 36px;
-	color: #fff;
+	color: rgba(255, 255, 255, 0.22);
 	opacity: 1;
 	transform: translateY(1px);
 }

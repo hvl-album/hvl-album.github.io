@@ -2405,6 +2405,7 @@ export function HVLScene() {
       imageUrl: string,
       textureIndex: number,
       presentation?: TrackPresentation,
+      keepLyricsOpen = false,
     ) => {
       if (closeOverlayTimeoutRef.current != null) {
         window.clearTimeout(closeOverlayTimeoutRef.current);
@@ -2425,7 +2426,6 @@ export function HVLScene() {
         }
       }
       setIsPlaying(false);
-      setIsLyricsOpen(false);
       setCurrentTime(0);
       setDuration(0);
       setAutoNextRemaining(streamDisplayDelay);
@@ -2435,6 +2435,7 @@ export function HVLScene() {
       autoNextDeadlineRef.current = null;
       setDetailNavigationPreview(null);
       const nextPresentation = presentation ?? (isDetailMinimizedRef.current ? "minimized" : "detail");
+      setIsLyricsOpen(keepLyricsOpen && nextPresentation === "detail");
       isDetailMinimizedRef.current = nextPresentation === "minimized";
       setIsDetailMinimized(isDetailMinimizedRef.current);
       setIsFloatingPlayerExpanded(true);
@@ -2477,13 +2478,16 @@ export function HVLScene() {
   const handleNextTrack = useCallback((presentation?: TrackPresentation) => {
     if (!nextTrackResult) return;
 
+    const nextPresentation = presentation ?? (isDetailMinimizedRef.current ? "minimized" : "detail");
+
     handleImageClick(
       nextTrackResult.track.title,
       nextTrackResult.track.imageUrl,
       nextTrackResult.index,
-      presentation ?? (isDetailMinimizedRef.current ? "minimized" : "detail"),
+      nextPresentation,
+      isLyricsOpen && nextPresentation === "detail",
     );
-  }, [handleImageClick, nextTrackResult]);
+  }, [handleImageClick, isLyricsOpen, nextTrackResult]);
 
   const handlePreviousTrack = useCallback((presentation: TrackPresentation = "minimized") => {
     if (!previousTrackResult) return;
@@ -2493,8 +2497,9 @@ export function HVLScene() {
       previousTrackResult.track.imageUrl,
       previousTrackResult.index,
       presentation,
+      isLyricsOpen && presentation === "detail",
     );
-  }, [handleImageClick, previousTrackResult]);
+  }, [handleImageClick, isLyricsOpen, previousTrackResult]);
 
   useEffect(() => {
     handleNextTrackRef.current = handleNextTrack;
@@ -3270,7 +3275,7 @@ export function HVLScene() {
 
       {selectedProject && (
         <div
-          className={`project-single-view ${showOverlay ? "visible" : "hidden"} ${isDetailMinimized ? "is-minimized" : ""} ${isLyricsOpen && selectedTrack?.lyrics ? "is-lyrics-open" : ""} ${areDetailButtonsVisible ? "" : "is-buttons-hidden"} ${!isMobile && (selectedTrack?.numberTrack === 8 || selectedTrack?.numberTrack === 27 || selectedTrack?.numberTrack === 28) ? "is-dark-track" : ""}`}
+          className={`project-single-view ${showOverlay ? "visible" : "hidden"} ${isDetailMinimized ? "is-minimized" : ""} ${isLyricsOpen ? "is-lyrics-open" : ""} ${areDetailButtonsVisible ? "" : "is-buttons-hidden"} ${!isMobile && (selectedTrack?.numberTrack === 8 || selectedTrack?.numberTrack === 27 || selectedTrack?.numberTrack === 28) ? "is-dark-track" : ""}`}
           onMouseMove={isMobile ? undefined : resetDetailButtonsVisibility}
         >
           {repeatToastMessage && repeatToastPlacement === "detail" && (
@@ -3316,7 +3321,7 @@ export function HVLScene() {
               <path d="M16 18v4" />
             </svg>
           </button>
-          {!isDetailMinimized && selectedTrack?.lyrics && (!isMobile || !isLyricsOpen) && (
+          {!isDetailMinimized && (!isMobile || !isLyricsOpen) && (
             <button
               className="detail-lyrics-button"
               type="button"
@@ -3473,7 +3478,7 @@ export function HVLScene() {
         </div>
       )}
 
-      {selectedProject && showOverlay && !isDetailMinimized && selectedTrack?.lyrics && (
+      {selectedProject && showOverlay && !isDetailMinimized && (
           <div className={`lyrics-panel__desktop-backdrop ${isLyricsOpen ? "is-open" : ""}`}>
           <aside
             className={`lyrics-panel ${isLyricsOpen ? "is-open" : ""}`}
@@ -3498,7 +3503,7 @@ export function HVLScene() {
               }
             }}
           >
-            {lyricsEntries.map((entry, index) => (
+            {selectedTrack?.lyrics ? lyricsEntries.map((entry, index) => (
               entry.text === "" ? (
                 <div className="lyrics-panel__separator" key={`${index}-${entry.text}`} aria-hidden="true" />
               ) : (
@@ -3514,7 +3519,9 @@ export function HVLScene() {
                   {renderLyricsLine(entry.text)}
                 </div>
               )
-            ))}
+            )) : (
+              <div className="lyrics-panel__empty">Lyrics của track này sẽ có trong vài ngày tới.</div>
+            )}
           </div>
           <div className="lyrics-panel__bottom-gradient" aria-hidden="true" />
           </aside>
@@ -3830,8 +3837,8 @@ export function HVLScene() {
         >
           <section className="settings-modal__panel" onPointerDown={(event) => event.stopPropagation()}>
             <header className="settings-modal__header">
-              <h2 id="settings-modal-title">Cài Đặt</h2>
-              <button className="settings-modal__close" type="button" onClick={handleSettingsClose} aria-label="Đóng Cài Đặt">
+              <h2 id="settings-modal-title">Thiết Lập</h2>
+              <button className="settings-modal__close" type="button" onClick={handleSettingsClose} aria-label="Đóng Thiết Lập">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path d="m6 6 12 12" />
                   <path d="m18 6-12 12" />
@@ -3873,7 +3880,7 @@ export function HVLScene() {
                     onClick={() => handleSettingsDisplayModeChange("full")}
                     aria-pressed={pendingDisplayMode === "full"}
                   >
-                    <span>FULL ALBUM</span>
+                    <span>Full Album (30)</span>
                   </button>
                   <button
                     className={`settings-modal__choice ${pendingDisplayMode === "pulled" ? "is-selected" : ""}`}
@@ -3881,7 +3888,7 @@ export function HVLScene() {
                     onClick={() => handleSettingsDisplayModeChange("pulled")}
                     aria-pressed={pendingDisplayMode === "pulled"}
                   >
-                    <span>TRACK BỊ GỠ</span>
+                    <span>Track Đã Gỡ (19)</span>
                   </button>
                 </div>
               </div>
