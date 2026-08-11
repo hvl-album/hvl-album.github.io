@@ -1,5 +1,5 @@
-import { FiberScene } from "../components/FiberScene";
+import { HVLScene } from "../components/HVLScene";
 
 export default function Home() {
-  return <FiberScene />;
+  return <HVLScene />;
 }

@@ -25,12 +25,13 @@ function makeAudioPool(url: string, poolSize: number, volume: number): AudioPool
 }
 
 export function GlobalClickSound() {
-  const clickUrls = useMemo(() => ["/sounds/clickDown.mp3", "/sounds/clickUp.mp3"], []);
-  const scrollUrl = useMemo(() => "/sounds/scroll.mp3", []);
+  const clickUrls = useMemo(() => ["/sound/clickDown.mp3", "/sound/clickUp.mp3"], []);
+  const scrollUrl = useMemo(() => "/sound/scroll.mp3", []);
 
   const clickPoolsRef = useRef<AudioPool[] | null>(null);
   const scrollAudioRef = useRef<HTMLAudioElement | null>(null);
-  const lastPointerDownAtRef = useRef(0);
+  const isUnlockingScrollAudioRef = useRef(false);
+  const isScrollAudioUnlockedRef = useRef(false);
 
   const lastWheelAtRef = useRef(0);
   const wheelIntensityRef = useRef(0);
@@ -48,64 +49,15 @@ export function GlobalClickSound() {
     scrollAudio.playbackRate = 1;
     scrollAudioRef.current = scrollAudio;
 
-    const onPointerDown = (event: PointerEvent) => {
-      if (typeof (event as unknown as MouseEvent).button === "number") {
-        const button = (event as unknown as MouseEvent).button;
-        if (button !== 0) return;
-      }
-
-      const now = performance.now();
-      if (now - lastPointerDownAtRef.current < 25) return;
-      lastPointerDownAtRef.current = now;
-
-      const pools = clickPoolsRef.current;
-      if (!pools || pools.length === 0) return;
-
-      const pool = pools[Math.floor(Math.random() * pools.length)];
-      const audio = pool.clips[pool.nextIndex];
-      pool.nextIndex = (pool.nextIndex + 1) % pool.clips.length;
-
-      try {
-        audio.currentTime = 0;
-        audio.play().catch(() => {});
-      } catch {
-      }
-    };
-
-    const onWheel = (event: WheelEvent) => {
-      const scrollAudio = scrollAudioRef.current;
-      if (!scrollAudio) return;
-
-      const now = performance.now();
-      const dtWheel = Math.min(0.05, Math.max(0.001, (now - lastWheelAtRef.current) / 1000));
-      lastWheelAtRef.current = now;
-
-      const raw = Math.abs(event.deltaY);
-      const clamped = Math.min(220, raw);
-      wheelIntensityRef.current = approach(wheelIntensityRef.current, clamped, 900 * dtWheel);
-      const normalized = Math.min(1, wheelIntensityRef.current / 120);
-
-      const targetRate = 1 + normalized * 0.55;
-      const targetVol = normalized * 0.32;
-
-      scrollTargetRateRef.current = targetRate;
-      scrollTargetVolRef.current = targetVol;
-
-      if (scrollAudio.paused) {
-        try {
-          scrollAudio.play().catch(() => {});
-        } catch {
-        }
-      }
-    };
-
     let rafId = 0;
     let lastRafAt = performance.now();
-    const tick = () => {
-      rafId = requestAnimationFrame(tick);
 
+    const tick = () => {
       const scrollAudio = scrollAudioRef.current;
-      if (!scrollAudio) return;
+      if (!scrollAudio) {
+        rafId = 0;
+        return;
+      }
 
       const now = performance.now();
       const dt = Math.min(0.05, (now - lastRafAt) / 1000);
@@ -134,15 +86,100 @@ export function GlobalClickSound() {
       if (sinceWheel > 220 && scrollCurrentVolRef.current < 0.01) {
         scrollAudio.pause();
         scrollAudio.currentTime = 0;
+        rafId = 0;
+        return;
+      }
+
+      rafId = requestAnimationFrame(tick);
+    };
+
+    const ensureScrollAnimation = () => {
+      if (rafId) return;
+      lastRafAt = performance.now();
+      rafId = requestAnimationFrame(tick);
+    };
+
+    const unlockScrollAudio = () => {
+      const audio = scrollAudioRef.current;
+      if (!audio || isScrollAudioUnlockedRef.current || isUnlockingScrollAudioRef.current) return;
+
+      isUnlockingScrollAudioRef.current = true;
+      void audio
+        .play()
+        .then(() => {
+          isScrollAudioUnlockedRef.current = true;
+          ensureScrollAnimation();
+        })
+        .catch(() => {
+          isScrollAudioUnlockedRef.current = false;
+        })
+        .finally(() => {
+          isUnlockingScrollAudioRef.current = false;
+        });
+    };
+
+    const onClickSound = () => {
+      unlockScrollAudio();
+
+      const pools = clickPoolsRef.current;
+      if (!pools || pools.length === 0) return;
+
+      const pool = pools[Math.floor(Math.random() * pools.length)];
+      const audio = pool.clips[pool.nextIndex];
+      pool.nextIndex = (pool.nextIndex + 1) % pool.clips.length;
+
+      try {
+        audio.currentTime = 0;
+        audio.play().catch(() => {});
+      } catch {
       }
     };
-    rafId = requestAnimationFrame(tick);
 
-    document.addEventListener("pointerdown", onPointerDown, { capture: true });
-    document.addEventListener("wheel", onWheel, { capture: true, passive: true });
+    const onScrollMotion = (delta: number) => {
+      const scrollAudio = scrollAudioRef.current;
+      if (!scrollAudio) return;
+
+      const now = performance.now();
+      const dtWheel = Math.min(0.05, Math.max(0.001, (now - lastWheelAtRef.current) / 1000));
+      lastWheelAtRef.current = now;
+
+      const raw = Math.abs(delta);
+      const clamped = Math.min(220, raw);
+      wheelIntensityRef.current = approach(wheelIntensityRef.current, clamped, 900 * dtWheel);
+      const normalized = Math.min(1, wheelIntensityRef.current / 120);
+
+      const targetRate = 1 + normalized * 0.55;
+      const targetVol = normalized * 0.32;
+
+      scrollTargetRateRef.current = targetRate;
+      scrollTargetVolRef.current = targetVol;
+
+      if (scrollAudio.paused) {
+        try {
+          scrollAudio.play().then(() => {
+            isScrollAudioUnlockedRef.current = true;
+          }).catch(() => {
+            isScrollAudioUnlockedRef.current = false;
+          });
+        } catch {
+        }
+      }
+      ensureScrollAnimation();
+    };
+
+    const onDragMotion = (event: Event) => {
+      const distance = (event as CustomEvent<number>).detail;
+      if (typeof distance !== "number") return;
+      onScrollMotion(distance);
+    };
+
+    window.addEventListener("hvl-click", onClickSound);
+    window.addEventListener("hvl-audio-unlock", unlockScrollAudio);
+    window.addEventListener("hvl-drag-motion", onDragMotion);
     return () => {
-      document.removeEventListener("pointerdown", onPointerDown, { capture: true });
-      document.removeEventListener("wheel", onWheel, { capture: true } as AddEventListenerOptions);
+      window.removeEventListener("hvl-click", onClickSound);
+      window.removeEventListener("hvl-audio-unlock", unlockScrollAudio);
+      window.removeEventListener("hvl-drag-motion", onDragMotion);
 
       cancelAnimationFrame(rafId);
       const scrollAudio = scrollAudioRef.current;
