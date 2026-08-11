@@ -352,7 +352,7 @@ const galleryItems: readonly GalleryItem[] = (
     title: "Wtf Bby I'm Lit",
     subtitle: "RPT MCK",
     imageUrl: "/images/wtf-bby-im-lit.png",
-    audioUrl: "/music/wtf-bby-im-lit.seek.mp3",
+    audioUrl: "/music/wtf-bby-im-lit.mp3",
     type: "pulled",
     lyrics: wtfBbyImLitLyrics,
     lyricsTimestamps: wtfBbyImLitLyricsTimestamps,
@@ -2686,38 +2686,6 @@ export function HVLScene() {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
   }, [completeAudioSeek]);
-
-  const handleCloseProject = useCallback(() => {
-    const audio = audioRef.current;
-    if (audio) {
-      audio.pause();
-      audio.currentTime = 0;
-      audio.removeAttribute("src");
-      audio.load();
-    }
-    setIsPlaying(false);
-    setIsLyricsOpen(false);
-    setIsSeeking(false);
-    setCurrentTime(0);
-    setAutoNextRemaining(streamDisplayDelay);
-    setStreamElapsedTime(0);
-    setIsAutoNextPaused(false);
-    autoNextDeadlineRef.current = null;
-    setRepeatMode("off");
-    isDetailMinimizedRef.current = false;
-    setIsDetailMinimized(false);
-    setShowOverlay(false);
-    setAreDetailButtonsVisible(true);
-    if (detailButtonsTimeoutRef.current != null) {
-      window.clearTimeout(detailButtonsTimeoutRef.current);
-      detailButtonsTimeoutRef.current = null;
-    }
-
-    if (closeOverlayTimeoutRef.current != null) window.clearTimeout(closeOverlayTimeoutRef.current);
-    closeOverlayTimeoutRef.current = window.setTimeout(() => {
-      setSelectedProject(null);
-    }, 1200);
-  }, [streamDisplayDelay]);
 
   useEffect(() => {
     const media = window.matchMedia(mobileMediaQuery);
