@@ -118,6 +118,223 @@ const wtfBbyImLitLyricsTimestamps = [0,
   148.09, 150.26, 151.84, 154.39, 155.49, 157.33, 159.11, 160.76,
 ] as const;
 
+const idkLyrics = String.raw`
+♬
+Ah-ah-ah-ah-ah-ah-ah-ah-ah-ah-ah-ah-ah-ah-ah-ah
+Khói bay nơi phố xưa, ánh mắt quen chiều chạng vạng
+Vắng hoe, chỉ còn mỗi anh, cigar và rượu vang
+Giá như em ở đây, như lúc xưa, anh sẽ sà vào
+Nàng nhắc anh là đã lâu anh vẫn chưa được về nhà
+Cứ như là không quan tâm, nhưng vẫn cứ luôn miệng xì xào
+Chẳng mấy khi, thấy suy, châm bi stiva
+Còn nhớ em, anh muốn quên, để những câu hỏi kỳ lạ
+Trả lời giúp anh, sao anh hút ben mà chẳng thấy phê, chẳng gì cả
+Chẳng thấy phê, chẳng gì cả
+Chẳng thấy phê, chẳng gì cả
+Chẳng thấy phê, chẳng gì cả (chyah)
+Baby, what's up?
+Chạy đuổi theo nhau thành một vòng tròn
+Đôi khi thấy nhưng không đợi mong
+Chắc sẽ đến lúc con tim mình thôi nhung nhớ (yeah, eh)
+Gió thu, déjà vu, tưởng thấy em ở gần nhà
+Màu tóc quen làm ngỡ như bóng ai vụt qua
+Nếu ta chạm mắt nhau, liệu có như hai người xa lạ?
+Anh phóng lên, tay vít ga, ngược gió thu, vraaa
+Trong một khoảnh khắc anh tưởng như anh đã tìm thấy thứ bao lâu nay anh kiếm tìm
+Mọi mảnh ghép kia hiện ra thật hợp lý, anh nghĩ là anh đã có lại niềm tin
+Không gian xung quanh như là đang sáng lên, anh lao đi ở trong một bộ phim
+Cào cào trắng trong màn đêm đen, FMF xé không gian lặng im
+Từng lời nguyện cầu trở thành hiện thực, rồi điều gì sẽ thuộc về anh?
+Anh không muốn mất em thêm lần nữa đâu nên đã phóng theo em thật nhanh
+Càng đi theo em, anh lại càng xa, tiếng chim lợn kêu báo điềm chẳng lành
+Từng lời nguyện cầu trở thành hiện thực, rồi điều gì sẽ thuộc về anh?
+Anh không muốn mất em thêm lần nữa đâu nên đã phóng theo em thật nhanh
+Càng đi theo em, anh lại càng xa, tiếng chim lợn kêu báo điềm chẳng lành
+(Hoh-oh-oh-oh-oh)
+Con tim như đang được sống lại
+Giấc mơ chia làm hai
+Anh mang mùa thu ngày hôm qua
+Em mang ngày mai
+Con tim như đang được sống lại
+Giấc mơ chia làm hai
+Anh mang mùa thu ngày hôm qua
+Em mang ngày mai
+Ở ngã ba, một tiếng la thất thanh, và
+Một tiếng xe cứu thương rít lên từ đằng xa
+Anh muốn em chậm lại chút thôi, anh muốn đi về nhà
+Họ đến đây để bắt anh, đừng bỏ anh (yeah)
+Phải rất lâu, hai chúng ta chẳng nến, vang, cigar
+Đốt thêm, khói bay, camel, trà đen
+Áo quan, lẵng hoa, chỉ là vẫn như hai người xa lạ
+Anh vẫn luôn là chính anh, đợi hình bóng quen là em
+Khói bay nơi phố xưa, ánh mắt quen chiều chạng vạng
+Màu tóc quen làm ngỡ như bóng ai vụt qua
+Nếu ta chạm mắt nhau, liệu có như hai người xa lạ?
+Nàng nhắc anh là đã lâu anh vẫn chưa được về nhà
+Gió thu, déjà vu, tưởng thấy em ở gần nhà
+Vắng hoe, chỉ còn mỗi anh, cigar và rượu vang
+Giá như em ở đây, như lúc xưa, anh sẽ sà vào
+Anh phóng lên, tay vít ga, ngược gió thu, vraaa
+♬
+`;
+
+const idkLyricsTimestamps = [0,
+  16.66, 22.95, 25.73, 28.55, 31.34, 34.1, 36.96, 39.77, 42.51, 46.68, 49.55,
+  52.41, 56.13, 57.71, 60.77, 63.49, 68.09, 70.89, 73.73, 76.33, 79.38, 82.25,
+  85.04, 87.7, 90.79, 93.42, 96.38, 102.05, 104.82, 107.61, 110.92, 113.19,
+  116.07, 118.95, 122.04, 124.31, 127.25, 130.2, 133.08, 135.66, 138.48, 141.34,
+  144.08, 146.92, 149.95, 152.86, 155.51, 158.46, 161.05, 164.03, 166.68, 169.64,
+  172.69, 175.42, 177.94, 180.7
+] as const;
+
+const tayThiLyrics = String.raw`
+Tên tao là gì?
+MCK
+Tên tao là gì?
+MCK
+Tên tao là gì?
+MCK
+Tên tao là gì?
+MCK
+Anh Long, em fan anh, em xin kiểu ảnh
+Anh Long, em fan anh, em xin kiểu ảnh
+Anh Long, em fan anh, em xin kiểu ảnh
+Anh Long, em fan anh, em xin kiểu ảnh
+Uh, trốn tránh cái trách nhiệm này quá lâu nên truyền thông rất thích săn đuổi
+Cạn chén, nếu mà mày là fan tao bất kể ngành nghề hay là năm tuổi
+Thả cả nếu mà đấy là anh em, tần số trở nên đéo thể ngăn nổi
+Thông minh và không ăn xổi, chung sở thích là làm tài khoản nhân đôi
+Tao làm việc của tao (ting-ting-ting-ting)
+Hi vọng là mày thích nó
+Đừng nói về thành công (về tao)
+Mày vẫn chưa chạm tới cái đích đó
+Mày thấy nó giống cái vòng vàng á?
+Tao lại tưởng nó là cái xích chó
+Ai để mày đi lung tung ngoài đường này?
+Xích vô, xích vô, xích vô, xích vô
+Khi tao pull up, pull up (pull up)
+Gái phải đẹp như Tây Thi
+Bảo là, "Em xinh quá đi" (quá ngon)
+"Wanna be my lady?"
+Có thể gọi anh là bố
+Hoặc gọi anh là baby
+Mấy thằng ngoài kia ý kiến con c*c
+F*ck you pay me
+Bố mày đéo gang, bố mày đéo gang, bố mày đéo gang, đéo phải gang gang
+Phong cách người chơi là chất chơi người dơi, chúng nó bảo tao là vamp vamp
+Bắt được con vợ ở Hàng Chiếu xong tao bảo nó làm điếu bởi vì thấy nó có vẻ quen quen
+Nếu mà không phải thì thôi nhớ, dạo này mắt anh hơi bị lem nhem
+Không thể hiểu rõ được nhân tình thế thái, đôi khi vạch dái vào chân mình cứ thế đái
+Chúng mày muốn có chỗ đứng còn tao thì mỏi rồi, cho tao tìm cái ghế cái
+Đừng có cap, cap, cap, cap, cap
+Bố mày đéo tin, đéo phải loại dễ dãi
+Thôi tao đi về đây, trông tao bễ vãi
+Nếu là công việc, thôi cứ để mai
+Khi tao pull up, pull up (pull up)
+Gái phải đẹp như Tây Thi
+Bảo là, "Em xinh quá đi" (quá ngon)
+"Wanna be my lady?"
+Có thể gọi anh là bố
+Hoặc gọi anh là baby (baby)
+Mấy thằng ngoài kia ý kiến con c*c
+F*ck you pay me
+(Hay là như này nhờ)
+`;
+
+const tayThiLyricsTimestamps = [
+  0.04, 1.9, 3.09, 5.12, 6.28, 8.35, 9.42, 11.51,
+  12.72, 15.89, 19.17, 22.25, 25.14, 29.01, 32.25, 35.5,
+  38.98, 40.57, 42.18, 43.44, 45.38, 46.92, 47.95, 49.46,
+  51.61, 53.25, 54.95, 56.53, 58.08, 59.64, 61.09, 63.02,
+  64.64, 67.79, 70.85, 73.94, 77.03, 80.79, 83.65, 85.05,
+  86.77, 88.32, 90.01, 91.71, 93.24, 94.86, 96.52, 98.02,
+  99.43, 101.41, 102.77,
+] as const;
+
+const liemLyrics = String.raw`
+♬
+Anh đã nói quá nhiều về tình yêu
+Nhưng lại chẳng biết anh muốn điều gì từ tình yêu
+Và đã có những vết cắt rất sâu, nhắc anh bao điều
+Đừng có tin khi con tim này còn phiêu
+Ừ thì viết nốt lần này thôi
+Chẳng thể để cảm xúc cứ mãi tồn đọng ở bờ môi
+Và anh sẽ xóa hết những thước phim khi em đi xa rồi
+Chẳng còn đớn đau, chỉ là do con tim anh rã rời
+Thêm một party, thêm một ly on the weekend
+Vậy đừng đỡ anh ra khỏi đây, anh đang say mèm
+Anh chẳng biết thế nào là tốt đâu
+Anh đang đi tìm chính mình
+Giết em luôn, không để cho em thay đổi tính tình
+Fuck all the bitches, không thể tin, không thể phiêu được
+I got no chill dù anh trip hơi sâu, eh-eh-eh-eh
+Và thế nào là một thằng đàn ông?
+Là phải giang tay và ôm em vào lòng?
+Sẽ trao cho em bao nụ hôn dù là chẳng còn lại gì ở bên trong?
+Và nếu cho anh quay ngược thời gian
+Anh sẽ yêu em như là yêu một người bạn
+Như cách em đã từng yêu một người bạn (Yeah)
+Yeah, yeah, vậy đừng có nói quá nhiều về tình yêu (Nói quá nhiều về tình yêu)
+Như là mình biết tất cả mọi chuyện về tình yêu (Hah-uh-huh)
+Đã có những vết cắt rất sâu, nhắc anh bao điều
+Đừng có tin khi con tim này còn phiêu (Huh-huh-huh)
+Và anh chỉ viết nốt lần này thôi
+Chẳng thể để cảm xúc cứ mãi tồn đọng ở bờ môi
+Và anh sẽ xóa hết những thước phim khi em đi xa rồi
+Chẳng còn gì nữa đâu bởi vì con tim anh rã rời
+Ah, hết rồi (Huh), anh chưa từng nghĩ ngợi
+Hãy để, cho anh được nghỉ ngơi
+Nói hết, ra những lời trong lòng
+Hiên ngang không quan tâm ai quy tội
+Trào lên bao nhiêu nghi ngờ vùi dập đi những khúc ca tình (Những khúc ca)
+Cảm ơn vì những bài học này làm cho anh nhận ra mình (Hah-hah)
+Em làm đúng những thứ anh suy luận giờ đã sáng tỏ khung hình
+Và bước đi anh cần tôn trọng thằng đàn ông ở trong mình, yeah-eh
+Eh-eh
+Eh-eh
+Eh-eh
+Eh-eh, eh-eh
+Uh-uh, mọc đâu ra cây hoa ở ngoài hiên nhà
+Mong cho hoa đưa hương bay thật xa
+Anh đã cảm thấy nơi đây như là thiên đường
+Mặc người đời nói rằng anh điêu toa
+Ngân nga câu hát ta và hoa đã từng đắm chìm
+Nhưng anh biết, không phải bông hoa của riêng anh
+Và nếu anh muốn, chắc chắn anh sẽ làm
+Anh đủ yêu hoa để anh rời xa
+Nói, về tình yêu
+Mà chẳng biết, về tình yêu
+Cắt rất sâu, bao điều
+Đừng tin khi tim còn phiêu
+Viết, lần này thôi
+Cảm xúc, đọng bờ môi
+Xóa phim, đi xa rồi
+Đớn đau, tim rã rời, yeah
+Vậy đừng có nói quá nhiều về tình yêu (Quá nhiều về tình yêu)
+Như là mình sẽ mãi mãi luôn bên nhau (Huh-huh), anh không bao giờ chạm vào nữa đâu
+(Nhưng tại sao mà anh lại tin khi con tim này còn phiêu, uh-huh)
+(Trao cho ai nhờ?)
+Anh chỉ viết nốt lần này (Viết nốt lần này)
+(Viết nốt lần này)
+Chẳng còn cách nào có thể xóa được những buồn phiền khi em đi xa rồi
+Chẳng còn đớn đau chẳng còn phù hợp (Uh-huh) thì giữ lại làm gì
+(Em đừng nói gì với tình yêu nữa)
+(Anh nghe chán rồi, yeah)
+(Em đừng nói gì với tình yêu nữa)
+`;
+
+const liemLyricsTimestamps = [0,
+  22.69, 24.98, 26.82, 30.02, 32.58, 34.78, 36.8, 39.71,
+  41.86, 46.83, 51.86, 53.42, 54.65, 57.15, 59.58, 63.97,
+  66.36, 69.07, 73.92, 76.31, 78.85, 81.25, 84.78, 86.95,
+  89.99, 92.32, 94.68, 96.83, 99.78, 102.45, 105.23, 107.87,
+  110.37, 112.65, 115.16, 117.56, 120.15, 127.46, 132.43, 137.59,
+  137.59, 141.13, 144.94, 147.28, 149.83, 152.32, 154.94, 157.4,
+  160.08, 162.87, 164.92, 167.13, 170.02, 172.81, 175.09, 177.41,
+  180.03, 182.47, 184.95, 189.32, 192.18, 192.59, 195.3, 196.23,
+  199.76, 211.96, 214.99, 219.82,
+] as const;
+
 const nhinKeThuTaoLyrics = String.raw`
 ♬ ♬ ♬
 Yeah, tao đang không đeo bịt mắt
@@ -345,6 +562,8 @@ const galleryItems: readonly GalleryItem[] = (
     pMobileBackground: "left",
     audioUrl: "/music/idk.mp3",
     type: "pulled",
+    lyrics: idkLyrics,
+    lyricsTimestamps: idkLyricsTimestamps,
   },
   {
     numberTrack: 3,
@@ -438,6 +657,8 @@ const galleryItems: readonly GalleryItem[] = (
     imageUrl: "/images/liem.png",
     audioUrl: "/music/liem.mp3",
     type: "pulled",
+    lyrics: liemLyrics,
+    lyricsTimestamps: liemLyricsTimestamps,
   },
   {
     numberTrack: 13,
@@ -485,6 +706,8 @@ const galleryItems: readonly GalleryItem[] = (
     pMobileBackground: "left",
     audioUrl: "/music/tay-thi.mp3",
     type: "pulled",
+    lyrics: tayThiLyrics,
+    lyricsTimestamps: tayThiLyricsTimestamps,
   },
   {
     numberTrack: 18,
