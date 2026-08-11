@@ -2424,9 +2424,14 @@ export function HVLScene() {
   }, [isAutoNextEnabled, isAutoNextPaused, nextTrackResult?.index, selectedProject?.index, streamDisplayDelay, streamTimerRevision]);
 
   const handleTrackEnded = useCallback(() => {
-    if (repeatMode === "one") {
+    if (repeatMode === "all" || repeatMode === "one") {
       const audio = audioRef.current;
       if (!audio) return;
+
+      // "all" is the UI's single-repeat mode: consume it after replaying once.
+      if (repeatMode === "all") {
+        setRepeatMode("off");
+      }
 
       audio.currentTime = 0;
       void audio.play().catch(() => setIsPlaying(false));
