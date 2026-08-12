@@ -1,5 +1,5 @@
-import { HVLScene } from "../components/HVLScene";
+import { HVLScreen } from "../components/HVLScreen";
 
 export default function Home() {
-  return <HVLScene />;
+  return <HVLScreen />;
 }
