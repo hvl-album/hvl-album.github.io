@@ -1,11 +1,11 @@
 "use client";
 
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import type { ThreeEvent } from "@react-three/fiber";
 import { Image as DreiImage, Text, useTexture } from "@react-three/drei";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
-import { AdditiveBlending, FrontSide, Mesh, Object3D, ShaderMaterial } from "three";
-import type { DisplayMode, GalleryItem } from "./hvl-types";
+import { AdditiveBlending, FrontSide, Mesh, Object3D, PerspectiveCamera, ShaderMaterial } from "three";
+import type { DisplayMode, DisplayStyle, GalleryItem } from "./hvl-types";
 
 function playClickSound() {
   window.dispatchEvent(new Event("hvl-click"));
@@ -299,6 +299,70 @@ function HVLTitle() {
   );
 }
 
+function SceneCamera({ displayStyle }: { displayStyle: DisplayStyle }) {
+  const { camera } = useThree();
+  const perspectiveCamera = camera as PerspectiveCamera;
+  const previousStyleRef = useRef<DisplayStyle | null>(null);
+  const transitionRef = useRef<{
+    kind: "initial" | "to-center" | "to-observatory";
+    elapsed: number;
+    startZ: number;
+    startFov: number;
+  }>({ kind: "initial", elapsed: 0, startZ: 14, startFov: 42 });
+
+  useEffect(() => {
+    const nextKind = displayStyle === "art" ? "to-center" : "to-observatory";
+    if (previousStyleRef.current == null) {
+      transitionRef.current = {
+        kind: "initial",
+        elapsed: 0,
+        startZ: camera.position.z,
+        startFov: perspectiveCamera.fov,
+      };
+    } else if (previousStyleRef.current !== displayStyle) {
+      transitionRef.current = {
+        kind: nextKind,
+        elapsed: 0,
+        startZ: camera.position.z,
+        startFov: perspectiveCamera.fov,
+      };
+    }
+    previousStyleRef.current = displayStyle;
+  }, [camera, displayStyle]);
+
+  useFrame((_, delta) => {
+    const targetZ = displayStyle === "art" ? 0.85 : 6;
+    const targetFov = displayStyle === "art" ? 62 : 50;
+    const transition = transitionRef.current;
+    const duration = transition.kind === "initial" ? 1.8 : 1.45;
+    transition.elapsed = Math.min(duration, transition.elapsed + delta);
+    const progress = Math.min(1, transition.elapsed / duration);
+    const easedProgress = progress * progress * (3 - 2 * progress);
+    let animatedZ = targetZ;
+
+    if (transition.kind === "to-observatory") {
+      const peakZ = 9.5;
+      if (progress < 0.58) {
+        const peakProgress = (progress / 0.58) * (progress / 0.58) * (3 - 2 * (progress / 0.58));
+        animatedZ = transition.startZ + (peakZ - transition.startZ) * peakProgress;
+      } else {
+        const settleProgress = (progress - 0.58) / 0.42;
+        const easedSettle = settleProgress * settleProgress * (3 - 2 * settleProgress);
+        animatedZ = peakZ + (targetZ - peakZ) * easedSettle;
+      }
+    } else {
+      animatedZ = transition.startZ + (targetZ - transition.startZ) * easedProgress;
+    }
+
+    camera.position.z = animatedZ;
+    perspectiveCamera.fov = transition.startFov + (targetFov - transition.startFov) * easedProgress;
+    camera.lookAt(0, 0, 0);
+    camera.updateProjectionMatrix();
+  });
+
+  return null;
+}
+
 function ImageTube({
   items,
   tubeCols,
@@ -313,6 +377,7 @@ function ImageTube({
   suppressClickUntilRef,
   onImageClick,
   displayMode,
+  displayStyle,
   playingTrackIndex,
 }: {
   items: readonly GalleryItem[];
@@ -328,6 +393,7 @@ function ImageTube({
   suppressClickUntilRef: React.MutableRefObject<number>;
   onImageClick: (projectName: string, imageUrl: string, textureIndex: number) => void;
   displayMode: DisplayMode;
+  displayStyle: DisplayStyle;
   playingTrackIndex: number | null;
 }) {
   const groupRef = useRef<Object3D>(null);
@@ -401,6 +467,7 @@ function ImageTube({
     }
     return out.filter(({ itemCount }) => itemCount > 0);
   }, [activeItems.length, cols, rows, totalRows, ySpacing]);
+  const targetViewTheta = displayStyle === "art" ? -Math.PI / 2 : Math.PI / 2;
 
   useEffect(() => {
     if (displayMode === tubeLayoutMode) {
@@ -446,7 +513,7 @@ function ImageTube({
         if (targetRow) {
           const targetTheta =
             Math.PI - ((targetCol + targetRow.rowOffset + 0.5) / targetRow.itemCount) * Math.PI * 2;
-          const targetRowRotation = targetTheta - Math.PI / 2;
+          const targetRowRotation = targetTheta - targetViewTheta;
           const targetAngle = targetRowRotation / rowSpeed[targetRow.baseRow];
           const rowAnglePeriod = (Math.PI * 2) / rowSpeed[targetRow.baseRow];
           const nearestTurn = Math.round((angle.current - targetAngle) / rowAnglePeriod);
@@ -654,7 +721,7 @@ function ImageTube({
               // theta - rowRotation. At rowRotation = theta - PI / 2, this
               // card is on the camera's center axis and its back face points
               // toward the camera.
-              const targetRowRotation = theta - Math.PI / 2;
+              const targetRowRotation = theta - targetViewTheta;
               const targetAngle = targetRowRotation / rowSpeed[baseRow];
               // Each row has its own angular speed, so its equivalent full
               // rotations in `angle.current` are 2π / rowSpeed, not 2π.
@@ -819,6 +886,7 @@ export function HVLCanvas({
   suppressClickUntilRef,
   onImageClick,
   displayMode,
+  displayStyle,
   playingTrackIndex,
 }: {
   items: readonly GalleryItem[];
@@ -834,11 +902,12 @@ export function HVLCanvas({
   suppressClickUntilRef: React.MutableRefObject<number>;
   onImageClick: (projectName: string, imageUrl: string, textureIndex: number) => void;
   displayMode: DisplayMode;
+  displayStyle: DisplayStyle;
   playingTrackIndex: number | null;
 }) {
   return (
     <Canvas
-      camera={{ position: [0, 0, 6], fov: 50 }}
+      camera={{ position: [0, 0, 14], fov: 42 }}
       gl={{ antialias: true, powerPreference: "high-performance", alpha: true }}
       dpr={[1, 2]}
       frameloop="always"
@@ -847,8 +916,9 @@ export function HVLCanvas({
         gl.setClearColor(0x000000, 0);
       }}
     >
+      <SceneCamera displayStyle={displayStyle} />
       <Suspense fallback={null}>
-        <HVLTitle />
+        {displayStyle !== "art" && <HVLTitle />}
         <ImageTube
           items={items}
           tubeCols={tubeCols}
@@ -863,6 +933,7 @@ export function HVLCanvas({
           suppressClickUntilRef={suppressClickUntilRef}
           onImageClick={onImageClick}
           displayMode={displayMode}
+          displayStyle={displayStyle}
           playingTrackIndex={playingTrackIndex}
         />
       </Suspense>

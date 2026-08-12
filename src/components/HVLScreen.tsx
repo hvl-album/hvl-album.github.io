@@ -87,6 +87,7 @@ const galleryItems: readonly GalleryItem[] = (
     pMobileBackground: "left",
     bMobileBackground: 0.8,
     audioUrl: "/music/idk.mp3",
+    videoUrl: "/videos/idk.mp4",
     type: "pulled",
     ...idkLyrics,
   },
@@ -212,6 +213,7 @@ const galleryItems: readonly GalleryItem[] = (
     subtitle: "RPT MCK, Tùng Dương",
     imageUrl: "/images/slippery.png",
     audioUrl: "/music/slippery.mp3",
+    videoUrl: "/videos/slippery.mp4",
     type: "pulled",
     ...slipperyLyrics,
   },
@@ -264,6 +266,7 @@ const galleryItems: readonly GalleryItem[] = (
     subtitle: "RPT MCK, Obito",
     imageUrl: "/images/xa-xoi.png",
     audioUrl: "/music/xa-xoi.mp3",
+    videoUrl: "/videos/xa-xoi.mp4",
     type: "pulled",
     ...xaXoiLyrics,
   },
@@ -284,6 +287,7 @@ const galleryItems: readonly GalleryItem[] = (
     subtitle: "RPT MCK",
     imageUrl: "/images/oanh-m-=-thuoc.png",
     audioUrl: "/music/oanh-m-=-thuoc.mp3",
+    videoUrl: "/videos/oanh-m-=-thuoc.mp4",
     type: "pulled",
     ...oanhMThuocLyrics,
   },
@@ -304,6 +308,7 @@ const galleryItems: readonly GalleryItem[] = (
     subtitle: "RPT MCK",
     imageUrl: "/images/nhin-ke-thu-tao.png",
     audioUrl: "/music/nhin-ke-thu-tao.mp3",
+    videoUrl: "/videos/nhin-ke-thu-tao.mp4",
     type: "pulled",
     ...nhinKeThuTaoLyrics,
   },
@@ -625,6 +630,7 @@ export function HVLScreen() {
   } | null>(null);
   const [showOverlay, setShowOverlay] = useState(false);
   const [isDetailMinimized, setIsDetailMinimized] = useState(false);
+  const [isTrackVideoActive, setIsTrackVideoActive] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [repeatMode, setRepeatMode] = useState<RepeatMode>("off");
   const [isLyricsOpen, setIsLyricsOpen] = useState(false);
@@ -1047,6 +1053,11 @@ export function HVLScreen() {
   }, [isDetailMinimized, isDockPinned, isMobile, selectedProject]);
 
   const selectedTrack = selectedProject ? galleryItems[selectedProject.index] : null;
+  const handleTrackVideoToggle = useCallback((showVideo: boolean) => {
+    if (!isMobile || !selectedTrack?.videoUrl) return;
+    playClickSound();
+    setIsTrackVideoActive(showVideo);
+  }, [isMobile, selectedTrack?.numberTrack]);
   const normalizedLyricsLines = (selectedTrack?.lyrics?.split("\n") ?? []).reduce<string[]>((lines, line) => {
     const normalizedLine = line.trim().length > 0 ? line : "";
     if (normalizedLine === "" && lines[lines.length - 1] === "") return lines;
@@ -1159,6 +1170,7 @@ export function HVLScreen() {
         : Boolean(shouldOpenLyrics);
       setIsLyricsOpen(Boolean(shouldOpenLyrics));
       setIsDownloadModalOpen(false);
+      setIsTrackVideoActive(false);
       isDetailMinimizedRef.current = nextPresentation === "minimized";
       setIsDetailMinimized(isDetailMinimizedRef.current);
       setIsFloatingPlayerExpanded(true);
@@ -1451,17 +1463,6 @@ export function HVLScreen() {
     setCurrentTime(nextTime);
   }, []);
 
-  const snapToLyricsTimestamp = useCallback((nextTime: number) => {
-    const timestamps = selectedTrack?.lyricsTimestamps;
-    if (!timestamps?.length) return nextTime;
-
-    return timestamps.reduce((nearestTimestamp, timestamp) => (
-      Math.abs(timestamp - nextTime) < Math.abs(nearestTimestamp - nextTime)
-        ? timestamp
-        : nearestTimestamp
-    ));
-  }, [selectedTrack]);
-
   const completeAudioSeek = useCallback((audio: HTMLAudioElement, nextTime: number, shouldResume: boolean) => {
     pendingAudioSeekCleanupRef.current?.();
     const requestId = audioSeekRequestRef.current + 1;
@@ -1508,9 +1509,12 @@ export function HVLScreen() {
         return;
       }
 
+      audio.pause();
+      audio.currentTime = targetTime;
       restorePlayback?.();
       restorePlayback = null;
       settleAtCurrentPosition();
+      if (shouldResume) void audio.play().catch(() => setIsPlaying(false));
     };
 
     const startWarmup = () => {
@@ -1573,9 +1577,9 @@ export function HVLScreen() {
       if (!audio || startTime == null || selectedTrack?.type !== "pulled" || !selectedTrack.audioUrl) return;
 
       audio.pause();
-      completeAudioSeek(audio, snapToLyricsTimestamp(startTime), true);
+      completeAudioSeek(audio, startTime, true);
     },
-    [completeAudioSeek, selectedTrack, snapToLyricsTimestamp],
+    [completeAudioSeek, selectedTrack],
   );
 
   const handleLyricsLineKeyDown = useCallback(
@@ -1624,13 +1628,13 @@ export function HVLScreen() {
     setIsSeeking(false);
     const audio = audioRef.current;
     if (audio && nextTime != null) {
-      completeAudioSeek(audio, snapToLyricsTimestamp(nextTime), resumeAfterSeekRef.current);
+      completeAudioSeek(audio, nextTime, resumeAfterSeekRef.current);
     }
     resumeAfterSeekRef.current = false;
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
-  }, [completeAudioSeek, getProgressSeekTime, snapToLyricsTimestamp]);
+  }, [completeAudioSeek, getProgressSeekTime]);
 
   const cancelProgressSeek = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
     event.stopPropagation();
@@ -1655,7 +1659,7 @@ export function HVLScreen() {
         setDisplayStyle("list");
       } else {
         const storedDisplayStyle = window.localStorage.getItem(displayStyleStorageKey);
-        setDisplayStyle(storedDisplayStyle === "list" ? "list" : "museum");
+        setDisplayStyle(storedDisplayStyle === "list" || storedDisplayStyle === "art" ? storedDisplayStyle : "museum");
       }
       setIsPresentationReady(true);
     };
@@ -1892,7 +1896,7 @@ export function HVLScreen() {
   return (
     <div className="sceneRoot">
       <div
-      className={`sceneRoot__content ${!isAgeGateStateReady || isAgeGateOpen ? "is-blurred" : ""}`}
+      className={`sceneRoot__content ${displayStyle === "art" ? "is-art-style" : ""} ${!isAgeGateStateReady || isAgeGateOpen ? "is-blurred" : ""}`}
       onPointerDown={isMobile || displayStyle === "list" || (selectedProject && !isDetailMinimized) ? undefined : onPointerDown}
       onPointerMove={isMobile || displayStyle === "list" || (selectedProject && !isDetailMinimized) ? undefined : handleScenePointerMove}
       onPointerUp={isMobile || displayStyle === "list" || (selectedProject && !isDetailMinimized) ? undefined : onPointerUp}
@@ -1917,6 +1921,18 @@ export function HVLScreen() {
             ))}
           </div>
         </>
+      )}
+
+      {isPresentationReady && !isMobile && displayStyle === "art" && (
+        <h1 className="art-style-title">
+          <NextImage
+            src="/images/hvl-logo.svg"
+            alt="HVL"
+            width={3790}
+            height={654}
+            priority
+          />
+        </h1>
       )}
 
       {!isPresentationReady ? null : isMobile || displayStyle === "list" ? (
@@ -1945,6 +1961,7 @@ export function HVLScreen() {
           suppressClickUntilRef={suppressImageClickUntil}
           onImageClick={handleImageClick}
           displayMode={displayMode}
+          displayStyle={displayStyle}
           playingTrackIndex={showOverlay && isDetailPlaying && selectedProject ? selectedProject.index : null}
         />
       )}
@@ -2081,6 +2098,8 @@ export function HVLScreen() {
         areDetailButtonsVisible,
         isMobile,
         selectedTrack,
+        isTrackVideoActive,
+        handleTrackVideoToggle,
         resetDetailButtonsVisibility,
         repeatToastMessage,
         repeatToastPlacement,
@@ -2198,6 +2217,14 @@ export function HVLScreen() {
                       type="button"
                       onClick={() => handleSettingsDisplayStyleChange("museum")}
                       aria-pressed={pendingDisplayStyle === "museum"}
+                    >
+                      <span>ĐÀI QUAN SÁT</span>
+                    </button>
+                    <button
+                      className={`settings-modal__choice ${pendingDisplayStyle === "art" ? "is-selected" : ""}`}
+                      type="button"
+                      onClick={() => handleSettingsDisplayStyleChange("art")}
+                      aria-pressed={pendingDisplayStyle === "art"}
                     >
                       <span>BẢO TÀNG</span>
                     </button>
