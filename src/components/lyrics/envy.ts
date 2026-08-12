@@ -13,7 +13,7 @@ Vslyy, Rick, tao cần thêm cả Balenci
 Tiền tươi, thóc thật (oh)
 Đẹp zai mọi góc mặt (oh)
 Suy nghĩ vẫn cứ giữ là người tốt
-Nếu mày đéo hiểu, mày óc cặc (bitch)
+Nếu mày đéo hiểu, mày óc c*c (bitch)
 Cỏ nhập và đây là sativa
 Young boy đi cảnh mafia
 Tao phang hết gái của chúng mày
@@ -37,7 +37,7 @@ Fuck (đĩ, đĩ, đĩ) , fuck (đĩ, đĩ, đĩ)
 Mày xấu vãi cả l*n (đĩ, đĩ, đĩ)
 Fuck, do that (đĩ, đĩ, đĩ)
 Fuck (đĩ, đĩ, đĩ), fuck (đĩ, đĩ, đĩ)
-Mày xấu vãi cả l*n
+Mày xấu vãi cả l*n (đĩ, đĩ)
 Take off dat shit, xem mày như nào (đĩ, đĩ, đĩ)
 Take off dat shit, xem mày như nào (đĩ, đĩ, đĩ)
 Put down dat shit, xem mày như nào (đĩ, đĩ, đĩ)
