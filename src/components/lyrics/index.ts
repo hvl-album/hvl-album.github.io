@@ -6,6 +6,7 @@ export { envyLyrics } from "./envy";
 export { ghetXogLaiThikLyrics } from "./ghet-xog-lai-thik";
 export { hutVaHutLyrics } from "./hut-va-hut";
 export { idkLyrics } from "./idk";
+export { intepolLyrics } from "./intepol";
 export { laGiCuaNhauLyrics } from "./la-gi-cua-nhau";
 export { liemLyrics } from "./liem";
 export { nhinKeThuTaoLyrics } from "./nhin-ke-thu-tao";

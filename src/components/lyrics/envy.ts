@@ -2,95 +2,83 @@ import type { LyricsTrack } from "./types";
 
 export const envyLyrics: LyricsTrack = {
   lyrics: String.raw`
-
 ♬
 (Làng nước ơi, thằng chó nó dụ tôi về đây để giết tôi, làng nước ơi)
 ♬ ♬
-Tao cũng đéo biết tại sao mấy thằng khốn này ghen tị kìa
-Trứng nó bị che mắt bằng mấy tờ mấy tờ VND kìa
-Bitch life rich kìa tao cần thêm cả Balenci
+
+Tao cũng đéo biết tại sao mấy thằng khốn này ghen tị, yeah
+Chúng nó bị che mắt bằng mấy tờ, mấy tờ VND, yeah
+Vslyy, Rick, tao cần thêm cả Balenci
 Đéo thể cản được tao kiếm tiền đâu chúng mày nên làm quen đi
-Tiền tươi thọc thật, uh, đẹp giai mọi góc mặt, uh
-Suy nghĩ vẫn cứ dư là người tốt nên mày đéo hiểu mày óc c*c
-Bitch còn nhẫn và đây là sativa
+Tiền tươi, thóc thật (oh)
+Đẹp zai mọi góc mặt (oh)
+Suy nghĩ vẫn cứ giữ là người tốt
+Nếu mày đéo hiểu, mày óc cặc (bitch)
+Cỏ nhập và đây là sativa
 Young boy đi cảnh mafia
-Tao phang hết cả con chúng mày
+Tao phang hết gái của chúng mày
 Burn the club để đánh dấu nơi mà tao đi qua
 Tao trả, tao trả, tao trả, tao trả, tao trả, tao trả, tao trả
-Đây là dấu mồ hôi của tao, mày thấy đéo vừa mắt à sao hả sao hả
+Tao chỉ sống cuộc đời của tao? Mày thấy đéo vừa mắt à?
+Sao hả? Sao hả?
 Show up và tao không cần truyền thông
-Vì ý tưởng của tao nó đã quá là cao cả
-Có tài năng với âm nhạc đéo nói tao đang
-Sắp bảng xếp hạng khi tao bước xong tuổi 23
-Nhắn với chúng nó là you know shit
-Fuck mấy cái thằng ngu này where your crew at
-Hàng Mỹ Kỳ thì đừng gọi đây là crew về
-Tao để moi mọi người gọi là mu lề
-Mày đéo ngầu đâu you ain't cool
-Tầm nhìn chúng mày đó là bị thu hẹp
-Thiếu hiểu biết drink up the Kool-Aid
-Đứng trước mặt mày eat my food plate
-Bet you hate it when I do that
-Đi, đi, đi, fuck
-Đi, đi, đi, fuck
-Đi, đi, đi, mày sống với cả l*n
-Đi, đi, đi, fuck
-Đi, đi, đi, fuck
-Đi, đi, đi, mày sống với cả l*n
-Đi, đi
-Take that shit xem mày như nào
-Take that shit xem mày như nào
-Take that shit xem mày như nào
-Take that shit xem mày như nào
-Take that shit xem mày như nào
-Đã, đã, đã, sao nào
-Bọn này quay lại đang làm sao này
-Tao đang ra xa để mà khơi này
-Đừng đi nói chuyện với mấy ma này
-Chuyện đã xa lạ
-Muốn là chơi game với thằng này thì tao ba đời
-Muốn là mày sống tao bằng bao đời
-Thế thì cứ nói không phải cách để tao phấn
-Sướng cả đời gang gang gang
-Cứ không thông điệu là bảo chơi cho thật vui
-Kiến thức đầy đủ như thế cho mày đừng có lui
-Bắn đi mày, bắn mày sống ở hậu đuôi
-Càng thêm càn nghiêng thì lý nào mà chả xuôi
-Sẵn tay áo lên thì cho cùng cũng phải thôi
-Nằm cạnh những mặt này ông nào tao chả đuôi
-Mày cứ ghen tị đi
-Swagga
-Wow, swag
-Swag
-Huh
-Thấy không ai chết theo mày cả đâu
-Swagga
-Nhìn bọn tao này có làm sao
-Cho mày lấy dây cuộn ra chéo luôn
-Bọn tao là thần chướng này không có phép buộc
-Huh, huh huh huh
-Bởi vì xưa nay chưa quen nhau (Lil Bitch)
-Đừng có mà lên tay tao là nếu không mày nhớ (À bố khi bẩn)
-Lại đầu gác tay lên
-Trốn vào mánh khóe tao là scud lại wow
-Cứ như là tao scud lại wow
-Anh em tao bơi với scud, scud, wow
-Thế nhà tao chắc không vô được đâu
-Scud, scud, scud, scud
-Scud, scud, scud, scud
-Scud, scud, scud, scud
-Wow
+Vì lý tưởng của tao nó đã quá là cao cả
+Còn tài năng và âm nhạc thì đéo nói
+Tao đánh sập bảng xếp hạng khi tao bước sang tuổi 23
+Nhắn với chúng nó là "U don't know shits"
+Fuck mấy cái thằng ngu này, where ur crew at?
+Hàng mĩ kí thì đừng gọi đấy là cubans
+Tao để moi mọi người gọi nó là mullet
+Mày đéo ngầu đâu, u ain't cool, tầm nhìn chúng mày nó đã bị thu hẹp
+Thiếu hiểu biết, drink up the kool-aid
+Đứng trước mặt mày eat my full plate
+Bet u hate it when I do that
+Fuck, fuck
+Mày xấu vãi cả lồn
+Fuck, do that
+Fuck, fuck
+Mày xấu vãi cả lồn
+Take off dat shit, xem mày như nào
+Take off dat shit, xem mày như nào
+Put down dat shit, xem mày như nào
+Take off dat shit, xem mày như nào
+Put down dat shit, xem mày như nào
+Yeah yeah, sao vậy? Quay đi quay lại đã làm sao đây?
+Tao đang ăn sáng đã phải callin'
+Đến đây nói chuyện, khuyên mày mau lên
+Thiên thần sa lầy
+Muốn tao chứng kiến cảnh tượng này tiếp tục bao lần?
+Mỗi lần mày sống thay mặt bao lần?
+Thích thì cứ nói không phải ganh tị, tao phần
+Suốt ngày đòi gang gang gang
+Không có thông điệp rồi lại bảo chơi cho thật vui
+Kiếm tiền đầy túi nhớ dành cho mình đường lui
+I'm boogeyman, bắt mày giấu đầu hở đuôi
+Cạn tình cạn nghĩa thì lí nào mà chả xuôi
+Xắn tay áo lên, nghĩ sau cùng cũng phải thôi
+Nằm gai nếm mật nên ong nào tao chả nuôi
+Nên cứ ghét tiếp đi
+Swagged out, woah, swag (swag)
+(Oh oh) Take off my shit cho mày ghét luôn
+(Swagged out) Nhịn mày lần này gọi là xong
+Cho mày lấy giấy bút ra mà chép luôn
+Bọn tao là dân chơi khồng được phép buồn
+Huh, huh huh huh, coi như xưa nay chưa quen nhau (lil bitch)
+Để tao phải thấy thêm lần nữa khuyên mày nhớ lấy
+I'm Boogeyman, rượu đâu mang ra đê
+Cho tiền vào bank xong tao skrt like woah
+Không cần nhìn giá tao skrt like woah
+Anh em tao vâm, we skrt, we roll
+Anh em tao trap không đùa được đâu
 `,
-  lyricsTimestamps:
-[
-  0, 17.4, 23.2,
-  53.47, 56.72, 60.02, 62.84, 66.16, 69.47, 72.39, 74.38, 75.82, 77.22,
-  79.39, 82.48, 85.6, 86.9, 88.96, 90.43, 92.86, 95.32, 97.45, 99.05,
-  100.68, 102.37, 103.96, 105.67, 107.26, 111.32, 121.61, 128.66, 131.95, 132.78,
-  132.78, 133.39, 133.52, 136.88, 140.13, 141.78, 146.65, 148.33, 149.98, 151.27,
-  151.27, 154.96, 156.17, 158.25, 159.46, 161.42, 162.79, 164.43, 165.95, 167.74,
-  169.28, 170.93, 172.32, 175.34, 175.7, 177.48, 178.77, 179.42, 182.03, 182.82,
-  184.41, 185.99, 187.71, 189.03, 190.67, 192.95, 193.92, 195.92, 197.68, 199.19,
-  200.9, 203.33, 205.86, 210.36,
-],
+  lyricsTimestamps: [
+    0, 17.91, 23.09,
+    53.17, 56.46, 59.9, 62.69, 66.01, 67.69, 69.29, 70.81, 72.6, 74.27, 75.79,
+    77.03, 79.1, 82.31, 84.48, 85.47, 86.86, 88.81, 90.05, 92.82, 95.57, 97.17,
+    98.96, 100.61, 103.89, 105.53, 107.13, 111.11, 117.36, 121.1, 124.4, 128.8,
+    130.36, 133.15, 136.65, 140.06, 143.29, 148.07, 151.47, 152.99, 154.79, 156.06,
+    158.01, 159.24, 161.39, 162.74, 164.28, 165.77, 167.53, 169.17, 171.43, 172.74,
+    175.11, 179.02, 181.69, 184.15, 185.9, 187.67, 190.49, 191.98, 194.05, 195.79,
+    197.45, 199.01,
+  ],
 } as const;
