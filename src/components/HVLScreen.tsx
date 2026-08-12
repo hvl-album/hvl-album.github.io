@@ -12,6 +12,7 @@ import {
   ghetXogLaiThikLyrics,
   hutVaHutLyrics,
   idkLyrics,
+  intepolLyrics,
   laGiCuaNhauLyrics,
   liemLyrics,
   nhinKeThuTaoLyrics,
@@ -220,6 +221,7 @@ const galleryItems: readonly GalleryItem[] = (
     imageUrl: "/images/intepol.png",
     audioUrl: "/music/intepol.mp3",
     type: "pulled",
+    ...intepolLyrics,
   },
   {
     numberTrack: 17,
