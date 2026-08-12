@@ -32,16 +32,16 @@ Tao để moi mọi người gọi nó là mullet
 Mày đéo ngầu đâu, u ain't cool, tầm nhìn chúng mày nó đã bị thu hẹp
 Thiếu hiểu biết, drink up the kool-aid
 Đứng trước mặt mày eat my full plate
-Bet u hate it when I do that
-Fuck, fuck
-Mày xấu vãi cả lồn
-Fuck, do that
-Fuck, fuck
-Mày xấu vãi cả lồn
-Take off dat shit, xem mày như nào
-Take off dat shit, xem mày như nào
-Put down dat shit, xem mày như nào
-Take off dat shit, xem mày như nào
+Bet u hate it when I do that (đĩ, đĩ, đĩ)
+Fuck (đĩ, đĩ, đĩ) , fuck (đĩ, đĩ, đĩ)
+Mày xấu vãi cả l*n (đĩ, đĩ, đĩ)
+Fuck, do that (đĩ, đĩ, đĩ)
+Fuck (đĩ, đĩ, đĩ), fuck (đĩ, đĩ, đĩ)
+Mày xấu vãi cả l*n
+Take off dat shit, xem mày như nào (đĩ, đĩ, đĩ)
+Take off dat shit, xem mày như nào (đĩ, đĩ, đĩ)
+Put down dat shit, xem mày như nào (đĩ, đĩ, đĩ)
+Take off dat shit, xem mày như nào (đĩ, đĩ)
 Put down dat shit, xem mày như nào
 Yeah yeah, sao vậy? Quay đi quay lại đã làm sao đây?
 Tao đang ăn sáng đã phải callin'
@@ -62,7 +62,7 @@ Swagged out, woah, swag (swag)
 (Oh oh) Take off my shit cho mày ghét luôn
 (Swagged out) Nhịn mày lần này gọi là xong
 Cho mày lấy giấy bút ra mà chép luôn
-Bọn tao là dân chơi khồng được phép buồn
+Bọn tao là dân chơi không được phép buồn
 Huh, huh huh huh, coi như xưa nay chưa quen nhau (lil bitch)
 Để tao phải thấy thêm lần nữa khuyên mày nhớ lấy
 I'm Boogeyman, rượu đâu mang ra đê
