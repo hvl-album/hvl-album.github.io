@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import { GlobalClickSound } from "../components/GlobalClickSound";
+import { GlobalSound } from "../components/GlobalSound";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
   ?? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
@@ -50,7 +50,7 @@ export default function RootLayout({
   return (
     <html lang="vi">
       <body>
-        <GlobalClickSound />
+        <GlobalSound />
         {children}
       </body>
     </html>
