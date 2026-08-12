@@ -95,6 +95,7 @@ export function HVLTrackList({
               {item.type === "stream" ? (
                 <>
                   <span>/</span>
+                  <span className="mobile-track-list__stream-label">STREAM ON</span>
                   <span className="mobile-track-list__platforms" aria-hidden="true">
                     <span className="mobile-track-list__platform">
                       <svg viewBox="0 0 24 24" fill="none">
@@ -137,4 +138,3 @@ export function HVLTrackList({
     </div>
   );
 }
-

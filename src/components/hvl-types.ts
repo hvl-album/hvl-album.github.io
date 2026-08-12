@@ -12,6 +12,7 @@ export type GalleryItem = {
   subtitle: string;
   imageUrl: string;
   pMobileBackground: string;
+  bMobileBackground: number;
   audioUrl: string;
   type: GalleryItemType;
   lyrics?: string;

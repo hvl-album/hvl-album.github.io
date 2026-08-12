@@ -18,9 +18,8 @@ export function HVLTrackDetail(props: Record<string, unknown>) {
     repeatToastPlacement,
     handleMinimizeProject,
     handleSettingsOpen,
-    playClickSound,
-    resetLyricsAutoScrollPause,
-    setIsLyricsOpen,
+    handleLyricsToggle,
+    handleDownloadOpen,
     ListXIcon,
     ListMusicIcon,
     detailPreviewTrack,
@@ -99,29 +98,45 @@ export function HVLTrackDetail(props: Record<string, unknown>) {
             aria-label="Cài Đặt"
           >
             <svg viewBox="0 0 24 24" aria-hidden="true" fill="none">
-              <path d="M21 4h-7" />
-              <path d="M10 4H3" />
-              <path d="M21 12h-9" />
-              <path d="M8 12H3" />
-              <path d="M21 20h-5" />
-              <path d="M12 20H3" />
-              <path d="M14 2v4" />
-              <path d="M8 10v4" />
-              <path d="M16 18v4" />
+              <path d="M11 10.27 7 3.34" />
+              <path d="m11 13.73-4 6.93" />
+              <path d="M12 22v-2" />
+              <path d="M12 2v2" />
+              <path d="M14 12h8" />
+              <path d="m17 20.66-1-1.73" />
+              <path d="m17 3.34-1 1.73" />
+              <path d="M2 12h2" />
+              <path d="m20.66 17-1.73-1" />
+              <path d="m20.66 7-1.73 1" />
+              <path d="m3.34 17 1.73-1" />
+              <path d="m3.34 7 1.73 1" />
+              <circle cx="12" cy="12" r="2" />
+              <circle cx="12" cy="12" r="8" />
             </svg>
           </button>
-          {!isDetailMinimized && (!isMobile || !isLyricsOpen) && (
+          {!isDetailMinimized && selectedTrack?.type === "pulled" && (!isMobile || !isLyricsOpen) && (
             <button
               className="detail-lyrics-button"
               type="button"
-              onClick={() => {
-                playClickSound();
-                resetLyricsAutoScrollPause();
-                setIsLyricsOpen((isOpen: boolean) => !isOpen);
-              }}
+              onClick={handleLyricsToggle}
               aria-label={isLyricsOpen ? "Đóng lời bài hát" : "Mở lời bài hát"}
             >
               {isLyricsOpen ? <ListXIcon /> : <ListMusicIcon />}
+            </button>
+          )}
+          {!isDetailMinimized && selectedTrack?.type === "pulled" && (
+            <button
+              className="detail-download-button"
+              type="button"
+              onClick={handleDownloadOpen}
+              onPointerDown={(event) => event.stopPropagation()}
+              aria-label="Tải audio"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 3v12" />
+                <path d="m7 10 5 5 5-5" />
+                <path d="M5 21h14" />
+              </svg>
             </button>
           )}
           <div className="project-content">
@@ -134,6 +149,7 @@ export function HVLTrackDetail(props: Record<string, unknown>) {
               unoptimized
               style={{
                 objectPosition: isMobile ? selectedTrack?.pMobileBackground ?? "center" : "center",
+                filter: isMobile ? `brightness(${selectedTrack?.bMobileBackground ?? 0.48})` : undefined,
               }}
             />
           </div>
@@ -274,9 +290,7 @@ export function HVLTrackDetail(props: Record<string, unknown>) {
             aria-label="Lời bài hát"
           >
             <button className="lyrics-panel__close" type="button" onClick={handleLyricsClose} aria-label="Đóng Lời Bài Hát">
-              <svg className="lyrics-panel__close-chevron" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="m6 9 6 6 6-6" />
-              </svg>
+              <ListXIcon />
             </button>
           <div
             className="lyrics-panel__body"
