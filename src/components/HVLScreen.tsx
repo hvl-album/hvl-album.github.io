@@ -1663,6 +1663,15 @@ export function HVLScreen() {
   }, [activeLyricsLineIndex, isDetailPlaying, isLyricsAutoScrollPaused, isLyricsOpen]);
 
   useEffect(() => {
+    if (!isLyricsOpen || selectedProject?.index == null) return;
+
+    const lyricsBody = lyricsBodyRef.current;
+    if (!lyricsBody) return;
+
+    lyricsBody.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [isLyricsOpen, selectedProject?.index]);
+
+  useEffect(() => {
     if (!hasConfirmedAge || isAgeGateOpen || selectedProject || isMobile) {
       if (sceneControlsTimeoutRef.current != null) {
         window.clearTimeout(sceneControlsTimeoutRef.current);
