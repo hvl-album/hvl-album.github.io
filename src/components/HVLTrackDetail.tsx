@@ -13,6 +13,8 @@ export function HVLTrackDetail(props: Record<string, unknown>) {
     areDetailButtonsVisible,
     isMobile,
     selectedTrack,
+    isTrackVideoActive,
+    handleTrackVideoToggle,
     resetDetailButtonsVisibility,
     repeatToastMessage,
     repeatToastPlacement,
@@ -69,6 +71,43 @@ export function HVLTrackDetail(props: Record<string, unknown>) {
           {repeatToastMessage && repeatToastPlacement === "detail" && (
             <div className="project-single-view__repeat-toast" role="status" aria-live="polite">
               {repeatToastMessage}
+            </div>
+          )}
+          {!isDetailMinimized && isMobile && selectedTrack?.videoUrl && (
+            <div
+              className={`detail-media-toggle ${isTrackVideoActive ? "is-video-active" : ""}`}
+              role="group"
+              aria-label="Chuyển đổi ảnh và video"
+            >
+              <button
+                className={`detail-media-toggle__item ${!isTrackVideoActive ? "is-active" : ""}`}
+                type="button"
+                onClick={() => handleTrackVideoToggle(false)}
+                onPointerDown={(event) => event.stopPropagation()}
+                aria-label="Hiển thị ảnh"
+                aria-pressed={!isTrackVideoActive}
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+                  <circle cx="9" cy="9" r="2" />
+                  <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+                </svg>
+              </button>
+              <button
+                className={`detail-media-toggle__item ${isTrackVideoActive ? "is-active" : ""}`}
+                type="button"
+                onClick={() => handleTrackVideoToggle(true)}
+                onPointerDown={(event) => event.stopPropagation()}
+                aria-label="Phát video"
+                aria-pressed={isTrackVideoActive}
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m12.296 3.464 3.02 3.956" />
+                  <path d="M20.2 6 3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1.1-.3 2.2.3 2.5 1.3z" />
+                  <path d="M3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                  <path d="m6.18 5.276 3.1 3.899" />
+                </svg>
+              </button>
             </div>
           )}
           <div
@@ -140,18 +179,30 @@ export function HVLTrackDetail(props: Record<string, unknown>) {
             </button>
           )}
           <div className="project-content">
-            <NextImage
-              src={selectedProject.imageUrl}
-              alt={selectedProject.name}
-              width={516}
-              height={516}
-              sizes="(max-width: 516px) calc(100vw - 48px), 516px"
-              unoptimized
-              style={{
-                objectPosition: isMobile ? selectedTrack?.pMobileBackground ?? "center" : "center",
-                filter: isMobile ? `brightness(${selectedTrack?.bMobileBackground ?? 0.48})` : undefined,
-              }}
-            />
+            {isMobile && selectedTrack?.videoUrl && isTrackVideoActive ? (
+              <video
+                className="project-content__video"
+                src={selectedTrack.videoUrl}
+                autoPlay
+                loop
+                muted
+                playsInline
+                aria-label={selectedProject.name}
+              />
+            ) : (
+              <NextImage
+                src={selectedProject.imageUrl}
+                alt={selectedProject.name}
+                width={516}
+                height={516}
+                sizes="(max-width: 516px) calc(100vw - 48px), 516px"
+                unoptimized
+                style={{
+                  objectPosition: isMobile ? selectedTrack?.pMobileBackground ?? "center" : "center",
+                  filter: isMobile ? `brightness(${selectedTrack?.bMobileBackground ?? 0.48})` : undefined,
+                }}
+              />
+            )}
           </div>
           {selectedTrack && !isDetailMinimized && (
             <section
