@@ -3343,6 +3343,11 @@ body {
 		height: 34px;
 	}
 
+	.project-player__next {
+		width: 34px;
+		height: 34px;
+	}
+
 	.close-button,
 	.detail-settings-button,
 	.project-player__previous,
