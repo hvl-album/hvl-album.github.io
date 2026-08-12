@@ -37,7 +37,7 @@ import { HVLCanvas } from "./HVLCanvas";
 import { HVLTrackDetail } from "./HVLTrackDetail";
 import { HVLDock } from "./HVLDock";
 
-type GalleryItemSeed = Omit<GalleryItem, "pMobileBackground"> & Partial<Pick<GalleryItem, "pMobileBackground">>;
+type GalleryItemSeed = Omit<GalleryItem, "pMobileBackground" | "bMobileBackground"> & Partial<Pick<GalleryItem, "pMobileBackground" | "bMobileBackground">>;
 
 
 
@@ -74,6 +74,7 @@ const galleryItems: readonly GalleryItem[] = (
     subtitle: "RPT MCK",
     imageUrl: "/images/elegie.png",
     pMobileBackground: "right",
+    bMobileBackground: 0.7,
     audioUrl: "",
     type: "stream",
   },
@@ -84,6 +85,7 @@ const galleryItems: readonly GalleryItem[] = (
     subtitle: "RPT MCK",
     imageUrl: "/images/idk.png",
     pMobileBackground: "left",
+    bMobileBackground: 0.8,
     audioUrl: "/music/idk.mp3",
     type: "pulled",
     ...idkLyrics,
@@ -364,9 +366,10 @@ const galleryItems: readonly GalleryItem[] = (
     ...thitLonLyrics,
   },
   ] satisfies readonly GalleryItemSeed[]
-).map((item) => ({
+).map((item: GalleryItemSeed) => ({
   ...item,
   pMobileBackground: item.pMobileBackground ?? "center",
+  bMobileBackground: item.bMobileBackground ?? 0.48,
 }));
 
 const tubeCols = Math.min(7, galleryItems.length);
@@ -390,6 +393,16 @@ function formatTime(seconds: number) {
   const minutes = Math.floor(seconds / 60).toString().padStart(2, "0");
   const remainingSeconds = Math.floor(seconds % 60).toString().padStart(2, "0");
   return `${minutes}:${remainingSeconds}`;
+}
+
+function formatFileSize(bytes: number | null) {
+  if (bytes == null || !Number.isFinite(bytes) || bytes <= 0) return "Không xác định";
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+}
+
+function getAudioFileName(audioUrl: string) {
+  return audioUrl.split("?")[0].split("/").pop()?.toLowerCase() ?? "audio.mp3";
 }
 
 function formatTrackNumber(numberTrack: number) {
@@ -615,8 +628,14 @@ export function HVLScreen() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [repeatMode, setRepeatMode] = useState<RepeatMode>("off");
   const [isLyricsOpen, setIsLyricsOpen] = useState(false);
+  const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
+  const [isDownloadDisabled, setIsDownloadDisabled] = useState(false);
+  const [downloadAudioSize, setDownloadAudioSize] = useState<number | null>(null);
+  const [isDownloadSizeLoading, setIsDownloadSizeLoading] = useState(false);
   const [isLyricsAutoScrollPaused, setIsLyricsAutoScrollPaused] = useState(false);
   const lyricsBodyRef = useRef<HTMLDivElement>(null);
+  const lyricsShouldReopenRef = useRef(false);
+  const downloadResetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [repeatAnimationNonce, setRepeatAnimationNonce] = useState(0);
   const [isRepeatAnimating, setIsRepeatAnimating] = useState(false);
   const [isSeeking, setIsSeeking] = useState(false);
@@ -800,8 +819,51 @@ export function HVLScreen() {
   const handleLyricsClose = useCallback(() => {
     playClickSound();
     resetLyricsAutoScrollPause();
+    lyricsShouldReopenRef.current = false;
     setIsLyricsOpen(false);
   }, [resetLyricsAutoScrollPause]);
+
+  const handleLyricsToggle = useCallback(() => {
+    playClickSound();
+    resetLyricsAutoScrollPause();
+    setIsLyricsOpen((isOpen) => {
+      const nextIsOpen = !isOpen;
+      lyricsShouldReopenRef.current = nextIsOpen;
+      return nextIsOpen;
+    });
+  }, [resetLyricsAutoScrollPause]);
+
+  const handleDownloadOpen = useCallback(() => {
+    const track = selectedProject ? galleryItems[selectedProject.index] : null;
+    if (!track || track.type !== "pulled" || !track.audioUrl) return;
+    playClickSound();
+    if (downloadResetTimeoutRef.current) clearTimeout(downloadResetTimeoutRef.current);
+    setIsDownloadDisabled(false);
+    setIsDownloadModalOpen(true);
+  }, [selectedProject]);
+
+  const handleDownloadClose = useCallback(() => {
+    playClickSound();
+    if (downloadResetTimeoutRef.current) clearTimeout(downloadResetTimeoutRef.current);
+    setIsDownloadDisabled(false);
+    setIsDownloadModalOpen(false);
+  }, []);
+
+  const handleDownloadAudio = useCallback((event: React.MouseEvent<HTMLAnchorElement>) => {
+    const track = selectedProject ? galleryItems[selectedProject.index] : null;
+    if (!track || track.type !== "pulled" || !track.audioUrl) return;
+    if (isDownloadDisabled) {
+      event.preventDefault();
+      return;
+    }
+    playClickSound();
+    if (downloadResetTimeoutRef.current) clearTimeout(downloadResetTimeoutRef.current);
+    setIsDownloadDisabled(true);
+    downloadResetTimeoutRef.current = setTimeout(() => {
+      setIsDownloadDisabled(false);
+      downloadResetTimeoutRef.current = null;
+    }, 1000);
+  }, [isDownloadDisabled, selectedProject]);
 
   const handleSettingsDisplayModeChange = useCallback((nextMode: DisplayMode) => {
     playClickSound();
@@ -1088,7 +1150,15 @@ export function HVLScreen() {
       autoNextDeadlineRef.current = null;
       setDetailNavigationPreview(null);
       const nextPresentation = presentation ?? (isDetailMinimizedRef.current ? "minimized" : "detail");
-      setIsLyricsOpen(keepLyricsOpen && nextPresentation === "detail");
+      const shouldRestoreLyrics = keepLyricsOpen || lyricsShouldReopenRef.current;
+      const shouldOpenLyrics = track?.type === "pulled"
+        && nextPresentation === "detail"
+        && shouldRestoreLyrics;
+      lyricsShouldReopenRef.current = track?.type === "stream"
+        ? keepLyricsOpen || lyricsShouldReopenRef.current
+        : Boolean(shouldOpenLyrics);
+      setIsLyricsOpen(Boolean(shouldOpenLyrics));
+      setIsDownloadModalOpen(false);
       isDetailMinimizedRef.current = nextPresentation === "minimized";
       setIsDetailMinimized(isDetailMinimizedRef.current);
       setIsFloatingPlayerExpanded(true);
@@ -1216,7 +1286,9 @@ export function HVLScreen() {
   }, [isAutoNextPaused, streamDisplayDelay, streamElapsedTime]);
 
   const handleMinimizeProject = useCallback(() => {
+    playClickSound();
     isDetailMinimizedRef.current = true;
+    lyricsShouldReopenRef.current = false;
     setIsLyricsOpen(false);
     setIsDetailMinimized(true);
     setIsFloatingPlayerExpanded(true);
@@ -1235,6 +1307,7 @@ export function HVLScreen() {
   }, [isDockPinned, isMobile, selectedTrack]);
 
   const handleRestoreProject = useCallback(() => {
+    playClickSound();
     isDetailMinimizedRef.current = false;
     setIsDetailMinimized(false);
     setShowOverlay(true);
@@ -1643,6 +1716,43 @@ export function HVLScreen() {
   }, [isSettingsOpen]);
 
   useEffect(() => {
+    if (!isDownloadModalOpen) return;
+
+    const handleDownloadModalKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") handleDownloadClose();
+    };
+
+    window.addEventListener("keydown", handleDownloadModalKeyDown);
+    return () => window.removeEventListener("keydown", handleDownloadModalKeyDown);
+  }, [handleDownloadClose, isDownloadModalOpen]);
+
+  useEffect(() => {
+    if (!isDownloadModalOpen || !selectedTrack?.audioUrl || selectedTrack.type !== "pulled") return;
+
+    let isCurrent = true;
+    setDownloadAudioSize(null);
+    setIsDownloadSizeLoading(true);
+    const audioUrl = new URL(selectedTrack.audioUrl, window.location.origin).href;
+
+    fetch(audioUrl, { method: "HEAD", cache: "no-store" })
+      .then((response) => {
+        const contentLength = response.headers.get("content-length");
+        const parsedSize = contentLength ? Number(contentLength) : null;
+        if (isCurrent) setDownloadAudioSize(parsedSize && Number.isFinite(parsedSize) ? parsedSize : null);
+      })
+      .catch(() => {
+        if (isCurrent) setDownloadAudioSize(null);
+      })
+      .finally(() => {
+        if (isCurrent) setIsDownloadSizeLoading(false);
+      });
+
+    return () => {
+      isCurrent = false;
+    };
+  }, [isDownloadModalOpen, selectedTrack?.audioUrl, selectedTrack?.type]);
+
+  useEffect(() => {
     if (!isLyricsOpen) return;
 
     const handleLyricsKeyDown = (event: KeyboardEvent) => {
@@ -1663,13 +1773,13 @@ export function HVLScreen() {
   }, [activeLyricsLineIndex, isDetailPlaying, isLyricsAutoScrollPaused, isLyricsOpen]);
 
   useEffect(() => {
-    if (!isLyricsOpen || selectedProject?.index == null) return;
+    if (selectedProject?.index == null) return;
 
     const lyricsBody = lyricsBodyRef.current;
     if (!lyricsBody) return;
 
     lyricsBody.scrollTo({ top: 0, left: 0, behavior: "auto" });
-  }, [isLyricsOpen, selectedProject?.index]);
+  }, [selectedProject?.index]);
 
   useEffect(() => {
     if (!hasConfirmedAge || isAgeGateOpen || selectedProject || isMobile) {
@@ -1916,15 +2026,48 @@ export function HVLScreen() {
           aria-label="Cài Đặt"
         >
           <svg viewBox="0 0 24 24" aria-hidden="true" fill="none">
-            <path d="M21 4h-7" />
-            <path d="M10 4H3" />
-            <path d="M21 12h-9" />
-            <path d="M8 12H3" />
-            <path d="M21 20h-5" />
-            <path d="M12 20H3" />
-            <path d="M14 2v4" />
-            <path d="M8 10v4" />
-            <path d="M16 18v4" />
+            <path d="M11 10.27 7 3.34" />
+            <path d="m11 13.73-4 6.93" />
+            <path d="M12 22v-2" />
+            <path d="M12 2v2" />
+            <path d="M14 12h8" />
+            <path d="m17 20.66-1-1.73" />
+            <path d="m17 3.34-1 1.73" />
+            <path d="M2 12h2" />
+            <path d="m20.66 17-1.73-1" />
+            <path d="m20.66 7-1.73 1" />
+            <path d="m3.34 17 1.73-1" />
+            <path d="m3.34 7 1.73 1" />
+            <circle cx="12" cy="12" r="2" />
+            <circle cx="12" cy="12" r="8" />
+          </svg>
+        </button>
+      )}
+
+      {!isMobile && hasConfirmedAge && !isAgeGateOpen && (
+        <button
+          className={`desktop-header-settings ${displayStyle === "museum" && !areSceneControlsVisible ? "is-hidden" : ""}`}
+          type="button"
+          onClick={handleSettingsOpen}
+          onPointerDown={(event) => event.stopPropagation()}
+          aria-label="Cài Đặt"
+          tabIndex={displayStyle === "museum" && !areSceneControlsVisible ? -1 : 0}
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none">
+            <path d="M11 10.27 7 3.34" />
+            <path d="m11 13.73-4 6.93" />
+            <path d="M12 22v-2" />
+            <path d="M12 2v2" />
+            <path d="M14 12h8" />
+            <path d="m17 20.66-1-1.73" />
+            <path d="m17 3.34-1 1.73" />
+            <path d="M2 12h2" />
+            <path d="m20.66 17-1.73-1" />
+            <path d="m20.66 7-1.73 1" />
+            <path d="m3.34 17 1.73-1" />
+            <path d="m3.34 7 1.73 1" />
+            <circle cx="12" cy="12" r="2" />
+            <circle cx="12" cy="12" r="8" />
           </svg>
         </button>
       )}
@@ -1943,9 +2086,8 @@ export function HVLScreen() {
         repeatToastPlacement,
         handleMinimizeProject,
         handleSettingsOpen,
-        playClickSound,
-        resetLyricsAutoScrollPause,
-        setIsLyricsOpen,
+        handleLyricsToggle,
+        handleDownloadOpen,
         ListXIcon,
         ListMusicIcon,
         detailPreviewTrack,
@@ -2023,9 +2165,6 @@ export function HVLScreen() {
         finishProgressSeek,
         cancelProgressSeek,
         StreamingPlatformLinks,
-        isDisplayModeStatusVisible,
-        displayMode,
-        handleSettingsOpen,
       }} />
 
       {isSettingsOpen && (
@@ -2078,20 +2217,20 @@ export function HVLScreen() {
                 <span className="settings-modal__label">Hiển Thị</span>
                 <div className="settings-modal__choices" role="group" aria-label="Chế độ hiển thị">
                   <button
-                    className={`settings-modal__choice ${pendingDisplayMode === "full" ? "is-selected" : ""}`}
-                    type="button"
-                    onClick={() => handleSettingsDisplayModeChange("full")}
-                    aria-pressed={pendingDisplayMode === "full"}
-                  >
-                    <span>FULL ALBUM (30)</span>
-                  </button>
-                  <button
                     className={`settings-modal__choice ${pendingDisplayMode === "pulled" ? "is-selected" : ""}`}
                     type="button"
                     onClick={() => handleSettingsDisplayModeChange("pulled")}
                     aria-pressed={pendingDisplayMode === "pulled"}
                   >
                     <span>TRACK ĐÃ GỠ (19)</span>
+                  </button>
+                  <button
+                    className={`settings-modal__choice ${pendingDisplayMode === "full" ? "is-selected" : ""}`}
+                    type="button"
+                    onClick={() => handleSettingsDisplayModeChange("full")}
+                    aria-pressed={pendingDisplayMode === "full"}
+                  >
+                    <span>FULL ALBUM (30)</span>
                   </button>
                 </div>
               </div>
@@ -2123,7 +2262,7 @@ export function HVLScreen() {
                 className={`settings-modal__row ${pendingDisplayMode === "pulled" ? "is-disabled" : ""}`}
                 aria-disabled={pendingDisplayMode === "pulled"}
               >
-                <span className="settings-modal__label">Bỏ Qua Bài Stream Sau</span>
+                <span className="settings-modal__label">Tự Động Bỏ Qua Bài Stream</span>
                 <div className="settings-modal__tabs" role="group" aria-label="Thời gian bỏ qua bài stream">
                   {streamDisplayDelayOptions.map((delay) => (
                     <button
@@ -2145,6 +2284,75 @@ export function HVLScreen() {
                 LƯU
               </button>
             </footer>
+          </section>
+        </div>
+      )}
+      {isDownloadModalOpen && selectedTrack?.type === "pulled" && selectedTrack.audioUrl && (
+        <div
+          className="download-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="download-modal-title"
+          onPointerDown={(event) => {
+            if (event.target === event.currentTarget) handleDownloadClose();
+          }}
+        >
+          <section className="download-modal__panel" onPointerDown={(event) => event.stopPropagation()}>
+            <header className="download-modal__header">
+              <h2 id="download-modal-title">TẢI XUỐNG BÀI HÁT</h2>
+              <button className="download-modal__close" type="button" onClick={handleDownloadClose} aria-label="Đóng tải audio">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m6 6 12 12" />
+                  <path d="m18 6-12 12" />
+                </svg>
+              </button>
+            </header>
+            <div className="download-modal__content">
+              <NextImage
+                className="download-modal__image"
+                src={selectedTrack.imageUrl}
+                alt=""
+                width={112}
+                height={112}
+                unoptimized
+              />
+              <div className="download-modal__details">
+                <strong>{selectedTrack.title}</strong>
+                <span className="download-modal__artist">{selectedTrack.subtitle}</span>
+                <div className="download-modal__meta">
+                  <div className="download-modal__meta-row">
+                    <span>THỜI GIAN</span>
+                    <strong>{formatTime(selectedTrack.durationSeconds ?? duration)}</strong>
+                  </div>
+                  <div className="download-modal__meta-row">
+                    <span>TÊN FILE</span>
+                    <strong>{getAudioFileName(selectedTrack.audioUrl)}</strong>
+                  </div>
+                  <div className="download-modal__meta-row">
+                    <span>DUNG LƯỢNG</span>
+                    <strong>{isDownloadSizeLoading ? "ĐANG KIỂM TRA..." : formatFileSize(downloadAudioSize)}</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="download-modal__footer">
+              <a
+                className={`download-modal__action ${isDownloadDisabled ? "is-disabled" : ""}`}
+                href={selectedTrack.audioUrl}
+                download
+                aria-disabled={isDownloadDisabled}
+                onClick={handleDownloadAudio}
+              >
+                <span className="download-modal__action-content">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 3v12" />
+                    <path d="m7 10 5 5 5-5" />
+                    <path d="M5 21h14" />
+                  </svg>
+                  DOWNLOAD
+                </span>
+              </a>
+            </div>
           </section>
         </div>
       )}

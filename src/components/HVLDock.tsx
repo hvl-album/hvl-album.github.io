@@ -48,9 +48,6 @@ export function HVLDock(props: Record<string, unknown>) {
     finishProgressSeek,
     cancelProgressSeek,
     StreamingPlatformLinks,
-    isDisplayModeStatusVisible,
-    displayMode,
-    handleSettingsOpen,
   } = props as any;
 
   return (
@@ -311,28 +308,6 @@ export function HVLDock(props: Record<string, unknown>) {
                   <RepeatIcon isAll={repeatMode === "one"} isOne={repeatMode === "all"} animationNonce={repeatAnimationNonce} />
                 </button>
               )}
-              <button
-                className={`floating-player__display-mode ${isDisplayModeStatusVisible ? "is-status-visible" : ""}`}
-                type="button"
-                onClick={handleSettingsOpen}
-                onPointerDown={(event) => event.stopPropagation()}
-                aria-label="Cài Đặt"
-              >
-                <span className="floating-player__display-status" aria-hidden="true">
-                  {displayMode === "full" ? "FULL ALBUM" : "PULLED TRACK"}
-                </span>
-                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
-                  <path d="M21 4h-7" />
-                  <path d="M10 4H3" />
-                  <path d="M21 12h-9" />
-                  <path d="M8 12H3" />
-                  <path d="M21 20h-5" />
-                  <path d="M12 20H3" />
-                  <path d="M14 2v4" />
-                  <path d="M8 10v4" />
-                  <path d="M16 18v4" />
-                </svg>
-              </button>
               <button
                 className="floating-player__open-detail"
                 type="button"
