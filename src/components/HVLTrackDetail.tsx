@@ -179,28 +179,29 @@ export function HVLTrackDetail(props: Record<string, unknown>) {
             </button>
           )}
           <div className="project-content">
-            {isMobile && selectedTrack?.videoUrl && isTrackVideoActive ? (
+            <NextImage
+              className={selectedTrack?.videoUrl && isTrackVideoActive ? "project-content__image is-media-hidden" : "project-content__image"}
+              src={selectedProject.imageUrl}
+              alt={selectedProject.name}
+              width={516}
+              height={516}
+              sizes="(max-width: 516px) calc(100vw - 48px), 516px"
+              unoptimized
+              style={{
+                objectPosition: isMobile ? selectedTrack?.pMobileBackground ?? "center" : "center",
+                filter: isMobile ? `brightness(${selectedTrack?.bMobileBackground ?? 0.48})` : undefined,
+              }}
+            />
+            {isMobile && selectedTrack?.videoUrl && (
               <video
-                className="project-content__video"
+                className={`project-content__video ${isTrackVideoActive ? "is-media-visible" : ""}`}
                 src={selectedTrack.videoUrl}
                 autoPlay
                 loop
                 muted
                 playsInline
+                preload="auto"
                 aria-label={selectedProject.name}
-              />
-            ) : (
-              <NextImage
-                src={selectedProject.imageUrl}
-                alt={selectedProject.name}
-                width={516}
-                height={516}
-                sizes="(max-width: 516px) calc(100vw - 48px), 516px"
-                unoptimized
-                style={{
-                  objectPosition: isMobile ? selectedTrack?.pMobileBackground ?? "center" : "center",
-                  filter: isMobile ? `brightness(${selectedTrack?.bMobileBackground ?? 0.48})` : undefined,
-                }}
               />
             )}
           </div>

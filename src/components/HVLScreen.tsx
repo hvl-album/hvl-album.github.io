@@ -29,7 +29,6 @@ import type {
   DisplayStyle,
   GalleryItem,
   RepeatMode,
-  StreamDisplayDelay,
   TrackPresentation,
 } from "./hvl-types";
 import { HVLTrackList } from "./HVLTrackList";
@@ -64,7 +63,8 @@ const galleryItems: readonly GalleryItem[] = (
     title: "'HVL'",
     subtitle: "RPT MCK",
     imageUrl: "/images/hvl-trailer.webp",
-    audioUrl: "",
+    bMobileBackground: 0.6,
+    audioUrl: "/music/hvl.mp3",
     type: "stream",
   },
   {
@@ -74,8 +74,8 @@ const galleryItems: readonly GalleryItem[] = (
     subtitle: "RPT MCK",
     imageUrl: "/images/elegie.png",
     pMobileBackground: "right",
-    bMobileBackground: 0.7,
-    audioUrl: "",
+    bMobileBackground: 0.6,
+    audioUrl: "/music/elegie.mp3",
     type: "stream",
   },
   {
@@ -85,7 +85,7 @@ const galleryItems: readonly GalleryItem[] = (
     subtitle: "RPT MCK",
     imageUrl: "/images/idk.png",
     pMobileBackground: "left",
-    bMobileBackground: 0.8,
+    bMobileBackground: 0.7,
     audioUrl: "/music/idk.mp3",
     videoUrl: "/videos/idk.mp4",
     type: "pulled",
@@ -97,6 +97,7 @@ const galleryItems: readonly GalleryItem[] = (
     title: "Wtf Bby I'm Lit",
     subtitle: "RPT MCK",
     imageUrl: "/images/wtf-bby-im-lit.png",
+    bMobileBackground: 0.425,
     audioUrl: "/music/wtf-bby-im-lit.mp3",
     type: "pulled",
     ...wtfBbyImLitLyrics,
@@ -107,6 +108,7 @@ const galleryItems: readonly GalleryItem[] = (
     title: "Anh Không Muốn Nó Dễ Dàng",
     subtitle: "RPT MCK",
     imageUrl: "/images/anh-khong-muon-no-de-dang.png",
+    bMobileBackground: 0.55,
     audioUrl: "/music/anh-khong-muon-no-de-dang.mp3",
     type: "pulled",
     ...anhKhongMuonNoDeDangLyrics,
@@ -117,8 +119,9 @@ const galleryItems: readonly GalleryItem[] = (
     title: "Baby",
     subtitle: "RPT MCK, marzuz",
     imageUrl: "/images/baby.png",
+    bMobileBackground: 0.6,
     pMobileBackground: "right",
-    audioUrl: "",
+    audioUrl: "/music/baby.mp3",
     type: "stream",
   },
   {
@@ -127,6 +130,7 @@ const galleryItems: readonly GalleryItem[] = (
     title: "Yêu Anh Giết Anh",
     subtitle: "RPT MCK",
     imageUrl: "/images/yeu-anh-giet-anh.png",
+    bMobileBackground: 0.6,
     audioUrl: "/music/yeu-anh-giet-anh.mp3",
     type: "pulled",
     ...yeuAnhGietAnhLyrics,
@@ -137,7 +141,8 @@ const galleryItems: readonly GalleryItem[] = (
     title: "Mắt Môi Tay Chân",
     subtitle: "RPT MCK ft. Tage",
     imageUrl: "/images/mat-moi-tay-chan.png",
-    audioUrl: "",
+    bMobileBackground: 0.6,
+    audioUrl: "/music/mat-moi-tay-chan.mp3",
     type: "stream",
   },
   {
@@ -146,7 +151,7 @@ const galleryItems: readonly GalleryItem[] = (
     title: "Đao Của Anh Vừa",
     subtitle: "RPT MCK",
     imageUrl: "/images/dao-cua-anh-vua.png",
-    audioUrl: "",
+    audioUrl: "/music/dao-cua-anh-vua.mp3",
     type: "stream",
   },
   {
@@ -155,6 +160,7 @@ const galleryItems: readonly GalleryItem[] = (
     title: "Là Gì Của Nhau",
     subtitle: "RPT MCK",
     imageUrl: "/images/la-gi-cua-nhau.png",
+    bMobileBackground: 0.6,
     audioUrl: "/music/la-gi-cua-nhau.mp3",
     type: "pulled",
     ...laGiCuaNhauLyrics,
@@ -165,7 +171,8 @@ const galleryItems: readonly GalleryItem[] = (
     title: "Night In Prague",
     subtitle: "RPT MCK",
     imageUrl: "/images/night-in-prague.png",
-    audioUrl: "",
+    bMobileBackground: 0.35,
+    audioUrl: "/music/night-in-prague.mp3",
     type: "stream",
   },
   {
@@ -174,7 +181,8 @@ const galleryItems: readonly GalleryItem[] = (
     title: "Một Cái Ôm",
     subtitle: "RPT MCK",
     imageUrl: "/images/mot-cai-om.png",
-    audioUrl: "",
+    bMobileBackground: 0.6,
+    audioUrl: "/music/mot-cai-om.mp3",
     type: "stream",
   },
   {
@@ -183,6 +191,7 @@ const galleryItems: readonly GalleryItem[] = (
     title: "Liệm",
     subtitle: "RPT MCK",
     imageUrl: "/images/liem.png",
+    bMobileBackground: 0.6,
     audioUrl: "/music/liem.mp3",
     type: "pulled",
     ...liemLyrics,
@@ -194,7 +203,7 @@ const galleryItems: readonly GalleryItem[] = (
     subtitle: "RPT MCK, A$AP Ướt Mi",
     imageUrl: "/images/neu-nhu-ta-chang-con.png",
     pMobileBackground: "right",
-    audioUrl: "",
+    audioUrl: "/music/neu-nhu-ta-chang-con.mp3",
     type: "stream",
   },
   {
@@ -203,7 +212,8 @@ const galleryItems: readonly GalleryItem[] = (
     title: "Ai Mới Là Kẻ Xấu Xa",
     subtitle: "RPT MCK",
     imageUrl: "/images/ai-moi-la-ke-xau-xa.png",
-    audioUrl: "",
+    bMobileBackground: 0.6,
+    audioUrl: "/music/ai-moi-la-ke-xau-xa.mp3",
     type: "stream",
   },
   {
@@ -212,6 +222,7 @@ const galleryItems: readonly GalleryItem[] = (
     title: "Slippery",
     subtitle: "RPT MCK, Tùng Dương",
     imageUrl: "/images/slippery.png",
+    bMobileBackground: 0.6,
     audioUrl: "/music/slippery.mp3",
     videoUrl: "/videos/slippery.mp4",
     type: "pulled",
@@ -223,6 +234,7 @@ const galleryItems: readonly GalleryItem[] = (
     title: "Intepol",
     subtitle: "RPT MCK",
     imageUrl: "/images/intepol.png",
+    bMobileBackground: 0.6,
     audioUrl: "/music/intepol.mp3",
     type: "pulled",
     ...intepolLyrics,
@@ -234,6 +246,7 @@ const galleryItems: readonly GalleryItem[] = (
     subtitle: "RPT MCK",
     imageUrl: "/images/tay-thi.png",
     pMobileBackground: "left",
+    bMobileBackground: 0.6,
     audioUrl: "/music/tay-thi.mp3",
     type: "pulled",
     ...tayThiLyrics,
@@ -245,6 +258,7 @@ const galleryItems: readonly GalleryItem[] = (
     subtitle: "RPT MCK",
     imageUrl: "/images/hut-va-hut.png",
     pMobileBackground: "right",
+    bMobileBackground: 0.6,
     audioUrl: "/music/hut-va-hut.mp3",
     type: "pulled",
     ...hutVaHutLyrics,
@@ -255,6 +269,7 @@ const galleryItems: readonly GalleryItem[] = (
     title: "Dưa Chua",
     subtitle: "RPT MCK",
     imageUrl: "/images/dua-chua.png",
+    bMobileBackground: 0.55,
     audioUrl: "/music/dua-chua.mp3",
     type: "pulled",
     ...duaChuaLyrics,
@@ -265,6 +280,7 @@ const galleryItems: readonly GalleryItem[] = (
     title: "Xa Xôi",
     subtitle: "RPT MCK, Obito",
     imageUrl: "/images/xa-xoi.png",
+    bMobileBackground: 0.4,
     audioUrl: "/music/xa-xoi.mp3",
     videoUrl: "/videos/xa-xoi.mp4",
     type: "pulled",
@@ -276,6 +292,7 @@ const galleryItems: readonly GalleryItem[] = (
     title: "Che Phủ",
     subtitle: "RPT MCK",
     imageUrl: "/images/che-phu.png",
+    bMobileBackground: 0.6,
     audioUrl: "/music/che-phu.mp3",
     type: "pulled",
     ...chePhuLyrics,
@@ -286,6 +303,7 @@ const galleryItems: readonly GalleryItem[] = (
     title: "Oanh M = Thuoc",
     subtitle: "RPT MCK",
     imageUrl: "/images/oanh-m-=-thuoc.png",
+    bMobileBackground: 0.6,
     audioUrl: "/music/oanh-m-=-thuoc.mp3",
     videoUrl: "/videos/oanh-m-=-thuoc.mp4",
     type: "pulled",
@@ -307,6 +325,7 @@ const galleryItems: readonly GalleryItem[] = (
     title: "Nhìn Kẻ Thù Của Tao",
     subtitle: "RPT MCK",
     imageUrl: "/images/nhin-ke-thu-cua-tao.png",
+    bMobileBackground: 0.6,
     audioUrl: "/music/nhin-ke-thu-cua-tao.mp3",
     videoUrl: "/videos/nhin-ke-thu-cua-tao.mp4",
     type: "pulled",
@@ -329,6 +348,7 @@ const galleryItems: readonly GalleryItem[] = (
     subtitle: "RPT MCK",
     imageUrl: "/images/cam-on.png",
     pMobileBackground: "right",
+    bMobileBackground: 0.55,
     audioUrl: "/music/cam-on.mp3",
     type: "pulled",
     ...camOnLyrics,
@@ -339,7 +359,8 @@ const galleryItems: readonly GalleryItem[] = (
     title: "Không Cần Lo Cho Tao",
     subtitle: "RPT MCK",
     imageUrl: "/images/khong-can-lo-cho-tao.png",
-    audioUrl: "",
+    bMobileBackground: 0.35,
+    audioUrl: "/music/khong-can-lo-cho-tao.mp3",
     type: "stream",
   },
   {
@@ -348,7 +369,8 @@ const galleryItems: readonly GalleryItem[] = (
     title: "Huh",
     subtitle: "RPT MCK, RPT Orijinn, THANHDRAW",
     imageUrl: "/images/huh.jpg",
-    audioUrl: "",
+    bMobileBackground: 0.35,
+    audioUrl: "/music/huh.mp3",
     type: "stream",
   },
   {
@@ -357,7 +379,8 @@ const galleryItems: readonly GalleryItem[] = (
     title: "Nguyễn Văn Mười",
     subtitle: "RPT MCK",
     imageUrl: "/images/nguyen-van-muoi.png",
-    audioUrl: "",
+    bMobileBackground: 0.6,
+    audioUrl: "/music/nguyen-van-muoi.mp3",
     type: "stream",
   },
   {
@@ -384,13 +407,11 @@ const tubeScrollLimit = ((tubeRows - 1) * tubeRowSpacing) / 2;
 const tubeWheelScrollFactor = 0.00075;
 const mobileMediaQuery = "(pointer: coarse), (max-width: 1199px)";
 const ageConfirmationStorageKey = "hvl-age-confirmed";
-const autoNextDelaySeconds = 10;
+const autoNextDelaySeconds = 15;
 const displayModeStorageKey = "hvl-display-mode";
 const displayStyleStorageKey = "hvl-display-style";
 const dockPinnedStorageKey = "hvl-dock-pinned";
 const mobileDockModeStorageKey = "hvl-mobile-dock-mode";
-const streamDisplayDelayStorageKey = "hvl-stream-display-delay";
-const streamDisplayDelayOptions: readonly StreamDisplayDelay[] = [5, 10, 15];
 
 function formatTime(seconds: number) {
   if (!Number.isFinite(seconds) || seconds < 0) return "00:00";
@@ -653,11 +674,10 @@ export function HVLScreen() {
   const [displayMode, setDisplayMode] = useState<DisplayMode>("pulled");
   const [displayStyle, setDisplayStyle] = useState<DisplayStyle>("museum");
   const [isDockPinned, setIsDockPinned] = useState(false);
-  const [streamDisplayDelay, setStreamDisplayDelay] = useState<StreamDisplayDelay>(autoNextDelaySeconds);
+  const streamDisplayDelay = autoNextDelaySeconds;
   const [pendingDisplayMode, setPendingDisplayMode] = useState<DisplayMode>("pulled");
   const [pendingDisplayStyle, setPendingDisplayStyle] = useState<DisplayStyle>("museum");
   const [pendingDockPinned, setPendingDockPinned] = useState(false);
-  const [pendingStreamDisplayDelay, setPendingStreamDisplayDelay] = useState<StreamDisplayDelay>(autoNextDelaySeconds);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isDisplayModeStatusVisible, setIsDisplayModeStatusVisible] = useState(false);
   const [areDetailButtonsVisible, setAreDetailButtonsVisible] = useState(true);
@@ -780,9 +800,8 @@ export function HVLScreen() {
     setPendingDisplayStyle(isMobile ? "list" : displayStyle);
     setPendingDisplayMode(displayMode);
     setPendingDockPinned(isDockPinned);
-    setPendingStreamDisplayDelay(streamDisplayDelay);
     setIsSettingsOpen(true);
-  }, [displayMode, displayStyle, isDockPinned, isMobile, streamDisplayDelay]);
+  }, [displayMode, displayStyle, isDockPinned, isMobile]);
 
   const handleSettingsClose = useCallback(() => {
     playClickSound();
@@ -807,7 +826,7 @@ export function HVLScreen() {
       isLyricsUserScrollingRef.current = false;
       setIsLyricsAutoScrollPaused(false);
       lyricsAutoScrollPauseTimeoutRef.current = null;
-    }, 2_500);
+    }, 2_000);
   }, []);
 
   const pauseLyricsAutoScroll = useCallback(() => {
@@ -886,11 +905,6 @@ export function HVLScreen() {
     setPendingDockPinned(nextPinned);
   }, []);
 
-  const handleStreamDisplayDelayChange = useCallback((nextDelay: StreamDisplayDelay) => {
-    playClickSound();
-    setPendingStreamDisplayDelay(nextDelay);
-  }, []);
-
   const handleSettingsSave = useCallback(() => {
     playClickSound();
     if (!isMobile) {
@@ -919,17 +933,8 @@ export function HVLScreen() {
       scheduleFloatingPlayerHideAfterSettings(nextDockPinned);
     }
 
-    if (pendingStreamDisplayDelay !== streamDisplayDelay) {
-      setStreamDisplayDelay(pendingStreamDisplayDelay);
-      setAutoNextRemaining(pendingStreamDisplayDelay);
-      setStreamElapsedTime(0);
-      setStreamTimerRevision((revision) => revision + 1);
-      setIsAutoNextPaused(false);
-      autoNextDeadlineRef.current = null;
-    }
-    window.localStorage.setItem(streamDisplayDelayStorageKey, String(pendingStreamDisplayDelay));
     setIsSettingsOpen(false);
-  }, [isDetailMinimized, isDockPinned, isMobile, pendingDisplayMode, pendingDisplayStyle, pendingDockPinned, pendingStreamDisplayDelay, scheduleFloatingPlayerHideAfterSettings, selectedProject, streamDisplayDelay]);
+  }, [isDetailMinimized, isDockPinned, isMobile, pendingDisplayMode, pendingDisplayStyle, pendingDockPinned, scheduleFloatingPlayerHideAfterSettings, selectedProject]);
 
   const handleAgeGateConfirm = useCallback(() => {
     playClickSound();
@@ -949,8 +954,12 @@ export function HVLScreen() {
     drag.lastY = event.clientY;
     if (deltaX === 0 && deltaY === 0) return;
 
-    tubeDragDelta.current += deltaX * 0.0025;
-    tubeSpinVelocity.current = Math.max(-2, Math.min(2, tubeSpinVelocity.current + deltaX * 0.0025));
+    const horizontalDragDelta = deltaX * (displayStyle === "art" ? -1 : 1);
+    tubeDragDelta.current += horizontalDragDelta * 0.0025;
+    tubeSpinVelocity.current = Math.max(
+      -2,
+      Math.min(2, tubeSpinVelocity.current + horizontalDragDelta * 0.0025),
+    );
     tubeScrollTarget.current = Math.max(
       -tubeScrollLimit,
       Math.min(tubeScrollLimit, tubeScrollTarget.current + deltaY * 0.0033),
@@ -965,7 +974,7 @@ export function HVLScreen() {
       drag.hasDragged = true;
       suppressImageClickUntil.current = performance.now() + 250;
     }
-  }, []);
+  }, [displayStyle]);
 
   const handleScenePointerMove = useCallback(
     (event: React.PointerEvent<HTMLDivElement>) => {
@@ -1144,7 +1153,7 @@ export function HVLScreen() {
         audio.currentTime = 0;
         audio.removeAttribute("src");
 
-        if (track?.type === "pulled" && track.audioUrl) {
+        if (track?.audioUrl) {
           audio.src = track.audioUrl;
           audio.load();
         } else {
@@ -1198,7 +1207,7 @@ export function HVLScreen() {
       }
       setSelectedProject({ name: projectName, imageUrl, index: textureIndex });
       setShowOverlay(true);
-      if (track?.type === "pulled" && track.audioUrl && audio) {
+      if (track?.audioUrl && audio) {
         void audio.play().catch(() => setIsPlaying(false));
       }
       if (isMobile) {
@@ -1280,9 +1289,13 @@ export function HVLScreen() {
 
   const handleAutoNextPauseToggle = useCallback(() => {
     playClickSound();
+    const audio = audioRef.current;
     if (isAutoNextPaused) {
       autoNextDeadlineRef.current = performance.now() + Math.max(0, streamDisplayDelay - streamElapsedTime) * 1_000;
       setIsAutoNextPaused(false);
+      if (selectedTrack?.audioUrl && audio) {
+        void audio.play().catch(() => setIsPlaying(false));
+      }
       return;
     }
 
@@ -1295,7 +1308,10 @@ export function HVLScreen() {
     }
     autoNextDeadlineRef.current = null;
     setIsAutoNextPaused(true);
-  }, [isAutoNextPaused, streamDisplayDelay, streamElapsedTime]);
+    if (selectedTrack?.audioUrl && audio) {
+      audio.pause();
+    }
+  }, [isAutoNextPaused, selectedTrack?.audioUrl, streamDisplayDelay, streamElapsedTime]);
 
   const handleMinimizeProject = useCallback(() => {
     playClickSound();
@@ -1700,12 +1716,6 @@ export function HVLScreen() {
       setIsDockPinned(storedDockPinned === "true");
     }
 
-    const storedStreamDelay = Number(window.localStorage.getItem(streamDisplayDelayStorageKey));
-    if (streamDisplayDelayOptions.includes(storedStreamDelay as StreamDisplayDelay)) {
-      setStreamDisplayDelay(storedStreamDelay as StreamDisplayDelay);
-      setAutoNextRemaining(storedStreamDelay);
-      setStreamElapsedTime(0);
-    }
   }, []);
 
   useEffect(() => {
@@ -2063,12 +2073,12 @@ export function HVLScreen() {
 
       {!isMobile && hasConfirmedAge && !isAgeGateOpen && (
         <button
-          className={`desktop-header-settings ${displayStyle === "museum" && !areSceneControlsVisible ? "is-hidden" : ""}`}
+          className={`desktop-header-settings ${displayStyle === "art" && !areSceneControlsVisible ? "is-hidden" : ""}`}
           type="button"
           onClick={handleSettingsOpen}
           onPointerDown={(event) => event.stopPropagation()}
           aria-label="Cài Đặt"
-          tabIndex={displayStyle === "museum" && !areSceneControlsVisible ? -1 : 0}
+          tabIndex={displayStyle === "art" && !areSceneControlsVisible ? -1 : 0}
         >
           <svg viewBox="0 0 24 24" aria-hidden="true" fill="none">
             <path d="M11 10.27 7 3.34" />
@@ -2285,26 +2295,6 @@ export function HVLScreen() {
                 </div>
               </div>
 
-              <div
-                className={`settings-modal__row ${pendingDisplayMode === "pulled" ? "is-disabled" : ""}`}
-                aria-disabled={pendingDisplayMode === "pulled"}
-              >
-                <span className="settings-modal__label">Tự Động Bỏ Qua Bài Stream</span>
-                <div className="settings-modal__tabs" role="group" aria-label="Thời gian bỏ qua bài stream">
-                  {streamDisplayDelayOptions.map((delay) => (
-                    <button
-                      className={`settings-modal__tab ${pendingStreamDisplayDelay === delay ? "is-selected" : ""}`}
-                      key={delay}
-                      type="button"
-                      disabled={pendingDisplayMode === "pulled"}
-                      onClick={() => handleStreamDisplayDelayChange(delay)}
-                      aria-pressed={pendingStreamDisplayDelay === delay}
-                    >
-                      {delay}s
-                    </button>
-                  ))}
-                </div>
-              </div>
             </div>
             <footer className="settings-modal__footer">
               <button className="settings-modal__save" type="button" onClick={handleSettingsSave}>
@@ -2348,12 +2338,12 @@ export function HVLScreen() {
                 <span className="download-modal__artist">{selectedTrack.subtitle}</span>
                 <div className="download-modal__meta">
                   <div className="download-modal__meta-row">
-                    <span>THỜI GIAN</span>
-                    <strong>{formatTime(selectedTrack.durationSeconds ?? duration)}</strong>
-                  </div>
-                  <div className="download-modal__meta-row">
                     <span>TÊN FILE</span>
                     <strong>{getAudioFileName(selectedTrack.audioUrl)}</strong>
+                  </div>
+                  <div className="download-modal__meta-row">
+                    <span>THỜI GIAN</span>
+                    <strong>{formatTime(selectedTrack.durationSeconds ?? duration)}</strong>
                   </div>
                   <div className="download-modal__meta-row">
                     <span>DUNG LƯỢNG</span>
