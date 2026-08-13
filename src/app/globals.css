@@ -123,14 +123,14 @@ body {
   box-sizing: border-box;
   overflow: hidden;
   background: rgba(0, 0, 0, 0.78);
-  backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
+  backdrop-filter: blur(30px);
 }
 
 .age-gate--boot {
   background: #080808;
-  backdrop-filter: none;
   -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 
 .age-gate__scroll {
@@ -941,7 +941,9 @@ body {
   flex-direction: column;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
-  background: #111;
+  background: rgba(17, 17, 17, 0.76);
+  -webkit-backdrop-filter: blur(24px) saturate(1.1);
+  backdrop-filter: blur(24px) saturate(1.1);
   box-shadow: -24px 0 80px rgba(0, 0, 0, 0.5);
   color: rgba(255, 255, 255, 0.94);
   overflow: hidden;
@@ -960,7 +962,9 @@ body {
   bottom: 0;
   z-index: 149;
   width: 375px;
-  background: #080808;
+  background: rgba(8, 8, 8, 0.56);
+  -webkit-backdrop-filter: blur(24px) saturate(1.1);
+  backdrop-filter: blur(24px) saturate(1.1);
   visibility: hidden;
   pointer-events: none;
   transform: translateX(100%);
@@ -1017,8 +1021,8 @@ body {
   border-radius: 999px;
   background: #fff;
   display: none;
-  backdrop-filter: blur(16px) saturate(1.2);
   -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  backdrop-filter: blur(16px) saturate(1.2);
   color: #080808;
   cursor: pointer;
   transition:
@@ -1116,8 +1120,8 @@ body {
   box-sizing: border-box;
   padding: 20px;
   background: rgba(0, 0, 0, 0.52);
-  backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
 }
 
 .settings-modal__panel {
@@ -1705,8 +1709,8 @@ body {
   border: 0;
   background: transparent;
   color: inherit;
-  backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
   transition:
     background-color 160ms ease,
     color 160ms ease;
@@ -2165,8 +2169,8 @@ body {
   box-sizing: border-box;
   padding: 20px;
   background: rgba(0, 0, 0, 0.58);
-  backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
 }
 
 .download-modal__panel {
@@ -3203,57 +3207,57 @@ body {
   }
 
   .mobile-bottom-blur > div:nth-child(1) {
-    backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
+    backdrop-filter: blur(24px);
     mask-image: linear-gradient(to top, #000 0%, transparent 32%);
     -webkit-mask-image: linear-gradient(to top, #000 0%, transparent 32%);
   }
 
   .mobile-bottom-blur > div:nth-child(2) {
-    backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
     mask-image: linear-gradient(to top, #000 5%, transparent 44%);
     -webkit-mask-image: linear-gradient(to top, #000 5%, transparent 44%);
   }
 
   .mobile-bottom-blur > div:nth-child(3) {
-    backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
     mask-image: linear-gradient(to top, #000 12%, transparent 56%);
     -webkit-mask-image: linear-gradient(to top, #000 12%, transparent 56%);
   }
 
   .mobile-bottom-blur > div:nth-child(4) {
-    backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
     mask-image: linear-gradient(to top, #000 22%, transparent 68%);
     -webkit-mask-image: linear-gradient(to top, #000 22%, transparent 68%);
   }
 
   .mobile-bottom-blur > div:nth-child(5) {
-    backdrop-filter: blur(3.5px);
     -webkit-backdrop-filter: blur(3.5px);
+    backdrop-filter: blur(3.5px);
     mask-image: linear-gradient(to top, #000 34%, transparent 78%);
     -webkit-mask-image: linear-gradient(to top, #000 34%, transparent 78%);
   }
 
   .mobile-bottom-blur > div:nth-child(6) {
-    backdrop-filter: blur(2px);
     -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
     mask-image: linear-gradient(to top, #000 46%, transparent 87%);
     -webkit-mask-image: linear-gradient(to top, #000 46%, transparent 87%);
   }
 
   .mobile-bottom-blur > div:nth-child(7) {
-    backdrop-filter: blur(1px);
     -webkit-backdrop-filter: blur(1px);
+    backdrop-filter: blur(1px);
     mask-image: linear-gradient(to top, #000 58%, transparent 96%);
     -webkit-mask-image: linear-gradient(to top, #000 58%, transparent 96%);
   }
 
   .mobile-bottom-blur > div:nth-child(8) {
-    backdrop-filter: blur(0.5px);
     -webkit-backdrop-filter: blur(0.5px);
+    backdrop-filter: blur(0.5px);
     mask-image: linear-gradient(to top, #000 70%, transparent 100%);
     -webkit-mask-image: linear-gradient(to top, #000 70%, transparent 100%);
   }
@@ -3285,8 +3289,8 @@ body {
     background: rgba(22, 22, 22, 0.5);
     color: #fff;
     box-shadow: 0 8px 26px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
     transform: translateX(-50%);
   }
 
@@ -3689,57 +3693,57 @@ body {
   }
 
   .mobile-title-blur > div:nth-child(1) {
-    backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
+    backdrop-filter: blur(24px);
     mask-image: linear-gradient(to bottom, #000 0%, transparent 32%);
     -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 32%);
   }
 
   .mobile-title-blur > div:nth-child(2) {
-    backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
     mask-image: linear-gradient(to bottom, #000 5%, transparent 44%);
     -webkit-mask-image: linear-gradient(to bottom, #000 5%, transparent 44%);
   }
 
   .mobile-title-blur > div:nth-child(3) {
-    backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
     mask-image: linear-gradient(to bottom, #000 12%, transparent 56%);
     -webkit-mask-image: linear-gradient(to bottom, #000 12%, transparent 56%);
   }
 
   .mobile-title-blur > div:nth-child(4) {
-    backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
     mask-image: linear-gradient(to bottom, #000 22%, transparent 68%);
     -webkit-mask-image: linear-gradient(to bottom, #000 22%, transparent 68%);
   }
 
   .mobile-title-blur > div:nth-child(5) {
-    backdrop-filter: blur(3.5px);
     -webkit-backdrop-filter: blur(3.5px);
+    backdrop-filter: blur(3.5px);
     mask-image: linear-gradient(to bottom, #000 34%, transparent 78%);
     -webkit-mask-image: linear-gradient(to bottom, #000 34%, transparent 78%);
   }
 
   .mobile-title-blur > div:nth-child(6) {
-    backdrop-filter: blur(2px);
     -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
     mask-image: linear-gradient(to bottom, #000 46%, transparent 87%);
     -webkit-mask-image: linear-gradient(to bottom, #000 46%, transparent 87%);
   }
 
   .mobile-title-blur > div:nth-child(7) {
-    backdrop-filter: blur(1px);
     -webkit-backdrop-filter: blur(1px);
+    backdrop-filter: blur(1px);
     mask-image: linear-gradient(to bottom, #000 58%, transparent 96%);
     -webkit-mask-image: linear-gradient(to bottom, #000 58%, transparent 96%);
   }
 
   .mobile-title-blur > div:nth-child(8) {
-    backdrop-filter: blur(0.5px);
     -webkit-backdrop-filter: blur(0.5px);
+    backdrop-filter: blur(0.5px);
     mask-image: linear-gradient(to bottom, #000 70%, transparent 100%);
     -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent 100%);
   }
@@ -3830,8 +3834,8 @@ body {
     height: 26px;
     flex-basis: 26px;
     background: transparent;
-    backdrop-filter: none;
     -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
 
   .project-player.is-streaming .detail-stream-platform-link svg {
@@ -4005,8 +4009,8 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 24px 24px 36px 36px;
     background: rgba(20, 20, 20, 0.76);
-    backdrop-filter: blur(24px) saturate(1.1);
     -webkit-backdrop-filter: blur(24px) saturate(1.1);
+    backdrop-filter: blur(24px) saturate(1.1);
     box-shadow: -24px 0 60px rgba(0, 0, 0, 0.42);
     isolation: isolate;
     overflow: visible;
@@ -4035,8 +4039,8 @@ body {
     height: 32px;
     border-color: rgba(255, 255, 255, 0.2);
     background: #fff;
-    backdrop-filter: blur(20px) saturate(1.1);
     -webkit-backdrop-filter: blur(20px) saturate(1.1);
+    backdrop-filter: blur(20px) saturate(1.1);
     color: #080808;
   }
 
