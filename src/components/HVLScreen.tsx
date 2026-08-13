@@ -2158,16 +2158,16 @@ export function HVLScreen() {
         </button>
       )}
 
-      {!isMobile && hasConfirmedAge && !isAgeGateOpen && (!selectedProject || isDetailMinimized) && (
+      {!isMobile && hasConfirmedAge && !isAgeGateOpen && (!selectedProject || isDetailMinimized || selectedTrack?.type === "stream") && (
         <button
-          className={`desktop-header-fullscreen ${!areSceneControlsVisible ? "is-hidden" : ""}`}
+          className={`desktop-header-fullscreen ${selectedProject && !isDetailMinimized ? (areDetailButtonsVisible ? "" : "is-hidden") : (areSceneControlsVisible ? "" : "is-hidden")}`}
           type="button"
           onPointerDown={(event) => {
             event.stopPropagation();
             void handleWebFullscreenToggle();
           }}
           aria-label={isWebFullscreen ? "Thu nhỏ màn hình" : "Mở toàn màn hình"}
-          tabIndex={!areSceneControlsVisible ? -1 : 0}
+          tabIndex={selectedProject && !isDetailMinimized ? (areDetailButtonsVisible ? 0 : -1) : (areSceneControlsVisible ? 0 : -1)}
         >
           <svg viewBox="0 0 24 24" aria-hidden="true">
             {isWebFullscreen ? (

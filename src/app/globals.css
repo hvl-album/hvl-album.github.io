@@ -4499,6 +4499,33 @@ body {
     bottom: 24px;
   }
 
+  .project-single-view .project-player {
+    top: 46%;
+    right: clamp(28px, 8.5vw, 170px);
+    bottom: auto;
+    left: clamp(28px, 7.5vw, 150px);
+    width: auto;
+    transform: none;
+  }
+
+  .project-single-view .project-player.is-stream-track .detail-stream-platforms {
+    position: fixed;
+    top: auto;
+    right: auto;
+    bottom: 38px;
+    left: 50%;
+    align-items: center;
+    gap: 7px;
+    transform: translateX(-50%);
+    z-index: 4;
+  }
+
+  .project-single-view .project-player.is-stream-track .detail-stream-platforms__items {
+    justify-content: center;
+    gap: 14px;
+  }
+
+
   .detail-media-toggle {
     transition: opacity 0.2s ease;
   }

@@ -270,7 +270,7 @@ export function HVLTrackDetail(props: Record<string, unknown>) {
                   <div className="project-player__duration">
                     {isStreamTrack ? (
                       <div className="detail-stream-platforms" aria-label="Nghe trên nền tảng khác">
-                        <span className="detail-stream-platforms__label">NGHE ĐẦY ĐỦ TẠI</span>
+                        <span className="detail-stream-platforms__label">NGHE BÀI HÁT ĐẦY ĐỦ TẠI</span>
                         <StreamingPlatformLinks
                           className="detail-stream-platforms__items"
                           linkClassName="detail-stream-platform-link"
