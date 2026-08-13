@@ -386,6 +386,40 @@ body {
   transition: opacity 260ms ease;
 }
 
+.desktop-header-fullscreen {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 200;
+  display: grid;
+  width: 38px;
+  height: 38px;
+  box-sizing: border-box;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.92);
+  cursor: pointer;
+  transition: opacity 260ms ease;
+}
+
+.desktop-header-fullscreen.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.desktop-header-fullscreen svg {
+  display: block;
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .desktop-header-settings.is-hidden {
   opacity: 0;
   pointer-events: none;
@@ -445,6 +479,14 @@ body {
   width: calc(100% - 375px);
 }
 
+.detail-lyrics-layout {
+  display: contents;
+}
+
+.detail-lyrics-layout.is-minimized {
+  pointer-events: none;
+}
+
 .project-single-background {
   position: absolute;
   inset: 0;
@@ -465,6 +507,23 @@ body {
   height: 100%;
   background: transparent;
   z-index: 1;
+}
+
+.detail-copyright {
+  position: absolute;
+  right: 16px;
+  bottom: 8px;
+  left: 16px;
+  z-index: 3;
+  color: rgba(255, 255, 255, 0.52);
+  font-family: "Geist Mono", monospace;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
 }
 
 .project-single-view.visible {
@@ -538,7 +597,71 @@ body {
 }
 
 .detail-media-toggle {
-  display: none;
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  z-index: 3;
+  display: flex;
+  align-items: stretch;
+  padding: 3px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(22, 22, 22, 0.5);
+  color: #fff;
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.3);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  transform: translateX(-50%);
+}
+
+.detail-media-toggle::before {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: 3px;
+  width: 40px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  content: "";
+  transition: left 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.detail-media-toggle.is-video-active::before {
+  left: 3px;
+}
+
+.detail-media-toggle__item {
+  display: grid;
+  width: 40px;
+  height: 34px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.68);
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.detail-media-toggle__item.is-active {
+  background: transparent;
+  color: #fff;
+}
+
+.detail-media-toggle__item svg {
+  display: block;
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .collapse-button:hover {
@@ -959,10 +1082,11 @@ body {
   position: fixed;
   top: 0;
   right: 0;
+  left: 0;
   bottom: 0;
   z-index: 149;
-  width: 375px;
-  background: rgba(8, 8, 8, 0.56);
+  width: auto;
+  background: transparent;
   -webkit-backdrop-filter: blur(24px) saturate(1.1);
   backdrop-filter: blur(24px) saturate(1.1);
   visibility: hidden;
@@ -980,15 +1104,42 @@ body {
 }
 
 @media (pointer: fine) and (min-width: 1200px) {
+  .lyrics-panel__desktop-backdrop {
+    top: 0;
+    right: -375px;
+    bottom: 0;
+    left: auto;
+    width: 375px;
+    background: #000;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    visibility: visible;
+    pointer-events: none;
+    transform: none;
+    transition: right 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .lyrics-panel__desktop-backdrop.is-open {
+    pointer-events: auto;
+    right: 0;
+    transform: none;
+  }
+
+  .lyrics-panel__desktop-backdrop.is-closing {
+    pointer-events: none;
+    right: -375px;
+    visibility: visible;
+  }
+
   .lyrics-panel__desktop-backdrop .lyrics-panel {
     position: absolute;
     inset: 15px;
     width: auto;
     max-width: none;
     height: auto;
-    transform: none;
     visibility: visible;
     pointer-events: auto;
+    transform: none;
     transition: none;
   }
 
@@ -1029,6 +1180,41 @@ body {
     background-color 160ms ease,
     color 160ms ease,
     border-color 160ms ease;
+}
+
+.detail-lyrics-fullscreen-button {
+  position: absolute;
+  right: 24px;
+  bottom: 72px;
+  z-index: 3;
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  transition:
+    color 160ms ease,
+    opacity 160ms ease;
+}
+
+.detail-lyrics-fullscreen-button:hover {
+  color: #fff;
+}
+
+.detail-lyrics-fullscreen-button svg {
+  display: block;
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .lyrics-panel__close:hover {
@@ -1657,15 +1843,34 @@ body {
   transition: opacity 0.2s ease;
 }
 
+.project-single-view .collapse-button,
+.project-single-view .detail-settings-button,
+.project-single-view .project-player__previous,
+.project-single-view .project-player__next,
+.project-single-view .project-player__toggle,
+.project-single-view .detail-lyrics-button,
+.project-single-view .detail-lyrics-fullscreen-button,
+.project-single-view .detail-download-button,
+.project-single-view .detail-media-toggle,
+.project-single-view .project-player__repeat,
+.project-single-view .project-player__next-actions {
+  transition:
+    opacity 480ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 480ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 .project-single-view.is-buttons-hidden .close-button,
 .project-single-view.is-buttons-hidden .collapse-button,
 .project-single-view.is-buttons-hidden .detail-settings-button,
 .project-single-view.is-buttons-hidden .project-player__previous,
 .project-single-view.is-buttons-hidden .detail-lyrics-button,
+.project-single-view.is-buttons-hidden .detail-lyrics-fullscreen-button,
 .project-single-view.is-buttons-hidden .detail-download-button,
+.project-single-view.is-buttons-hidden .detail-media-toggle,
 .project-single-view.is-buttons-hidden .project-player__repeat,
 .project-single-view.is-buttons-hidden .project-player__next-actions {
   opacity: 0;
+  filter: blur(12px);
   pointer-events: none;
 }
 
@@ -1780,7 +1985,51 @@ body {
   max-height: 100dvh;
   object-fit: contain;
   filter: brightness(0.95);
+  opacity: 1;
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+  transition: opacity 220ms ease;
+}
+
+.project-content__video {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: brightness(0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 220ms ease;
+}
+
+.project-content__image.is-media-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.project-content__video.is-media-visible {
+  opacity: 1;
+}
+
+.project-single-view__lyrics-dim {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: rgba(8, 8, 8, 0.9);
+  pointer-events: none;
+  transition: opacity 240ms ease;
+}
+
+@media (pointer: fine) and (min-width: 1200px) {
+  .project-content__video {
+    top: 50%;
+    left: 50%;
+    width: 100vw;
+    height: 100dvh;
+    object-fit: cover;
+    transform: translate(-50%, -50%);
+  }
 }
 
 .project-player {
@@ -2906,18 +3155,6 @@ body {
     transform: none;
   }
 
-  .project-single-view.is-buttons-hidden .close-button,
-  .project-single-view.is-buttons-hidden .collapse-button,
-  .project-single-view.is-buttons-hidden .detail-settings-button,
-  .project-single-view.is-buttons-hidden .project-player__previous,
-  .project-single-view.is-buttons-hidden .detail-lyrics-button,
-  .project-single-view.is-buttons-hidden .detail-download-button,
-  .project-single-view.is-buttons-hidden .project-player__repeat,
-  .project-single-view.is-buttons-hidden .project-player__next-actions {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
   .sceneRoot {
     touch-action: pan-y;
   }
@@ -3263,7 +3500,7 @@ body {
   }
 
   .collapse-button {
-    top: max(18px, env(safe-area-inset-top));
+    top: max(12px, env(safe-area-inset-top));
     right: 18px;
     width: 34px;
     height: 34px;
@@ -3278,7 +3515,7 @@ body {
   .detail-media-toggle {
     position: absolute;
     top: auto;
-    bottom: 24px;
+    bottom: calc(32px + env(safe-area-inset-bottom));
     left: 50%;
     z-index: 3;
     display: flex;
@@ -3307,7 +3544,7 @@ body {
   }
 
   .detail-media-toggle.is-video-active::before {
-    left: 43px;
+    left: 3px;
   }
 
   .detail-media-toggle__item {
@@ -3359,19 +3596,18 @@ body {
   .detail-lyrics-button {
     left: auto;
     right: 24px;
-    bottom: 24px;
+    bottom: 32px;
+  }
+
+  .detail-lyrics-fullscreen-button {
+    display: none;
   }
 
   .detail-download-button {
     top: auto;
     left: 24px;
     right: auto;
-    bottom: 24px;
-  }
-
-  .project-single-view.is-buttons-hidden .detail-download-button {
-    opacity: 1;
-    pointer-events: auto;
+    bottom: 32px;
   }
 
   .project-single-view.is-minimized .project-content {
@@ -3644,7 +3880,7 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: brightness(0.35);
+    filter: brightness(0.4);
     opacity: 0;
     pointer-events: none;
     transition: opacity 220ms ease;
@@ -3990,6 +4226,18 @@ body {
     width: 100%;
   }
 
+  .project-single-view.is-buttons-hidden .project-player__next,
+  .project-single-view.is-buttons-hidden .project-player__toggle {
+    opacity: 0;
+    filter: blur(12px);
+    pointer-events: none;
+  }
+
+  .detail-copyright {
+    bottom: max(15.5px, calc(env(safe-area-inset-bottom) + 7.5px));
+    font-size: 8px;
+  }
+
   .lyrics-panel__desktop-backdrop {
     display: contents;
     visibility: visible;
@@ -4184,6 +4432,130 @@ body {
 }
 
 @media (pointer: fine) and (min-width: 1200px) {
+  .floating-player-dock {
+    right: auto;
+    left: 50%;
+    width: min(991px, calc(100vw - 20px));
+    transform: translateX(-50%);
+  }
+
+  .collapse-button {
+    top: 24px;
+    right: 24px;
+    width: 38px;
+    height: 38px;
+  }
+
+  .collapse-button svg {
+    width: 24px;
+    height: 24px;
+    stroke-width: 2;
+  }
+
+  .detail-lyrics-button {
+    bottom: 72px;
+  }
+
+  .detail-lyrics-fullscreen-button {
+    top: auto;
+    right: 24px;
+    bottom: 24px;
+  }
+
+  .detail-download-button {
+    top: auto;
+    left: 24px;
+    right: auto;
+    bottom: 24px;
+  }
+
+  .detail-media-toggle {
+    transition: opacity 0.2s ease;
+  }
+
+  .project-single-view.is-buttons-hidden .detail-media-toggle {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .detail-lyrics-layout {
+    position: fixed;
+    inset: 0 auto auto 0;
+    display: flex;
+    width: calc(100vw + 375px);
+    height: 100dvh;
+    align-items: stretch;
+    overflow: visible;
+  }
+
+  .detail-lyrics-layout .project-single-view {
+    position: relative;
+    inset: auto;
+    flex: 0 0 100vw;
+    width: 100vw;
+    height: 100dvh;
+    right: auto;
+    transition:
+      opacity 1s cubic-bezier(0.4, 0, 0.2, 1),
+      flex-basis 420ms cubic-bezier(0.22, 1, 0.36, 1),
+      width 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .detail-lyrics-layout .project-single-view.is-lyrics-open {
+    flex-basis: calc(100vw - 375px);
+    width: calc(100vw - 375px);
+    right: auto;
+  }
+
+  .detail-lyrics-layout .lyrics-panel__desktop-backdrop {
+    position: relative;
+    inset: auto;
+    flex: 0 0 375px;
+    width: 375px;
+    height: 100dvh;
+    background: #000;
+    visibility: visible;
+    pointer-events: auto;
+    transform: none;
+    transition: none;
+  }
+
+  .detail-lyrics-layout .lyrics-panel__desktop-backdrop .lyrics-panel {
+    position: absolute;
+    inset: 15px;
+    width: auto;
+    max-width: none;
+    height: auto;
+    visibility: visible;
+    pointer-events: auto;
+    transform: none;
+    transition: none;
+  }
+
+  .floating-player-dock .floating-player {
+    transition:
+      transform 520ms ease,
+      opacity 120ms ease,
+      visibility 0s linear 0s,
+      box-shadow 240ms ease;
+  }
+
+  .floating-player-dock.is-collapsed .floating-player {
+    opacity: 0;
+    transform: translateX(-50%) translateY(calc(100% + 12px));
+    visibility: hidden;
+    transition:
+      transform 520ms ease,
+      opacity 120ms ease 420ms,
+      visibility 0s linear 540ms,
+      box-shadow 240ms ease;
+  }
+
+  .floating-player-dock.is-expanded .floating-player {
+    opacity: 1;
+    visibility: visible;
+  }
+
   .mobile-track-list__platforms {
     gap: 1px;
   }

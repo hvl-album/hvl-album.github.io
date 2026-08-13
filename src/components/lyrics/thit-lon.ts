@@ -58,7 +58,7 @@ Nhỡ đâu con dâu lại là người nước ngoài, cúi đầu tạ lễ, b
 Long Nhật Bản đã từng ngủ ở hè phố,
 Long Việt Nam giờ là báu vật của bố
 Những người bạn vẫn luôn ở đó, chỉ cần nhìn thấy họ là nó đã được củng cố
-Bước ra đường với đôi giày khủng bố, nhạc bật bung loa vang khắp cả phố
+Bước ra đường với đôi giày khủng bố, nhạc bật bùng loa vang khắp cả phố
 Racks on racks on racks on racks on racks on racks on racks, alo?
 Long Tân Mai mãi là một thằng nhóc,
 Long Ba Đình nhiều lần gục mặt khóc
