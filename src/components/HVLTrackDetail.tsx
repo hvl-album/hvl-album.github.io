@@ -10,6 +10,7 @@ export function HVLTrackDetail(props: Record<string, unknown>) {
     showOverlay,
     isDetailMinimized,
     isLyricsOpen,
+    isLyricsClosing,
     areDetailButtonsVisible,
     isMobile,
     selectedTrack,
@@ -19,6 +20,7 @@ export function HVLTrackDetail(props: Record<string, unknown>) {
     repeatToastMessage,
     repeatToastPlacement,
     handleMinimizeProject,
+    handleMobileDetailBlankPointerUp,
     handleSettingsOpen,
     handleLyricsToggle,
     handleDownloadOpen,
@@ -50,6 +52,8 @@ export function HVLTrackDetail(props: Record<string, unknown>) {
     handleDetailPlayPauseButtonClick,
     handleNextButtonClick,
     handleLyricsClose,
+    handleWebFullscreenToggle,
+    isWebFullscreen,
     lyricsBodyRef,
     handleLyricsScroll,
     pauseLyricsAutoScroll,
@@ -64,21 +68,36 @@ export function HVLTrackDetail(props: Record<string, unknown>) {
   return (
     <>
 {selectedProject && (
+      <div className={`detail-lyrics-layout ${isMobile ? "is-mobile" : ""} ${isDetailMinimized ? "is-minimized" : ""}`}>
         <div
           className={`project-single-view ${showOverlay ? "visible" : "hidden"} ${isDetailMinimized ? "is-minimized" : ""} ${isLyricsOpen ? "is-lyrics-open" : ""} ${areDetailButtonsVisible ? "" : "is-buttons-hidden"} ${!isMobile && (selectedTrack?.numberTrack === 8 || selectedTrack?.numberTrack === 27 || selectedTrack?.numberTrack === 28) ? "is-dark-track" : ""}`}
           onMouseMove={isMobile ? undefined : resetDetailButtonsVisibility}
+          onPointerUp={isMobile ? handleMobileDetailBlankPointerUp : undefined}
         >
           {repeatToastMessage && repeatToastPlacement === "detail" && (
             <div className="project-single-view__repeat-toast" role="status" aria-live="polite">
               {repeatToastMessage}
             </div>
           )}
-          {!isDetailMinimized && isMobile && selectedTrack?.videoUrl && (
+          {!isDetailMinimized && selectedTrack?.videoUrl && (
             <div
               className={`detail-media-toggle ${isTrackVideoActive ? "is-video-active" : ""}`}
               role="group"
               aria-label="Chuyển đổi ảnh và video"
             >
+              <button
+                className={`detail-media-toggle__item ${isTrackVideoActive ? "is-active" : ""}`}
+                type="button"
+                onClick={() => handleTrackVideoToggle(true)}
+                onPointerDown={(event) => event.stopPropagation()}
+                aria-label="Phát video"
+                aria-pressed={isTrackVideoActive}
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="3" y="3" width="18" height="18" rx="2" />
+                  <path d="M9 9.003a1 1 0 0 1 1.517-.859l4.997 2.997a1 1 0 0 1 0 1.718l-4.997 2.997A1 1 0 0 1 9 14.996z" />
+                </svg>
+              </button>
               <button
                 className={`detail-media-toggle__item ${!isTrackVideoActive ? "is-active" : ""}`}
                 type="button"
@@ -93,21 +112,6 @@ export function HVLTrackDetail(props: Record<string, unknown>) {
                   <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
                 </svg>
               </button>
-              <button
-                className={`detail-media-toggle__item ${isTrackVideoActive ? "is-active" : ""}`}
-                type="button"
-                onClick={() => handleTrackVideoToggle(true)}
-                onPointerDown={(event) => event.stopPropagation()}
-                aria-label="Phát video"
-                aria-pressed={isTrackVideoActive}
-              >
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="m12.296 3.464 3.02 3.956" />
-                  <path d="M20.2 6 3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1.1-.3 2.2.3 2.5 1.3z" />
-                  <path d="M3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                  <path d="m6.18 5.276 3.1 3.899" />
-                </svg>
-              </button>
             </div>
           )}
           <div
@@ -118,6 +122,11 @@ export function HVLTrackDetail(props: Record<string, unknown>) {
             }}
             aria-hidden="true"
           />
+          {!isDetailMinimized && (
+            <div className="detail-copyright" aria-label="Bản quyền">
+              © COPYRIGHT BY N0l4b3l / RPT MCK / ANTIANTIART
+            </div>
+          )}
           <button
             className="collapse-button"
             type="button"
@@ -129,30 +138,6 @@ export function HVLTrackDetail(props: Record<string, unknown>) {
               <rect width="10" height="7" x="12" y="13" rx="2" />
             </svg>
           </button>
-          <button
-            className="detail-settings-button"
-            type="button"
-            onClick={handleSettingsOpen}
-            onPointerDown={(event) => event.stopPropagation()}
-            aria-label="Cài Đặt"
-          >
-            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none">
-              <path d="M11 10.27 7 3.34" />
-              <path d="m11 13.73-4 6.93" />
-              <path d="M12 22v-2" />
-              <path d="M12 2v2" />
-              <path d="M14 12h8" />
-              <path d="m17 20.66-1-1.73" />
-              <path d="m17 3.34-1 1.73" />
-              <path d="M2 12h2" />
-              <path d="m20.66 17-1.73-1" />
-              <path d="m20.66 7-1.73 1" />
-              <path d="m3.34 17 1.73-1" />
-              <path d="m3.34 7 1.73 1" />
-              <circle cx="12" cy="12" r="2" />
-              <circle cx="12" cy="12" r="8" />
-            </svg>
-          </button>
           {!isDetailMinimized && selectedTrack?.type === "pulled" && (!isMobile || !isLyricsOpen) && (
             <button
               className="detail-lyrics-button"
@@ -161,6 +146,36 @@ export function HVLTrackDetail(props: Record<string, unknown>) {
               aria-label={isLyricsOpen ? "Đóng lời bài hát" : "Mở lời bài hát"}
             >
               {isLyricsOpen ? <ListXIcon /> : <ListMusicIcon />}
+            </button>
+          )}
+          {!isDetailMinimized && selectedTrack?.type === "pulled" && (
+            <button
+              className="detail-lyrics-fullscreen-button"
+              type="button"
+              onClick={() => void handleWebFullscreenToggle()}
+              aria-label={isWebFullscreen ? "Thu nhỏ màn hình" : "Mở toàn màn hình"}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                {isWebFullscreen ? (
+                  <>
+                    <path d="m15 15 6 6m-6-6v4.8m0-4.8h4.8" />
+                    <path d="M9 19.8V15m0 0H4.2M9 15l-6 6" />
+                    <path d="M15 4.2V9m0 0h4.8M15 9l6-6" />
+                    <path d="M9 4.2V9m0 0H4.2M9 9 3 3" />
+                  </>
+                ) : (
+                  <>
+                    <path d="m15 15 6 6" />
+                    <path d="m15 9 6-6" />
+                    <path d="M21 16v5h-5" />
+                    <path d="M21 8V3h-5" />
+                    <path d="M3 16v5h5" />
+                    <path d="m3 21 6-6" />
+                    <path d="M3 8V3h5" />
+                    <path d="M9 9 3 3" />
+                  </>
+                )}
+              </svg>
             </button>
           )}
           {!isDetailMinimized && selectedTrack?.type === "pulled" && (
@@ -192,7 +207,7 @@ export function HVLTrackDetail(props: Record<string, unknown>) {
                 filter: isMobile ? `brightness(${selectedTrack?.bMobileBackground ?? 0.48})` : undefined,
               }}
             />
-            {isMobile && selectedTrack?.videoUrl && (
+            {selectedTrack?.videoUrl && (
               <video
                 className={`project-content__video ${isTrackVideoActive ? "is-media-visible" : ""}`}
                 src={selectedTrack.videoUrl}
@@ -205,6 +220,15 @@ export function HVLTrackDetail(props: Record<string, unknown>) {
               />
             )}
           </div>
+          <div
+            className="project-single-view__lyrics-dim"
+            style={{
+              opacity: !isMobile && isLyricsOpen
+                ? Math.min(0.32, Math.max(0.12, 1 - (selectedTrack?.bMobileBackground ?? 0.86)))
+                : 0,
+            }}
+            aria-hidden="true"
+          />
           {selectedTrack && !isDetailMinimized && (
             <section
               className={`project-player ${isStreaming ? "is-streaming" : ""} ${areNextControlsVisible ? "is-next-controls-visible" : ""}`}
@@ -333,10 +357,11 @@ export function HVLTrackDetail(props: Record<string, unknown>) {
             </section>
           )}
         </div>
-      )}
 
-      {selectedProject && showOverlay && !isDetailMinimized && (
-          <div className={`lyrics-panel__desktop-backdrop ${isLyricsOpen ? "is-open" : ""}`}>
+      {showOverlay && !isDetailMinimized && (
+        <div
+          className={`lyrics-panel__desktop-backdrop ${isLyricsOpen ? "is-open" : ""} ${isLyricsClosing ? "is-closing" : ""}`}
+        >
           <aside
             className={`lyrics-panel ${isLyricsOpen ? "is-open" : ""}`}
             aria-label="Lời bài hát"
@@ -379,6 +404,8 @@ export function HVLTrackDetail(props: Record<string, unknown>) {
           </div>
           </aside>
           </div>
+      )}
+      </div>
       )}
     </>
   );

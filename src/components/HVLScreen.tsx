@@ -655,6 +655,8 @@ export function HVLScreen() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [repeatMode, setRepeatMode] = useState<RepeatMode>("off");
   const [isLyricsOpen, setIsLyricsOpen] = useState(false);
+  const [isLyricsClosing, setIsLyricsClosing] = useState(false);
+  const [isWebFullscreen, setIsWebFullscreen] = useState(false);
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
   const [isDownloadDisabled, setIsDownloadDisabled] = useState(false);
   const [downloadAudioSize, setDownloadAudioSize] = useState<number | null>(null);
@@ -662,6 +664,8 @@ export function HVLScreen() {
   const [isLyricsAutoScrollPaused, setIsLyricsAutoScrollPaused] = useState(false);
   const lyricsBodyRef = useRef<HTMLDivElement>(null);
   const lyricsShouldReopenRef = useRef(false);
+  const lyricsHasBeenOpenedRef = useRef(false);
+  const lyricsClosingTimeoutRef = useRef<number | null>(null);
   const downloadResetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [repeatAnimationNonce, setRepeatAnimationNonce] = useState(0);
   const [isRepeatAnimating, setIsRepeatAnimating] = useState(false);
@@ -733,6 +737,17 @@ export function HVLScreen() {
       setDetailNavigationPreview(null);
       detailButtonsTimeoutRef.current = null;
     }, 5_000);
+  }, [isMobile]);
+
+  const handleMobileDetailBlankPointerUp = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
+    if (!isMobile) return;
+
+    const target = event.target as HTMLElement;
+    if (target.closest("button, input, [role='slider'], .project-player__track, .project-player__time, .project-player__progress")) {
+      return;
+    }
+
+    setAreDetailButtonsVisible((visible) => !visible);
   }, [isMobile]);
 
   const resetSceneControlsVisibility = useCallback(() => {
@@ -845,18 +860,67 @@ export function HVLScreen() {
     playClickSound();
     resetLyricsAutoScrollPause();
     lyricsShouldReopenRef.current = false;
+    setIsLyricsClosing(true);
     setIsLyricsOpen(false);
   }, [resetLyricsAutoScrollPause]);
+
+  const handleWebFullscreenToggle = useCallback(async () => {
+    const fullscreenTarget = document.documentElement;
+
+    playClickSound();
+
+    if (document.fullscreenElement === fullscreenTarget) {
+      await document.exitFullscreen();
+      return;
+    }
+
+    if (!fullscreenTarget.requestFullscreen) {
+      setIsWebFullscreen(true);
+      return;
+    }
+
+    try {
+      await fullscreenTarget.requestFullscreen();
+    } catch {
+      setIsWebFullscreen(true);
+    }
+  }, []);
 
   const handleLyricsToggle = useCallback(() => {
     playClickSound();
     resetLyricsAutoScrollPause();
-    setIsLyricsOpen((isOpen) => {
-      const nextIsOpen = !isOpen;
-      lyricsShouldReopenRef.current = nextIsOpen;
-      return nextIsOpen;
-    });
-  }, [resetLyricsAutoScrollPause]);
+    if (isLyricsOpen) {
+      lyricsShouldReopenRef.current = false;
+      setIsLyricsClosing(true);
+      setIsLyricsOpen(false);
+      return;
+    }
+
+    lyricsShouldReopenRef.current = true;
+    setIsLyricsClosing(false);
+    setIsLyricsOpen(true);
+  }, [isLyricsOpen, resetLyricsAutoScrollPause]);
+
+  useEffect(() => {
+    if (lyricsClosingTimeoutRef.current != null) {
+      window.clearTimeout(lyricsClosingTimeoutRef.current);
+      lyricsClosingTimeoutRef.current = null;
+    }
+
+    if (isLyricsOpen) {
+      lyricsHasBeenOpenedRef.current = true;
+      setIsLyricsClosing(false);
+      return;
+    }
+
+    if (!lyricsHasBeenOpenedRef.current) return;
+
+    setIsLyricsClosing(true);
+    lyricsClosingTimeoutRef.current = window.setTimeout(() => {
+      setIsLyricsClosing(false);
+      lyricsClosingTimeoutRef.current = null;
+    }, 420);
+  }, [isLyricsOpen]);
 
   const handleDownloadOpen = useCallback(() => {
     const track = selectedProject ? galleryItems[selectedProject.index] : null;
@@ -1063,10 +1127,10 @@ export function HVLScreen() {
 
   const selectedTrack = selectedProject ? galleryItems[selectedProject.index] : null;
   const handleTrackVideoToggle = useCallback((showVideo: boolean) => {
-    if (!isMobile || !selectedTrack?.videoUrl) return;
+    if (!selectedTrack?.videoUrl) return;
     playClickSound();
     setIsTrackVideoActive(showVideo);
-  }, [isMobile, selectedTrack?.numberTrack]);
+  }, [selectedTrack?.numberTrack, selectedTrack?.videoUrl]);
   const normalizedLyricsLines = (selectedTrack?.lyrics?.split("\n") ?? []).reduce<string[]>((lines, line) => {
     const normalizedLine = line.trim().length > 0 ? line : "";
     if (normalizedLine === "" && lines[lines.length - 1] === "") return lines;
@@ -1177,9 +1241,10 @@ export function HVLScreen() {
       lyricsShouldReopenRef.current = track?.type === "stream"
         ? keepLyricsOpen || lyricsShouldReopenRef.current
         : Boolean(shouldOpenLyrics);
+      setIsLyricsClosing(false);
       setIsLyricsOpen(Boolean(shouldOpenLyrics));
       setIsDownloadModalOpen(false);
-      setIsTrackVideoActive(false);
+      setIsTrackVideoActive(Boolean(track?.videoUrl));
       isDetailMinimizedRef.current = nextPresentation === "minimized";
       setIsDetailMinimized(isDetailMinimizedRef.current);
       setIsFloatingPlayerExpanded(true);
@@ -1767,15 +1832,29 @@ export function HVLScreen() {
   }, [isDownloadModalOpen, selectedTrack?.audioUrl, selectedTrack?.type]);
 
   useEffect(() => {
-    if (!isLyricsOpen) return;
-
-    const handleLyricsKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") handleLyricsClose();
+    const handleEscapeKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      if (document.fullscreenElement === document.documentElement) return;
+      if (isWebFullscreen) {
+        setIsWebFullscreen(false);
+        return;
+      }
+      if (!isLyricsOpen) return;
+      handleLyricsClose();
     };
 
-    window.addEventListener("keydown", handleLyricsKeyDown);
-    return () => window.removeEventListener("keydown", handleLyricsKeyDown);
-  }, [handleLyricsClose, isLyricsOpen]);
+    window.addEventListener("keydown", handleEscapeKeyDown);
+    return () => window.removeEventListener("keydown", handleEscapeKeyDown);
+  }, [handleLyricsClose, isWebFullscreen, isLyricsOpen]);
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsWebFullscreen(document.fullscreenElement === document.documentElement);
+    };
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () => document.removeEventListener("fullscreenchange", handleFullscreenChange);
+  }, []);
 
   useEffect(() => {
     if (!isLyricsOpen || !isDetailPlaying || isLyricsAutoScrollPaused || activeLyricsLineIndex < 0) return;
@@ -1796,7 +1875,7 @@ export function HVLScreen() {
   }, [selectedProject?.index]);
 
   useEffect(() => {
-    if (!hasConfirmedAge || isAgeGateOpen || selectedProject || isMobile) {
+    if (!hasConfirmedAge || isAgeGateOpen || (selectedProject && !isDetailMinimized) || isMobile) {
       if (sceneControlsTimeoutRef.current != null) {
         window.clearTimeout(sceneControlsTimeoutRef.current);
         sceneControlsTimeoutRef.current = null;
@@ -1806,7 +1885,7 @@ export function HVLScreen() {
     }
 
     resetSceneControlsVisibility();
-  }, [hasConfirmedAge, isAgeGateOpen, isMobile, resetSceneControlsVisibility, selectedProject]);
+  }, [hasConfirmedAge, isAgeGateOpen, isDetailMinimized, isMobile, resetSceneControlsVisibility, selectedProject]);
 
   useEffect(() => {
     return () => {
@@ -1914,7 +1993,7 @@ export function HVLScreen() {
       onPointerLeave={isMobile || displayStyle === "list" || (selectedProject && !isDetailMinimized) ? undefined : onPointerLeave}
       onWheel={isMobile || displayStyle === "list" || (selectedProject && !isDetailMinimized) ? undefined : onWheel}
     >
-      {isPresentationReady && (isMobile || displayStyle === "list") && (
+      {isPresentationReady && (!selectedProject || isDetailMinimized) && (isMobile || displayStyle === "list") && (
         <>
           <h1 className={`main-title ${!isMobile ? "list-view-header" : ""}`}>
             <NextImage
@@ -1933,7 +2012,7 @@ export function HVLScreen() {
         </>
       )}
 
-      {isPresentationReady && !isMobile && displayStyle === "art" && (
+      {isPresentationReady && (!selectedProject || isDetailMinimized) && !isMobile && displayStyle === "art" && (
         <h1 className="art-style-title">
           <NextImage
             src="/images/hvl-logo.svg"
@@ -2022,7 +2101,7 @@ export function HVLScreen() {
         </div>
       )}
 
-      {isMobile && hasConfirmedAge && !isAgeGateOpen && (
+      {isMobile && hasConfirmedAge && !isAgeGateOpen && (!selectedProject || isDetailMinimized) && (
         <button
           className={`mobile-header-display-mode ${isDisplayModeStatusVisible ? "is-status-visible" : ""}`}
           type="button"
@@ -2071,14 +2150,49 @@ export function HVLScreen() {
         </button>
       )}
 
-      {!isMobile && hasConfirmedAge && !isAgeGateOpen && (
+      {!isMobile && hasConfirmedAge && !isAgeGateOpen && (!selectedProject || isDetailMinimized) && (
         <button
-          className={`desktop-header-settings ${displayStyle === "art" && !areSceneControlsVisible ? "is-hidden" : ""}`}
+          className={`desktop-header-fullscreen ${!areSceneControlsVisible ? "is-hidden" : ""}`}
+          type="button"
+          onPointerDown={(event) => {
+            event.stopPropagation();
+            void handleWebFullscreenToggle();
+          }}
+          aria-label={isWebFullscreen ? "Thu nhỏ màn hình" : "Mở toàn màn hình"}
+          tabIndex={!areSceneControlsVisible ? -1 : 0}
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            {isWebFullscreen ? (
+              <>
+                <path d="m15 15 6 6m-6-6v4.8m0-4.8h4.8" />
+                <path d="M9 19.8V15M9 15H4.2M9 15l-6 6" />
+                <path d="M15 4.2V9m0 0h4.8M15 9l6-6" />
+                <path d="M9 4.2V9M9 9 3 3M9 9H4.2" />
+              </>
+            ) : (
+              <>
+                <path d="m15 15 6 6" />
+                <path d="m15 9 6-6" />
+                <path d="M21 16v5h-5" />
+                <path d="M21 8V3h-5" />
+                <path d="M3 16v5h5" />
+                <path d="m3 21 6-6" />
+                <path d="M3 8V3h5" />
+                <path d="M9 9 3 3" />
+              </>
+            )}
+          </svg>
+        </button>
+      )}
+
+      {!isMobile && hasConfirmedAge && !isAgeGateOpen && (!selectedProject || isDetailMinimized) && (
+        <button
+          className={`desktop-header-settings ${!areSceneControlsVisible ? "is-hidden" : ""}`}
           type="button"
           onClick={handleSettingsOpen}
           onPointerDown={(event) => event.stopPropagation()}
           aria-label="Cài Đặt"
-          tabIndex={displayStyle === "art" && !areSceneControlsVisible ? -1 : 0}
+          tabIndex={!areSceneControlsVisible ? -1 : 0}
         >
           <svg viewBox="0 0 24 24" aria-hidden="true" fill="none">
             <path d="M11 10.27 7 3.34" />
@@ -2105,6 +2219,7 @@ export function HVLScreen() {
         showOverlay,
         isDetailMinimized,
         isLyricsOpen,
+        isLyricsClosing,
         areDetailButtonsVisible,
         isMobile,
         selectedTrack,
@@ -2114,6 +2229,7 @@ export function HVLScreen() {
         repeatToastMessage,
         repeatToastPlacement,
         handleMinimizeProject,
+        handleMobileDetailBlankPointerUp,
         handleSettingsOpen,
         handleLyricsToggle,
         handleDownloadOpen,
@@ -2145,6 +2261,8 @@ export function HVLScreen() {
         handleDetailPlayPauseButtonClick,
         handleNextButtonClick,
         handleLyricsClose,
+        handleWebFullscreenToggle,
+        isWebFullscreen,
         lyricsBodyRef,
         handleLyricsScroll,
         pauseLyricsAutoScroll,
