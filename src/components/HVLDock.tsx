@@ -49,6 +49,7 @@ export function HVLDock(props: Record<string, unknown>) {
     cancelProgressSeek,
     StreamingPlatformLinks,
   } = props as any;
+  const isStreamTrack = selectedTrack?.type === "stream";
 
   return (
     <>
@@ -59,7 +60,7 @@ export function HVLDock(props: Record<string, unknown>) {
           onMouseLeave={!isMobile ? handleFloatingPlayerMouseLeave : undefined}
         >
           <section
-            className={`floating-player ${isStreaming ? "is-streaming" : ""}`}
+            className={`floating-player ${isStreaming ? "is-streaming" : ""} ${isStreamTrack ? "is-stream-track" : ""}`}
             aria-label={`Trình phát ${selectedTrack.title}`}
             onClick={handleRestoreProject}
           >
@@ -107,10 +108,10 @@ export function HVLDock(props: Record<string, unknown>) {
 
             <div
               key={isStreaming ? "streaming" : "pulled"}
-              className={`floating-player__mobile-actions ${isStreaming ? "is-streaming" : ""}`}
+              className={`floating-player__mobile-actions ${isStreaming ? "is-streaming" : ""} ${isStreamTrack ? "is-stream-track" : ""}`}
               onClick={(event) => event.stopPropagation()}
             >
-              {!isStreaming && (
+              {!isStreamTrack && (
                 <button
                   className={`floating-player__repeat is-${repeatMode} ${isRepeatAnimating ? "is-animating" : ""}`}
                   type="button"
@@ -126,7 +127,7 @@ export function HVLDock(props: Record<string, unknown>) {
                   <RepeatIcon isAll={repeatMode === "one"} isOne={repeatMode === "all"} animationNonce={repeatAnimationNonce} />
                 </button>
               )}
-              {isStreaming && (
+              {isStreamTrack && (
                 <StreamingPlatformLinks
                   className="floating-player__platforms"
                   linkClassName="floating-player__platform-link"
@@ -286,13 +287,13 @@ export function HVLDock(props: Record<string, unknown>) {
               onPointerDown={(event) => event.stopPropagation()}
               onClick={(event) => event.stopPropagation()}
             >
-              {isStreaming && (
+              {isStreamTrack && (
                 <StreamingPlatformLinks
                   className="floating-player__desktop-platforms"
                   linkClassName="floating-player__platform-link"
                 />
               )}
-              {!isStreaming && (
+              {!isStreamTrack && (
                 <button
                   className={`floating-player__repeat is-${repeatMode} ${isRepeatAnimating ? "is-animating" : ""}`}
                   type="button"

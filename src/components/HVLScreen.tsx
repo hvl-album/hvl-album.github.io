@@ -121,7 +121,7 @@ const galleryItems: readonly GalleryItem[] = (
     imageUrl: "/images/baby.png",
     bMobileBackground: 0.6,
     pMobileBackground: "right",
-    audioUrl: "/music/baby.mp3",
+    audioUrl: "/music/baby.mp3?v=0133-0148",
     type: "stream",
   },
   {
@@ -151,7 +151,7 @@ const galleryItems: readonly GalleryItem[] = (
     title: "Đao Của Anh Vừa",
     subtitle: "RPT MCK",
     imageUrl: "/images/dao-cua-anh-vua.png",
-    audioUrl: "/music/dao-cua-anh-vua.mp3",
+    audioUrl: "/music/dao-cua-anh-vua.mp3?v=0013-8-0037-6",
     type: "stream",
   },
   {
@@ -182,7 +182,7 @@ const galleryItems: readonly GalleryItem[] = (
     subtitle: "RPT MCK",
     imageUrl: "/images/mot-cai-om.png",
     bMobileBackground: 0.6,
-    audioUrl: "/music/mot-cai-om.mp3",
+    audioUrl: "/music/mot-cai-om.mp3?v=0100-0126-7",
     type: "stream",
   },
   {
@@ -203,7 +203,7 @@ const galleryItems: readonly GalleryItem[] = (
     subtitle: "RPT MCK, A$AP Ướt Mi",
     imageUrl: "/images/neu-nhu-ta-chang-con.png",
     pMobileBackground: "right",
-    audioUrl: "/music/neu-nhu-ta-chang-con.mp3",
+    audioUrl: "/music/neu-nhu-ta-chang-con.mp3?v=0109-0130",
     type: "stream",
   },
   {
@@ -213,7 +213,7 @@ const galleryItems: readonly GalleryItem[] = (
     subtitle: "RPT MCK",
     imageUrl: "/images/ai-moi-la-ke-xau-xa.png",
     bMobileBackground: 0.6,
-    audioUrl: "/music/ai-moi-la-ke-xau-xa.mp3",
+    audioUrl: "/music/ai-moi-la-ke-xau-xa.mp3?v=0158-0225",
     type: "stream",
   },
   {
@@ -360,7 +360,7 @@ const galleryItems: readonly GalleryItem[] = (
     subtitle: "RPT MCK",
     imageUrl: "/images/khong-can-lo-cho-tao.png",
     bMobileBackground: 0.35,
-    audioUrl: "/music/khong-can-lo-cho-tao.mp3",
+    audioUrl: "/music/khong-can-lo-cho-tao.mp3?v=0113-0133-2",
     type: "stream",
   },
   {
@@ -370,7 +370,7 @@ const galleryItems: readonly GalleryItem[] = (
     subtitle: "RPT MCK, RPT Orijinn, THANHDRAW",
     imageUrl: "/images/huh.jpg",
     bMobileBackground: 0.35,
-    audioUrl: "/music/huh.mp3",
+    audioUrl: "/music/huh.mp3?v=0321-0334",
     type: "stream",
   },
   {
@@ -741,6 +741,13 @@ export function HVLScreen() {
 
   const handleMobileDetailBlankPointerUp = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
     if (!isMobile) return;
+
+    const viewportHeight = window.innerHeight;
+    const topControlBand = Math.max(96, window.innerWidth * 0.16);
+    const bottomControlBand = Math.max(144, window.innerWidth * 0.3);
+    if (event.clientY <= topControlBand || event.clientY >= viewportHeight - bottomControlBand) {
+      return;
+    }
 
     const target = event.target as HTMLElement;
     if (target.closest("button, input, [role='slider'], .project-player__track, .project-player__time, .project-player__progress")) {
@@ -1152,7 +1159,7 @@ export function HVLScreen() {
   const nextTrackResult = selectedProject ? getNextTrack(selectedProject.index, displayMode) : null;
   const previousTrackResult = selectedProject ? getPreviousTrack(selectedProject.index, displayMode) : null;
   const nextTrack = nextTrackResult?.track ?? null;
-  const isStreaming = selectedTrack?.type === "stream";
+  const isStreaming = selectedTrack?.type === "stream" && !selectedTrack.audioUrl;
   const playbackProgress = duration > 0 ? Math.min((currentTime / duration) * 100, 100) : 0;
   const isAutoNextEnabled =
     showOverlay && isStreaming && Boolean(selectedProject);
@@ -1212,6 +1219,7 @@ export function HVLScreen() {
       }
       const audio = audioRef.current;
       const track = galleryItems[textureIndex];
+      const isTrackStreamPreview = track?.type === "stream" && !track.audioUrl;
       if (audio) {
         audio.pause();
         audio.currentTime = 0;
@@ -1248,7 +1256,7 @@ export function HVLScreen() {
       isDetailMinimizedRef.current = nextPresentation === "minimized";
       setIsDetailMinimized(isDetailMinimizedRef.current);
       setIsFloatingPlayerExpanded(true);
-      if (track?.type === "stream") {
+      if (isTrackStreamPreview) {
         if (floatingPlayerHideTimeoutRef.current != null) {
           window.clearTimeout(floatingPlayerHideTimeoutRef.current);
           floatingPlayerHideTimeoutRef.current = null;
@@ -1259,7 +1267,7 @@ export function HVLScreen() {
           window.localStorage.setItem(dockPinnedStorageKey, "true");
         }
       }
-      if (!isMobile && nextPresentation === "minimized" && !isDockPinned && track?.type !== "stream") {
+      if (!isMobile && nextPresentation === "minimized" && !isDockPinned && !isTrackStreamPreview) {
         if (floatingPlayerHideTimeoutRef.current != null) {
           window.clearTimeout(floatingPlayerHideTimeoutRef.current);
         }
@@ -1385,7 +1393,7 @@ export function HVLScreen() {
     setIsLyricsOpen(false);
     setIsDetailMinimized(true);
     setIsFloatingPlayerExpanded(true);
-    if (!isMobile && !isDockPinned && selectedTrack?.type !== "stream") {
+    if (!isMobile && !isDockPinned && !isStreaming) {
       if (floatingPlayerHideTimeoutRef.current != null) {
         window.clearTimeout(floatingPlayerHideTimeoutRef.current);
       }
@@ -1397,7 +1405,7 @@ export function HVLScreen() {
       }, 2_000);
     }
     setAreDetailButtonsVisible(true);
-  }, [isDockPinned, isMobile, selectedTrack]);
+  }, [isDockPinned, isMobile, isStreaming]);
 
   const handleRestoreProject = useCallback(() => {
     playClickSound();
@@ -1491,7 +1499,7 @@ export function HVLScreen() {
 
   const handlePlayPause = useCallback(async () => {
     const audio = audioRef.current;
-    if (!audio || selectedTrack?.type !== "pulled" || !selectedTrack.audioUrl) return;
+    if (!audio || !selectedTrack?.audioUrl) return;
 
     if (audio.paused) {
       try {
@@ -1985,9 +1993,9 @@ export function HVLScreen() {
   return (
     <div className="sceneRoot">
       <div
-      className={`sceneRoot__content ${displayStyle === "art" ? "is-art-style" : ""} ${!isAgeGateStateReady || isAgeGateOpen ? "is-blurred" : ""}`}
+      className={`sceneRoot__content ${displayStyle === "art" ? "is-art-style" : ""} ${selectedProject && !isDetailMinimized ? "is-detail-open" : ""} ${!isAgeGateStateReady || isAgeGateOpen ? "is-blurred" : ""}`}
       onPointerDown={isMobile || displayStyle === "list" || (selectedProject && !isDetailMinimized) ? undefined : onPointerDown}
-      onPointerMove={isMobile || displayStyle === "list" || (selectedProject && !isDetailMinimized) ? undefined : handleScenePointerMove}
+      onPointerMove={isMobile || (selectedProject && !isDetailMinimized) ? undefined : handleScenePointerMove}
       onPointerUp={isMobile || displayStyle === "list" || (selectedProject && !isDetailMinimized) ? undefined : onPointerUp}
       onPointerCancel={isMobile || displayStyle === "list" || (selectedProject && !isDetailMinimized) ? undefined : onPointerCancel}
       onPointerLeave={isMobile || displayStyle === "list" || (selectedProject && !isDetailMinimized) ? undefined : onPointerLeave}

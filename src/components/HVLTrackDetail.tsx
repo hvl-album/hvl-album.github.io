@@ -64,6 +64,7 @@ export function HVLTrackDetail(props: Record<string, unknown>) {
     handleLyricsLineKeyDown,
     renderLyricsLine,
   } = props as any;
+  const isStreamTrack = selectedTrack?.type === "stream";
 
   return (
     <>
@@ -231,7 +232,7 @@ export function HVLTrackDetail(props: Record<string, unknown>) {
           />
           {selectedTrack && !isDetailMinimized && (
             <section
-              className={`project-player ${isStreaming ? "is-streaming" : ""} ${areNextControlsVisible ? "is-next-controls-visible" : ""}`}
+              className={`project-player ${isStreaming ? "is-streaming" : ""} ${isStreamTrack ? "is-stream-track" : ""} ${areNextControlsVisible ? "is-next-controls-visible" : ""}`}
               aria-label={`Trình phát ${selectedTrack.title}`}
             >
               <div className="project-player__track">
@@ -267,9 +268,9 @@ export function HVLTrackDetail(props: Record<string, unknown>) {
                     <span style={{ width: `${detailPlaybackProgress}%` }} />
                   </div>
                   <div className="project-player__duration">
-                    {isStreaming ? (
+                    {isStreamTrack ? (
                       <div className="detail-stream-platforms" aria-label="Nghe trên nền tảng khác">
-                        <span className="detail-stream-platforms__label">STREAM ON</span>
+                        <span className="detail-stream-platforms__label">NGHE ĐẦY ĐỦ TẠI</span>
                         <StreamingPlatformLinks
                           className="detail-stream-platforms__items"
                           linkClassName="detail-stream-platform-link"
