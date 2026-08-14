@@ -740,22 +740,22 @@ export function HVLScreen() {
   }, [isMobile]);
 
   const handleMobileDetailBlankPointerUp = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
-    if (!isMobile) return;
+    if (!isMobile || isLyricsOpen || isLyricsClosing) return;
 
     const viewportHeight = window.innerHeight;
     const topControlBand = Math.max(96, window.innerWidth * 0.16);
-    const bottomControlBand = Math.max(144, window.innerWidth * 0.3);
+    const bottomControlBand = 88;
     if (event.clientY <= topControlBand || event.clientY >= viewportHeight - bottomControlBand) {
       return;
     }
 
     const target = event.target as HTMLElement;
-    if (target.closest("button, input, [role='slider'], .project-player__track, .project-player__time, .project-player__progress")) {
+    if (target.closest("button, input, [role='slider'], .project-player__track, .project-player__time, .project-player__progress, .project-player__transport")) {
       return;
     }
 
     setAreDetailButtonsVisible((visible) => !visible);
-  }, [isMobile]);
+  }, [isLyricsClosing, isLyricsOpen, isMobile]);
 
   const resetSceneControlsVisibility = useCallback(() => {
     if (isMobile) return;
