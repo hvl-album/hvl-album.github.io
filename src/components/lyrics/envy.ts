@@ -70,6 +70,11 @@ Cho tiền vào bank xong tao skrt like woah
 Không cần nhìn giá tao skrt like woah
 Anh em tao vâm, we skrt, we roll
 Anh em tao trap không đùa được đâu
+(Trap, trap, trap, trap) Được đấy
+Uhm (Trap, cool, cool, wut, trap, trap, trap, trap)
+(Woah) 
+(Uhm) Được đấy
+(Uh) Được
 `,
   lyricsTimestamps: [
     0, 17.91, 23.09,
@@ -79,6 +84,6 @@ Anh em tao trap không đùa được đâu
     133.15, 136.65, 140.06, 143.29, 146.65, 148.07, 151.47, 152.99, 154.79, 156.06,
     158.01, 159.24, 161.39, 162.74, 164.28, 165.77, 167.53, 169.17, 171.43, 172.74,
     175.11, 179.02, 181.69, 184.15, 185.9, 187.67, 190.49, 191.98, 194.05, 195.79,
-    197.45, 199.01,
+    197.45, 199.01, 200.8, 204.5, 210.4, 210.8, 213.1
   ],
 } as const;

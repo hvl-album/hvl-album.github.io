@@ -5,6 +5,13 @@ export type RepeatMode = "off" | "one" | "all";
 export type TrackPresentation = "detail" | "minimized";
 export type StreamDisplayDelay = 5 | 10 | 15;
 
+export type SongAnnotation = {
+  lyric: string;
+  seekLabels: readonly string[];
+  startTime: number;
+  explanation: string;
+};
+
 export type GalleryItem = {
   numberTrack: number;
   durationSeconds: number | null;
@@ -18,4 +25,5 @@ export type GalleryItem = {
   type: GalleryItemType;
   lyrics?: string;
   lyricsTimestamps?: readonly number[];
+  songAnnotations?: readonly SongAnnotation[];
 };
