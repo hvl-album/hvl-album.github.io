@@ -45,11 +45,25 @@ function renderSongAnnotationExplanation(explanation: string) {
   ));
 }
 
+function renderArtistNames(subtitle: string, activeArtists: readonly string[]) {
+  if (activeArtists.length === 0) return subtitle;
+
+  const artistExpression = activeArtists.map(escapeRegularExpression).join("|");
+  return subtitle.split(new RegExp(`(${artistExpression})`, "g")).map((part, index) => (
+    activeArtists.includes(part) ? (
+      <span className="project-player__artist-name is-performing" key={`${part}-${index}`}>
+        {part}
+      </span>
+    ) : part
+  ));
+}
+
 export function HVLTrackDetail(props: Record<string, unknown>) {
   const {
     selectedProject,
     showOverlay,
     isDetailMinimized,
+    isDetailMinimizing,
     isLyricsOpen,
     isLyricsClosing,
     isSongAnnotationOpen,
@@ -112,16 +126,24 @@ export function HVLTrackDetail(props: Record<string, unknown>) {
     handleLyricsLineKeyDown,
     renderLyricsLine,
     songAnnotations,
+    activeArtists,
   } = props as any;
   const isStreamTrack = selectedTrack?.type === "stream";
   const isSongAnnotationPanelVisible = isSongAnnotationOpen || (!isLyricsOpen && isSongAnnotationClosing);
+  const isDetailClosing = isDetailMinimized || isDetailMinimizing;
+  const shouldKeepDetailButtonsVisible =
+    areDetailButtonsVisible ||
+    isLyricsOpen ||
+    isLyricsClosing ||
+    isSongAnnotationOpen ||
+    isSongAnnotationClosing;
 
   return (
     <>
 {selectedProject && (
-      <div className={`detail-lyrics-layout ${isMobile ? "is-mobile" : ""} ${isDetailMinimized ? "is-minimized" : ""}`}>
+      <div className={`detail-lyrics-layout ${isMobile ? "is-mobile" : ""} ${isDetailClosing ? "is-minimized" : ""} ${isDetailMinimizing ? "is-minimizing" : ""}`}>
         <div
-          className={`project-single-view ${showOverlay ? "visible" : "hidden"} ${isDetailMinimized ? "is-minimized" : ""} ${isLyricsOpen || isSongAnnotationOpen ? "is-side-panel-open" : ""} ${areDetailButtonsVisible ? "" : "is-buttons-hidden"} ${!isMobile && (selectedTrack?.numberTrack === 8 || selectedTrack?.numberTrack === 27 || selectedTrack?.numberTrack === 28) ? "is-dark-track" : ""}`}
+          className={`project-single-view ${showOverlay ? "visible" : "hidden"} ${isDetailClosing ? "is-minimized" : ""} ${isLyricsOpen || isSongAnnotationOpen ? "is-side-panel-open" : ""} ${shouldKeepDetailButtonsVisible ? "" : "is-buttons-hidden"} ${!isMobile && (selectedTrack?.numberTrack === 8 || selectedTrack?.numberTrack === 27 || selectedTrack?.numberTrack === 28) ? "is-dark-track" : ""}`}
           onMouseMove={isMobile ? undefined : resetDetailButtonsVisibility}
           onPointerUp={isMobile ? handleMobileDetailBlankPointerUp : undefined}
         >
@@ -303,7 +325,9 @@ export function HVLTrackDetail(props: Record<string, unknown>) {
               <div className="project-player__track">
                 <span className="project-player__track-number">{getTrackLabel(selectedTrack.numberTrack)}</span>
                 <span className="project-player__title">{selectedTrack.title}</span>
-                <span className="project-player__artist">{selectedTrack.subtitle}</span>
+                <span className="project-player__artist">
+                  {renderArtistNames(selectedTrack.subtitle, activeArtists)}
+                </span>
               </div>
               {detailPreviewTrack && !isMobile && (
                 <div

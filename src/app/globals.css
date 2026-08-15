@@ -2268,6 +2268,13 @@ body {
   text-transform: uppercase;
 }
 
+.project-player__artist-name.is-performing {
+  position: relative;
+  display: inline-flex;
+  color: #fff;
+  font-weight: 700;
+}
+
 .project-player__controls {
   display: grid;
   grid-template-columns:
@@ -3780,13 +3787,59 @@ body {
   }
 
   .project-single-view.is-minimized .project-content {
-    transform: translateY(-12dvh);
+    filter: blur(10px);
+    transform: translateY(-8dvh) scale(0.97);
+    transition:
+      filter 500ms cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 500ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .project-single-view.is-minimized {
     width: 0;
     height: 0;
     overflow: hidden;
+  }
+
+  .detail-lyrics-layout.is-minimizing .project-single-view.is-minimized {
+    width: 100%;
+    height: 100dvh;
+    overflow: hidden;
+    background: #080808;
+    opacity: 0;
+    transition: opacity 500ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .detail-lyrics-layout.is-minimizing .project-single-view.is-minimized .project-content img {
+    height: 100%;
+    max-height: none;
+  }
+
+  .project-single-view.is-minimized .project-player {
+    filter: blur(6px);
+    opacity: 0;
+    transform: translateY(calc(-50% + 14px));
+    transition:
+      filter 420ms cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 420ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .project-single-view.is-minimized .project-single-background,
+  .project-single-view.is-minimized::after,
+  .project-single-view.is-minimized .collapse-button,
+  .project-single-view.is-minimized .detail-settings-button {
+    transition: opacity 500ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .project-single-view.is-minimized .detail-copyright,
+  .project-single-view.is-minimized .detail-song-annotation-button,
+  .project-single-view.is-minimized .detail-lyrics-button,
+  .project-single-view.is-minimized .detail-lyrics-fullscreen-button,
+  .project-single-view.is-minimized .detail-download-button,
+  .project-single-view.is-minimized .detail-media-toggle {
+    opacity: 0;
+    transition: opacity 420ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .project-single-view.is-minimized .project-content img {
@@ -4386,6 +4439,12 @@ body {
 }
 
 @media (pointer: coarse), (max-width: 1199px) {
+  .song-annotation-panel {
+    transition:
+      transform 500ms cubic-bezier(0.16, 1, 0.3, 1),
+      visibility 0s linear 500ms;
+  }
+
   .detail-song-annotation-button {
     right: 16px;
     bottom: 83px;
@@ -4494,8 +4553,8 @@ body {
     overflow: visible;
     transform: translateY(calc(100% + 48px));
     transition:
-      transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
-      visibility 0s linear 420ms;
+      transform 500ms cubic-bezier(0.16, 1, 0.3, 1),
+      visibility 0s linear 500ms;
   }
 
   .lyrics-panel::before,
@@ -4810,8 +4869,8 @@ body {
 
   .floating-player-dock .floating-player {
     transition:
-      transform 520ms ease,
-      opacity 120ms ease,
+      transform 380ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 100ms ease,
       visibility 0s linear 0s,
       box-shadow 240ms ease;
   }
@@ -4821,10 +4880,14 @@ body {
     transform: translateX(-50%) translateY(calc(100% + 12px));
     visibility: hidden;
     transition:
-      transform 520ms ease,
-      opacity 120ms ease 420ms,
-      visibility 0s linear 540ms,
+      transform 380ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 100ms ease 280ms,
+      visibility 0s linear 400ms,
       box-shadow 240ms ease;
+  }
+
+  .floating-player-dock.is-collapsed {
+    pointer-events: none;
   }
 
   .floating-player-dock.is-expanded .floating-player {

@@ -13,6 +13,8 @@ export function HVLDock(props: Record<string, unknown>) {
   const {
     selectedProject,
     isDetailMinimized,
+    isDockVisible,
+    isDockHidingForDetail,
     selectedTrack,
     isFloatingPlayerExpanded,
     isDockPinned,
@@ -53,9 +55,9 @@ export function HVLDock(props: Record<string, unknown>) {
 
   return (
     <>
-{selectedProject && isDetailMinimized && selectedTrack && (
+{selectedProject && isDockVisible && selectedTrack && (
         <div
-          className={`floating-player-dock ${isFloatingPlayerExpanded || isDockPinned || (!isMobile && isStreaming) ? "is-expanded" : "is-collapsed"}`}
+          className={`floating-player-dock ${isDockHidingForDetail || !(isFloatingPlayerExpanded || isDockPinned || (!isMobile && isStreaming)) ? "is-collapsed" : "is-expanded"}`}
           onMouseEnter={!isMobile ? handleFloatingPlayerMouseEnter : undefined}
           onMouseLeave={!isMobile ? handleFloatingPlayerMouseLeave : undefined}
         >

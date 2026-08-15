@@ -12,6 +12,12 @@ export type SongAnnotation = {
   explanation: string;
 };
 
+export type ArtistHighlight = {
+  artist: string | readonly string[];
+  startTime: number;
+  endTime: number;
+};
+
 export type GalleryItem = {
   numberTrack: number;
   durationSeconds: number | null;
@@ -26,4 +32,5 @@ export type GalleryItem = {
   lyrics?: string;
   lyricsTimestamps?: readonly number[];
   songAnnotations?: readonly SongAnnotation[];
+  artistHighlights?: readonly ArtistHighlight[];
 };
