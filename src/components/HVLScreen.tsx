@@ -144,7 +144,7 @@ const galleryItems: readonly GalleryItem[] = (
         lyric: "Chúng ngã vào nhau trong một tấm canvas",
         seekLabels: ["canvas"],
         startTime: 27.87,
-        explanation: "Canvas trong bài vừa mang ý nghĩa là toan vẽ, ** vừa biến con người/khung cảnh thành một “bức tranh” nhiều màu sắc trong lúc ánh sáng, cơ thể và chuyển động hòa vào nhau.",
+        explanation: "Canvas trong bài vừa mang ý nghĩa là toan vẽ, vừa biến con người/khung cảnh thành một “bức tranh” nhiều màu sắc trong lúc ánh sáng, cơ thể và chuyển động hòa vào nhau.",
       },
       {
         lyric: "Your aura, your vibe",
@@ -304,6 +304,11 @@ const galleryItems: readonly GalleryItem[] = (
     audioUrl: "/music/slippery.mp3",
     videoUrl: "/videos/slippery.mp4",
     type: "pulled",
+    artistHighlights: [
+      { artist: "RPT MCK", startTime: 0, endTime: 157.17 },
+      { artist: "Tùng Dương", startTime: 157.17, endTime: 182.93 },
+      { artist: "RPT MCK", startTime: 182.93, endTime: 214.857143 },
+    ],
     ...slipperyLyrics,
   },
   {
@@ -362,6 +367,11 @@ const galleryItems: readonly GalleryItem[] = (
     audioUrl: "/music/xa-xoi.mp3",
     videoUrl: "/videos/xa-xoi.mp4",
     type: "pulled",
+    artistHighlights: [
+      { artist: "RPT MCK", startTime: 0, endTime: 138.02 },
+      { artist: "Obito", startTime: 138.02, endTime: 203.77 },
+      { artist: "RPT MCK", startTime: 203.77, endTime: 218.148571 },
+    ],
     ...xaXoiLyrics,
   },
   {
@@ -417,6 +427,11 @@ const galleryItems: readonly GalleryItem[] = (
     imageUrl: "/images/envy.png",
     audioUrl: "/music/envy.mp3",
     type: "pulled",
+    artistHighlights: [
+      { artist: "RPT MCK", startTime: 0, endTime: 133.15 },
+      { artist: "THANHDRAW", startTime: 133.15, endTime: 175.11 },
+      { artist: ["RPT MCK", "THANHDRAW"], startTime: 175.11, endTime: 235.467755 },
+    ],
     ...envyLyrics,
   },
   {
@@ -490,6 +505,8 @@ const displayModeStorageKey = "hvl-display-mode";
 const displayStyleStorageKey = "hvl-display-style";
 const dockPinnedStorageKey = "hvl-dock-pinned";
 const mobileDockModeStorageKey = "hvl-mobile-dock-mode";
+const desktopSidePanelTransitionDuration = 420;
+const mobileSidePanelTransitionDuration = 500;
 
 function formatTime(seconds: number) {
   if (!Number.isFinite(seconds) || seconds < 0) return "00:00";
@@ -753,6 +770,8 @@ export function HVLScreen() {
   } | null>(null);
   const [showOverlay, setShowOverlay] = useState(false);
   const [isDetailMinimized, setIsDetailMinimized] = useState(false);
+  const [isDetailMinimizing, setIsDetailMinimizing] = useState(false);
+  const [isDockHidingForDetail, setIsDockHidingForDetail] = useState(false);
   const [isTrackVideoActive, setIsTrackVideoActive] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [repeatMode, setRepeatMode] = useState<RepeatMode>("off");
@@ -766,14 +785,20 @@ export function HVLScreen() {
   const [downloadAudioSize, setDownloadAudioSize] = useState<number | null>(null);
   const [isDownloadSizeLoading, setIsDownloadSizeLoading] = useState(false);
   const [isLyricsAutoScrollPaused, setIsLyricsAutoScrollPaused] = useState(false);
+  const sidePanelTransitionDuration = isMobile
+    ? mobileSidePanelTransitionDuration
+    : desktopSidePanelTransitionDuration;
   const lyricsBodyRef = useRef<HTMLDivElement>(null);
   const songAnnotationBodyRef = useRef<HTMLDivElement>(null);
   const lyricsShouldReopenRef = useRef(false);
   const lyricsHasBeenOpenedRef = useRef(false);
   const lyricsClosingTimeoutRef = useRef<number | null>(null);
+  const suppressLyricsCloseEffectRef = useRef(false);
   const songAnnotationHasBeenOpenedRef = useRef(false);
   const songAnnotationClosingTimeoutRef = useRef<number | null>(null);
-  const pendingSongAnnotationOpenTimeoutRef = useRef<number | null>(null);
+  const suppressSongAnnotationCloseEffectRef = useRef(false);
+  const pendingLyricsOpenFrameRef = useRef<number | null>(null);
+  const pendingSongAnnotationOpenFrameRef = useRef<number | null>(null);
   const downloadResetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [repeatAnimationNonce, setRepeatAnimationNonce] = useState(0);
   const [isRepeatAnimating, setIsRepeatAnimating] = useState(false);
@@ -804,6 +829,8 @@ export function HVLScreen() {
   const [repeatToastPlacement, setRepeatToastPlacement] = useState<"detail" | "dock">("dock");
 
   const closeOverlayTimeoutRef = useRef<number | null>(null);
+  const detailMinimizeTimeoutRef = useRef<number | null>(null);
+  const detailRestoreTimeoutRef = useRef<number | null>(null);
   const detailButtonsTimeoutRef = useRef<number | null>(null);
   const sceneControlsTimeoutRef = useRef<number | null>(null);
   const displayModeStatusTimeoutRef = useRef<number | null>(null);
@@ -835,10 +862,6 @@ export function HVLScreen() {
   const resetDetailButtonsVisibility = useCallback(() => {
     setAreDetailButtonsVisible(true);
     if (detailButtonsTimeoutRef.current != null) window.clearTimeout(detailButtonsTimeoutRef.current);
-    if (isMobile) {
-      detailButtonsTimeoutRef.current = null;
-      return;
-    }
 
     detailButtonsTimeoutRef.current = window.setTimeout(() => {
       setAreDetailButtonsVisible(false);
@@ -850,6 +873,12 @@ export function HVLScreen() {
   const handleMobileDetailBlankPointerUp = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
     if (!isMobile || isLyricsOpen || isLyricsClosing || isSongAnnotationOpen) return;
 
+    const target = event.target as HTMLElement;
+    if (target.closest("button, input, [role='slider'], .project-player__track, .project-player__time, .project-player__progress, .project-player__transport")) {
+      resetDetailButtonsVisibility();
+      return;
+    }
+
     const viewportHeight = window.innerHeight;
     const topControlBand = Math.max(96, window.innerWidth * 0.16);
     const bottomControlBand = 88;
@@ -857,13 +886,15 @@ export function HVLScreen() {
       return;
     }
 
-    const target = event.target as HTMLElement;
-    if (target.closest("button, input, [role='slider'], .project-player__track, .project-player__time, .project-player__progress, .project-player__transport")) {
+    if (areDetailButtonsVisible) {
+      if (detailButtonsTimeoutRef.current != null) window.clearTimeout(detailButtonsTimeoutRef.current);
+      detailButtonsTimeoutRef.current = null;
+      setAreDetailButtonsVisible(false);
       return;
     }
 
-    setAreDetailButtonsVisible((visible) => !visible);
-  }, [isLyricsClosing, isLyricsOpen, isMobile, isSongAnnotationOpen]);
+    resetDetailButtonsVisibility();
+  }, [areDetailButtonsVisible, isLyricsClosing, isLyricsOpen, isMobile, isSongAnnotationOpen, resetDetailButtonsVisibility]);
 
   const resetSceneControlsVisibility = useCallback(() => {
     if (isMobile) return;
@@ -985,6 +1016,44 @@ export function HVLScreen() {
     setIsSongAnnotationOpen(false);
   }, []);
 
+  const openLyricsFromClosedPosition = useCallback(() => {
+    if (pendingLyricsOpenFrameRef.current != null) {
+      window.cancelAnimationFrame(pendingLyricsOpenFrameRef.current);
+    }
+    if (isSongAnnotationOpen) suppressSongAnnotationCloseEffectRef.current = true;
+    setIsSongAnnotationClosing(false);
+    setIsSongAnnotationOpen(false);
+    setIsLyricsClosing(true);
+    setIsLyricsOpen(false);
+    pendingLyricsOpenFrameRef.current = window.requestAnimationFrame(() => {
+      pendingLyricsOpenFrameRef.current = window.requestAnimationFrame(() => {
+        pendingLyricsOpenFrameRef.current = null;
+        setIsLyricsClosing(false);
+        setIsLyricsOpen(true);
+      });
+    });
+  }, [isSongAnnotationOpen]);
+
+  const openSongAnnotationFromClosedPosition = useCallback(() => {
+    if (pendingSongAnnotationOpenFrameRef.current != null) {
+      window.cancelAnimationFrame(pendingSongAnnotationOpenFrameRef.current);
+    }
+    resetLyricsAutoScrollPause();
+    lyricsShouldReopenRef.current = false;
+    if (isLyricsOpen) suppressLyricsCloseEffectRef.current = true;
+    setIsLyricsClosing(false);
+    setIsLyricsOpen(false);
+    setIsSongAnnotationClosing(true);
+    setIsSongAnnotationOpen(false);
+    pendingSongAnnotationOpenFrameRef.current = window.requestAnimationFrame(() => {
+      pendingSongAnnotationOpenFrameRef.current = window.requestAnimationFrame(() => {
+        pendingSongAnnotationOpenFrameRef.current = null;
+        setIsSongAnnotationClosing(false);
+        setIsSongAnnotationOpen(true);
+      });
+    });
+  }, [isLyricsOpen, resetLyricsAutoScrollPause]);
+
   const handleWebFullscreenToggle = useCallback(async () => {
     const fullscreenTarget = document.documentElement;
 
@@ -1018,10 +1087,14 @@ export function HVLScreen() {
     }
 
     lyricsShouldReopenRef.current = true;
+    if (isMobile) {
+      openLyricsFromClosedPosition();
+      return;
+    }
     setIsSongAnnotationOpen(false);
     setIsLyricsClosing(false);
     setIsLyricsOpen(true);
-  }, [isLyricsOpen, resetLyricsAutoScrollPause]);
+  }, [isLyricsOpen, isMobile, openLyricsFromClosedPosition, resetLyricsAutoScrollPause]);
 
   const handleSongAnnotationToggle = useCallback(() => {
     playClickSound();
@@ -1031,26 +1104,18 @@ export function HVLScreen() {
       return;
     }
 
-    const openSongAnnotation = () => {
-      pendingSongAnnotationOpenTimeoutRef.current = null;
-      resetLyricsAutoScrollPause();
-      lyricsShouldReopenRef.current = false;
-      setIsLyricsClosing(isLyricsOpen);
-      setIsLyricsOpen(false);
-      setIsSongAnnotationClosing(false);
-      setIsSongAnnotationOpen(true);
-    };
-
-    if (isMobile && isLyricsClosing) {
-      if (pendingSongAnnotationOpenTimeoutRef.current != null) {
-        window.clearTimeout(pendingSongAnnotationOpenTimeoutRef.current);
-      }
-      pendingSongAnnotationOpenTimeoutRef.current = window.setTimeout(openSongAnnotation, 420);
+    if (isMobile) {
+      openSongAnnotationFromClosedPosition();
       return;
     }
 
-    openSongAnnotation();
-  }, [isLyricsClosing, isLyricsOpen, isMobile, isSongAnnotationOpen, resetLyricsAutoScrollPause]);
+    resetLyricsAutoScrollPause();
+    lyricsShouldReopenRef.current = false;
+    setIsLyricsClosing(isLyricsOpen);
+    setIsLyricsOpen(false);
+    setIsSongAnnotationClosing(false);
+    setIsSongAnnotationOpen(true);
+  }, [isLyricsOpen, isMobile, isSongAnnotationOpen, openSongAnnotationFromClosedPosition, resetLyricsAutoScrollPause]);
 
   useEffect(() => {
     if (lyricsClosingTimeoutRef.current != null) {
@@ -1064,14 +1129,20 @@ export function HVLScreen() {
       return;
     }
 
+    if (suppressLyricsCloseEffectRef.current) {
+      suppressLyricsCloseEffectRef.current = false;
+      setIsLyricsClosing(false);
+      return;
+    }
+
     if (!lyricsHasBeenOpenedRef.current) return;
 
     setIsLyricsClosing(true);
     lyricsClosingTimeoutRef.current = window.setTimeout(() => {
       setIsLyricsClosing(false);
       lyricsClosingTimeoutRef.current = null;
-    }, 420);
-  }, [isLyricsOpen]);
+    }, sidePanelTransitionDuration);
+  }, [isLyricsOpen, sidePanelTransitionDuration]);
 
   useEffect(() => {
     if (songAnnotationClosingTimeoutRef.current != null) {
@@ -1085,14 +1156,20 @@ export function HVLScreen() {
       return;
     }
 
+    if (suppressSongAnnotationCloseEffectRef.current) {
+      suppressSongAnnotationCloseEffectRef.current = false;
+      setIsSongAnnotationClosing(false);
+      return;
+    }
+
     if (!songAnnotationHasBeenOpenedRef.current) return;
 
     setIsSongAnnotationClosing(true);
     songAnnotationClosingTimeoutRef.current = window.setTimeout(() => {
       setIsSongAnnotationClosing(false);
       songAnnotationClosingTimeoutRef.current = null;
-    }, 420);
-  }, [isSongAnnotationOpen]);
+    }, sidePanelTransitionDuration);
+  }, [isSongAnnotationOpen, sidePanelTransitionDuration]);
 
   const handleDownloadOpen = useCallback(() => {
     const track = selectedProject ? galleryItems[selectedProject.index] : null;
@@ -1321,6 +1398,12 @@ export function HVLScreen() {
   const activeLyricsLineIndex = lyricsEntries.reduce((activeIndex, entry, index) => (
     entry.startTime != null && currentTime >= entry.startTime ? index : activeIndex
   ), -1);
+  const activeArtistHighlight = selectedTrack?.artistHighlights?.find(
+    ({ startTime, endTime }) => currentTime >= startTime && currentTime < endTime,
+  );
+  const activeArtists = activeArtistHighlight
+    ? (Array.isArray(activeArtistHighlight.artist) ? activeArtistHighlight.artist : [activeArtistHighlight.artist])
+    : [];
   const nextTrackResult = selectedProject ? getNextTrack(selectedProject.index, displayMode) : null;
   const previousTrackResult = selectedProject ? getPreviousTrack(selectedProject.index, displayMode) : null;
   const nextTrack = nextTrackResult?.track ?? null;
@@ -1451,7 +1534,7 @@ export function HVLScreen() {
         void audio.play().catch(() => setIsPlaying(false));
       }
       if (isMobile) {
-        setAreDetailButtonsVisible(true);
+        resetDetailButtonsVisibility();
       } else {
         resetDetailButtonsVisibility();
       }
@@ -1558,7 +1641,22 @@ export function HVLScreen() {
     isDetailMinimizedRef.current = true;
     lyricsShouldReopenRef.current = false;
     setIsLyricsOpen(false);
-    setIsDetailMinimized(true);
+    setIsSongAnnotationOpen(false);
+
+    if (isMobile) {
+      if (detailMinimizeTimeoutRef.current != null) {
+        window.clearTimeout(detailMinimizeTimeoutRef.current);
+      }
+      setIsDockHidingForDetail(false);
+      setIsDetailMinimizing(true);
+      detailMinimizeTimeoutRef.current = window.setTimeout(() => {
+        setIsDetailMinimized(true);
+        setIsDetailMinimizing(false);
+        detailMinimizeTimeoutRef.current = null;
+      }, mobileSidePanelTransitionDuration);
+    } else {
+      setIsDetailMinimized(true);
+    }
     setIsFloatingPlayerExpanded(true);
     if (!isMobile && !isDockPinned && !isStreaming) {
       if (floatingPlayerHideTimeoutRef.current != null) {
@@ -1576,11 +1674,33 @@ export function HVLScreen() {
 
   const handleRestoreProject = useCallback(() => {
     playClickSound();
+    if (detailMinimizeTimeoutRef.current != null) {
+      window.clearTimeout(detailMinimizeTimeoutRef.current);
+      detailMinimizeTimeoutRef.current = null;
+    }
+    if (isMobile && isDetailMinimized) {
+      if (detailRestoreTimeoutRef.current != null) {
+        window.clearTimeout(detailRestoreTimeoutRef.current);
+      }
+      setIsDockHidingForDetail(true);
+      isDetailMinimizedRef.current = false;
+      setIsDetailMinimizing(false);
+      setIsDetailMinimized(false);
+      setShowOverlay(true);
+      resetDetailButtonsVisibility();
+      detailRestoreTimeoutRef.current = window.setTimeout(() => {
+        setIsDockHidingForDetail(false);
+        detailRestoreTimeoutRef.current = null;
+      }, 400);
+      return;
+    }
     isDetailMinimizedRef.current = false;
+    setIsDetailMinimizing(false);
     setIsDetailMinimized(false);
+    setIsDockHidingForDetail(false);
     setShowOverlay(true);
     resetDetailButtonsVisibility();
-  }, [resetDetailButtonsVisibility]);
+  }, [isDetailMinimized, isMobile, resetDetailButtonsVisibility]);
 
   const clearFloatingPlayerHideTimeout = useCallback(() => {
     if (floatingPlayerHideTimeoutRef.current != null) {
@@ -2080,9 +2200,12 @@ export function HVLScreen() {
       if (displayModeStatusTimeoutRef.current != null) window.clearTimeout(displayModeStatusTimeoutRef.current);
       if (repeatAnimationTimeoutRef.current != null) window.clearTimeout(repeatAnimationTimeoutRef.current);
       if (repeatToastTimeoutRef.current != null) window.clearTimeout(repeatToastTimeoutRef.current);
+      if (detailMinimizeTimeoutRef.current != null) window.clearTimeout(detailMinimizeTimeoutRef.current);
+      if (detailRestoreTimeoutRef.current != null) window.clearTimeout(detailRestoreTimeoutRef.current);
       if (lyricsAutoScrollPauseTimeoutRef.current != null) window.clearTimeout(lyricsAutoScrollPauseTimeoutRef.current);
       if (songAnnotationClosingTimeoutRef.current != null) window.clearTimeout(songAnnotationClosingTimeoutRef.current);
-      if (pendingSongAnnotationOpenTimeoutRef.current != null) window.clearTimeout(pendingSongAnnotationOpenTimeoutRef.current);
+      if (pendingLyricsOpenFrameRef.current != null) window.cancelAnimationFrame(pendingLyricsOpenFrameRef.current);
+      if (pendingSongAnnotationOpenFrameRef.current != null) window.cancelAnimationFrame(pendingSongAnnotationOpenFrameRef.current);
       clearFloatingPlayerHideTimeout();
     };
   }, [clearFloatingPlayerHideTimeout]);
@@ -2405,6 +2528,7 @@ export function HVLScreen() {
         selectedProject,
         showOverlay,
         isDetailMinimized,
+        isDetailMinimizing,
         isLyricsOpen,
         isLyricsClosing,
         isSongAnnotationOpen,
@@ -2467,11 +2591,14 @@ export function HVLScreen() {
         handleLyricsLineKeyDown,
         renderLyricsLine,
         songAnnotations: selectedTrack?.songAnnotations,
+        activeArtists,
       }} />
 
       <HVLDock {...{
         selectedProject,
         isDetailMinimized,
+        isDockVisible: isDetailMinimized || (isMobile && (isDetailMinimizing || isDockHidingForDetail)),
+        isDockHidingForDetail: isDockHidingForDetail || isDetailMinimizing,
         selectedTrack,
         isFloatingPlayerExpanded,
         isDockPinned,
