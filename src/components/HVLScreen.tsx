@@ -95,7 +95,7 @@ const galleryItems: readonly GalleryItem[] = (
         lyric: "Gió thu, déjà vu, tưởng thấy em ở gần nhà",
         seekLabels: ["déjà vu"],
         startTime: 68.09,
-        explanation: "Déjà vu là một sự kiện **“đã từng thấy/đã từng trải qua” ở đâu đó mà người cảm nhận đã xảy ra trong quá khứ** dù chỉ vừa mới xảy ra trong hiện thực.",
+        explanation: "Déjà vu là một khoảnh khắc “đã từng thấy / đã từng trải qua” ở đâu đó mà người cảm nhận đã xảy ra trong quá khứ dù chỉ vừa mới xảy ra trong hiện thực. ",
       },
       {
         lyric: "Cào cào trắng trong màn đêm đen, FMF xé không gian lặng im",
@@ -113,7 +113,7 @@ const galleryItems: readonly GalleryItem[] = (
         lyric: "Anh mang mùa thu ngày hôm qua\nEm mang ngày mai",
         seekLabels: ["ngày hôm qua", "ngày mai"],
         startTime: 118.95,
-        explanation: "Anh mãi mãi mắc kẹt trong quá khứ, còn em thuộc về tương lai.",
+        explanation: "Người con trai mắc kẹt trong quá khứ, còn cô gái thuộc về tương lai.",
       },
     ],
   },
@@ -132,25 +132,25 @@ const galleryItems: readonly GalleryItem[] = (
         lyric: "In the game, baby, I'm lit",
         seekLabels: ["I'm lit"],
         startTime: 15.1,
-        explanation: "Cảm giác đang rất “cháy”, phấn khích, high.",
+        explanation: "Cảm giác đang rất “cháy” / phấn khích / high.",
       },
       {
         lyric: "On the beat, anh lead em phiêu",
         seekLabels: ["lead em phiêu"],
         startTime: 20.7,
-        explanation: "Lead ở đây không chỉ đơn thuần là dẫn dắt, nó mang nghĩa người con trai là người chủ động dẫn nhịp, cầm nắm cảm xúc cô gái trong cuộc chơi.",
+        explanation: "Lead trong câu không chỉ đơn thuần là dẫn dắt, nó mang nghĩa người con trai là người chủ động dẫn nhịp, cầm nắm cảm xúc cô gái trong cuộc chơi.",
       },
       {
         lyric: "Chúng ngã vào nhau trong một tấm canvas",
         seekLabels: ["canvas"],
         startTime: 27.87,
-        explanation: "Canvas trong bài vừa mang ý nghĩa là toan vẽ, vừa biến con người/khung cảnh thành một “bức tranh” nhiều màu sắc trong lúc ánh sáng, cơ thể và chuyển động hòa vào nhau.",
+        explanation: "Tấm Canvas trong bài vừa mang ý nghĩa là toan vẽ vừa biến con người / khung cảnh thành một “bức tranh” nhiều màu sắc trong lúc ánh sáng, cơ thể và chuyển động hòa vào nhau.",
       },
       {
         lyric: "Your aura, your vibe",
         seekLabels: ["aura", "vibe"],
         startTime: 122.23,
-        explanation: "“Khí chất/năng lượng” mà một người tỏa ra; không nhất thiết là hào quang theo nghĩa siêu nhiên.",
+        explanation: "Aura mang nghĩa thần thái, sức hút. Vibe là năng lượng, cá tính hoặc cảm giác về tinh thần. Ở đây ý nói sự cuốn hút của cô gái."
       },
     ],
   },
@@ -169,7 +169,7 @@ const galleryItems: readonly GalleryItem[] = (
         lyric: "Quit playin', I ain't get it",
         seekLabels: ["Quit playin'", "I ain't get it"],
         startTime: 54.61,
-        explanation: "“Quit playin’” là cách nói rút gọn của “Quit playing”: **“đừng có đùa/đừng chơi trò này nữa”**, trong bài là yêu cầu đối phương nói rõ tình cảm. Còn “I ain’t get it” thể hiện anh không hiểu, không biết cô gái muốn gì trong mối quan hệ.",
+        explanation: "Là cách nói rút gọn của “Quit playing”: “đừng có đùa / đừng chơi trò này nữa”. Trong bài là yêu cầu đối phương nói rõ tình cảm. “I ain’t get it” thể hiện người con trai không hiểu, không biết cô gái muốn gì trong một mối quan hệ mập mờ.",
       },
       {
         lyric: "Ten out of ten, đấy là feedback cho bộ mông của em",
@@ -187,7 +187,7 @@ const galleryItems: readonly GalleryItem[] = (
         lyric: "Và vì anh biết, baby, you're my ride or die",
         seekLabels: ["ride or die"],
         startTime: 135.16,
-        explanation: "Chỉ một người **luôn ở bên và đồng hành với mình bất kể hoàn cảnh**, kiểu “sống chết có nhau”.",
+        explanation: "Chỉ một người luôn ở bên và đồng hành với mình bất kể hoàn cảnh, kiểu “sống chết có nhau”.",
       },
     ],
   },
@@ -212,6 +212,50 @@ const galleryItems: readonly GalleryItem[] = (
     audioUrl: "/music/yeu-anh-giet-anh.mp3",
     type: "pulled",
     ...yeuAnhGietAnhLyrics,
+    songAnnotations: [
+      {
+        lyric: "Shawty wanna fuck, những lúc cô đơn",
+        seekLabels: ["Shawty"],
+        startTime: 29.39,
+        explanation: "Chỉ một cô gái / người phụ nữ mà người nói thấy hấp dẫn. Ngang ngang nghĩa với từ Gu.",
+      },
+      {
+        lyric: "I just wanna link, now she want love",
+        seekLabels: ["wanna link"],
+        startTime: 36.78,
+        explanation: "Ở đây mang sắc thái là chỉ muốn gặp gỡ và trò chuyện nhưng chưa muốn xác định quan hệ tình cảm.",
+      },
+      {
+        lyric: "Things got real nhưng mà em hơi bớp",
+        seekLabels: ["Things got real", "hơi bớp"],
+        startTime: 38.65,
+        explanation: "**Mọi chuyện trở nên nghiêm túc/thật hơn dự định**. Ban đầu chỉ định gặp gỡ và vui vẻ, nhưng cảm xúc bắt đầu phát sinh một cách mạnh mẽ khiến cô gái trở nên “bớp” (chỉ trạng thái hơi hoảng sợ nhẹ, không biết phải xử sự như thế nào tiếp theo, tương đương với rất ngại ngùng).",
+      },
+      {
+        lyric: "Voodo Voo như là Shaman",
+        seekLabels: ["Voodo Voo", "Shaman"],
+        startTime: 45.97,
+        explanation: "**“Voodoo”** gợi đến hình ảnh bùa chú, nghi lễ và sự mê hoặc, còn **“Shaman”** là người thực hành các nghi lễ tâm linh trong một số truyền thống. Hai hình ảnh này để ví sự cuốn hút giữa hai người như một thứ **bùa mê**, khiến họ bị hấp dẫn và cuốn vào nhau một cách khó kiểm soát.",
+      },
+      {
+        lyric: "Situationship này thật là quá toang",
+        seekLabels: ["Situationship"],
+        startTime: 49.66,
+        explanation: "Mối quan hệ mập mờ.",
+      },
+      {
+        lyric: "Keep it down, low, low, undercover",
+        seekLabels: ["Keep it down", "undercover"],
+        startTime: 106.81,
+        explanation: "Hãy giữ mối quan hệ này kín đáo, hạ thấp sự chú ý và ngầm xác nhận rằng đây là một mối quan hệ không công khai.",
+      },
+      {
+        lyric: "Thích đi cửa sau nên là chạy đường vòng",
+        seekLabels: ["cửa sau", "đường vòng"],
+        startTime: 110.59,
+        explanation: "Có thể đọc theo nghĩa đen là đi đường vòng, nhưng trong context bài có hàm ý chơi chữ liên quan đến gần gũi thể xác.",
+      },
+    ],
   },
   {
     numberTrack: 7,
@@ -242,6 +286,14 @@ const galleryItems: readonly GalleryItem[] = (
     audioUrl: "/music/la-gi-cua-nhau.mp3",
     type: "pulled",
     ...laGiCuaNhauLyrics,
+    songAnnotations: [
+      {
+        lyric: "Mỗi đêm tôi cười, cười một mình tôi ...\n... và tôi chợt thấy thương tôi vô (cùng)",
+        seekLabels: ["Mỗi đêm tôi cười"],
+        startTime: 6.94,
+        explanation: "Người hát đoạn Intro : Phạm Hoài Nam. Đoạn này trong bài gốc “Mỗi Đêm Tôi Về” của nhạc sĩ Đức Trí.",
+      },
+    ],
   },
   {
     numberTrack: 10,
@@ -1008,13 +1060,15 @@ export function HVLScreen() {
     lyricsShouldReopenRef.current = false;
     setIsLyricsClosing(true);
     setIsLyricsOpen(false);
-  }, [resetLyricsAutoScrollPause]);
+    if (isMobile) resetDetailButtonsVisibility();
+  }, [isMobile, resetDetailButtonsVisibility, resetLyricsAutoScrollPause]);
 
   const handleSongAnnotationClose = useCallback(() => {
     playClickSound();
     setIsSongAnnotationClosing(true);
     setIsSongAnnotationOpen(false);
-  }, []);
+    if (isMobile) resetDetailButtonsVisibility();
+  }, [isMobile, resetDetailButtonsVisibility]);
 
   const openLyricsFromClosedPosition = useCallback(() => {
     if (pendingLyricsOpenFrameRef.current != null) {
@@ -1054,6 +1108,21 @@ export function HVLScreen() {
     });
   }, [isLyricsOpen, resetLyricsAutoScrollPause]);
 
+  const openSongAnnotationAlongsideLyrics = useCallback(() => {
+    if (pendingSongAnnotationOpenFrameRef.current != null) {
+      window.cancelAnimationFrame(pendingSongAnnotationOpenFrameRef.current);
+    }
+    setIsSongAnnotationClosing(true);
+    setIsSongAnnotationOpen(false);
+    pendingSongAnnotationOpenFrameRef.current = window.requestAnimationFrame(() => {
+      pendingSongAnnotationOpenFrameRef.current = window.requestAnimationFrame(() => {
+        pendingSongAnnotationOpenFrameRef.current = null;
+        setIsSongAnnotationClosing(false);
+        setIsSongAnnotationOpen(true);
+      });
+    });
+  }, []);
+
   const handleWebFullscreenToggle = useCallback(async () => {
     const fullscreenTarget = document.documentElement;
 
@@ -1091,7 +1160,6 @@ export function HVLScreen() {
       openLyricsFromClosedPosition();
       return;
     }
-    setIsSongAnnotationOpen(false);
     setIsLyricsClosing(false);
     setIsLyricsOpen(true);
   }, [isLyricsOpen, isMobile, openLyricsFromClosedPosition, resetLyricsAutoScrollPause]);
@@ -1110,12 +1178,13 @@ export function HVLScreen() {
     }
 
     resetLyricsAutoScrollPause();
-    lyricsShouldReopenRef.current = false;
-    setIsLyricsClosing(isLyricsOpen);
-    setIsLyricsOpen(false);
+    if (isLyricsOpen) {
+      openSongAnnotationAlongsideLyrics();
+      return;
+    }
     setIsSongAnnotationClosing(false);
     setIsSongAnnotationOpen(true);
-  }, [isLyricsOpen, isMobile, isSongAnnotationOpen, openSongAnnotationFromClosedPosition, resetLyricsAutoScrollPause]);
+  }, [isLyricsOpen, isMobile, isSongAnnotationOpen, openSongAnnotationAlongsideLyrics, openSongAnnotationFromClosedPosition, resetLyricsAutoScrollPause]);
 
   useEffect(() => {
     if (lyricsClosingTimeoutRef.current != null) {

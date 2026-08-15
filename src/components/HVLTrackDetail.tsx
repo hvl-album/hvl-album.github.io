@@ -129,7 +129,9 @@ export function HVLTrackDetail(props: Record<string, unknown>) {
     activeArtists,
   } = props as any;
   const isStreamTrack = selectedTrack?.type === "stream";
-  const isSongAnnotationPanelVisible = isSongAnnotationOpen || (!isLyricsOpen && isSongAnnotationClosing);
+  const isLyricsPanelVisible = isLyricsOpen || isLyricsClosing;
+  const isSongAnnotationPanelVisible = isSongAnnotationOpen || isSongAnnotationClosing;
+  const shouldSplitSidePanels = isLyricsPanelVisible && isSongAnnotationPanelVisible;
   const isDetailClosing = isDetailMinimized || isDetailMinimizing;
   const shouldKeepDetailButtonsVisible =
     areDetailButtonsVisible ||
@@ -448,80 +450,82 @@ export function HVLTrackDetail(props: Record<string, unknown>) {
           )}
         </div>
 
-      {showOverlay && !isDetailMinimized && (isLyricsOpen || isLyricsClosing || isSongAnnotationOpen || isSongAnnotationClosing) && (
+      {showOverlay && !isDetailMinimized && (isLyricsPanelVisible || isSongAnnotationPanelVisible) && (
         <div
           className={`lyrics-panel__desktop-backdrop ${isLyricsOpen || isSongAnnotationOpen ? "is-open" : ""} ${!isLyricsOpen && !isSongAnnotationOpen && (isLyricsClosing || isSongAnnotationClosing) ? "is-closing" : ""}`}
         >
+          {isLyricsPanelVisible && (
           <aside
-            className={`lyrics-panel ${isSongAnnotationPanelVisible ? "song-annotation-panel" : ""} ${isLyricsOpen || isSongAnnotationOpen ? "is-open" : ""}`}
-            aria-label={isSongAnnotationPanelVisible ? "Song Annotation" : "Lời bài hát"}
+            className={`lyrics-panel lyrics-panel--lyrics ${isLyricsOpen ? "is-open" : ""} ${shouldSplitSidePanels ? "is-split" : ""}`}
+            aria-label="Lời bài hát"
           >
-            {isSongAnnotationPanelVisible ? (
-              <>
-                <button className="lyrics-panel__close" type="button" onClick={handleSongAnnotationClose} aria-label="Đóng Song Annotation">
-                  <RouteOffIcon />
-                </button>
-                <div className="lyrics-panel__body song-annotation-panel__body" ref={songAnnotationBodyRef}>
-                  <h2 className="song-annotation-panel__title">
-                    SONG ANNOTATION
-                    <span className="song-annotation-panel__badge" aria-label={`${songAnnotations?.length ?? 0} mục`}>
-                      {songAnnotations?.length ?? 0}
-                    </span>
-                  </h2>
-                  {songAnnotations?.length ? songAnnotations.map((entry: SongAnnotationEntry) => (
-                      <article className="song-annotation-panel__item" key={`${entry.startTime}-${entry.seekLabels.join("-")}`}>
-                        <p className="song-annotation-panel__lyric">
-                          {renderSongAnnotationLyric(entry, handleLyricsLineClick)}
-                        </p>
-                        <p className="song-annotation-panel__explanation">{renderSongAnnotationExplanation(entry.explanation)}</p>
-                      </article>
-                  )) : (
-                    <div className="lyrics-panel__empty">Song Annotation đang cập nhật ...</div>
-                  )}
-                </div>
-              </>
-            ) : (
-              <>
-                <button className="lyrics-panel__close" type="button" onClick={handleLyricsClose} aria-label="Đóng Lời Bài Hát">
-                  <ListXIcon />
-                </button>
-                <div
-                  className="lyrics-panel__body"
-                  ref={lyricsBodyRef}
-                  onScroll={handleLyricsScroll}
-                  onWheel={pauseLyricsAutoScroll}
-                  onTouchStart={pauseLyricsAutoScroll}
-                  onTouchMove={pauseLyricsAutoScroll}
-                  onKeyDown={(event) => {
-                    if (["ArrowDown", "ArrowUp", "PageDown", "PageUp", "Home", "End", " "].includes(event.key)) {
-                      pauseLyricsAutoScroll();
-                    }
-                  }}
-                >
-                  <h2 className="lyrics-panel__title">LYRICS</h2>
-                  {selectedTrack?.lyrics ? lyricsEntries.map((entry: LyricsEntry, index: number) => (
-                    entry.text === "" ? (
-                      <div className="lyrics-panel__separator" key={`${index}-${entry.text}`} aria-hidden="true" />
-                    ) : (
-                      <div
-                        className={`lyrics-panel__line ${entry.startTime != null ? "is-seekable" : ""} ${entry.startTime != null && currentTime >= entry.startTime ? "is-passed" : ""} ${index === activeLyricsLineIndex ? "is-active" : ""}`}
-                        key={`${index}-${entry.text}`}
-                        data-lyrics-index={index}
-                        onClick={() => handleLyricsLineClick(entry.startTime)}
-                        onKeyDown={(event) => handleLyricsLineKeyDown(event, entry.startTime)}
-                        role={entry.startTime != null ? "button" : undefined}
-                        tabIndex={entry.startTime != null ? 0 : -1}
-                      >
-                        {renderLyricsLine(entry.text)}
-                      </div>
-                    )
-                  )) : (
-                    <div className="lyrics-panel__empty">Lyrics đang cập nhật ...</div>
-                  )}
-                </div>
-              </>
-            )}
+            <button className="lyrics-panel__close" type="button" onClick={handleLyricsClose} aria-label="Đóng Lời Bài Hát">
+              <ListXIcon />
+            </button>
+            <div
+              className="lyrics-panel__body"
+              ref={lyricsBodyRef}
+              onScroll={handleLyricsScroll}
+              onWheel={pauseLyricsAutoScroll}
+              onTouchStart={pauseLyricsAutoScroll}
+              onTouchMove={pauseLyricsAutoScroll}
+              onKeyDown={(event) => {
+                if (["ArrowDown", "ArrowUp", "PageDown", "PageUp", "Home", "End", " "].includes(event.key)) {
+                  pauseLyricsAutoScroll();
+                }
+              }}
+            >
+              <h2 className="lyrics-panel__title">LYRICS</h2>
+              {selectedTrack?.lyrics ? lyricsEntries.map((entry: LyricsEntry, index: number) => (
+                entry.text === "" ? (
+                  <div className="lyrics-panel__separator" key={`${index}-${entry.text}`} aria-hidden="true" />
+                ) : (
+                  <div
+                    className={`lyrics-panel__line ${entry.startTime != null ? "is-seekable" : ""} ${entry.startTime != null && currentTime >= entry.startTime ? "is-passed" : ""} ${index === activeLyricsLineIndex ? "is-active" : ""}`}
+                    key={`${index}-${entry.text}`}
+                    data-lyrics-index={index}
+                    onClick={() => handleLyricsLineClick(entry.startTime)}
+                    onKeyDown={(event) => handleLyricsLineKeyDown(event, entry.startTime)}
+                    role={entry.startTime != null ? "button" : undefined}
+                    tabIndex={entry.startTime != null ? 0 : -1}
+                  >
+                    {renderLyricsLine(entry.text)}
+                  </div>
+                )
+              )) : (
+                <div className="lyrics-panel__empty">Lyrics đang cập nhật ...</div>
+              )}
+            </div>
           </aside>
+          )}
+          {isSongAnnotationPanelVisible && (
+            <aside
+              className={`lyrics-panel song-annotation-panel ${isSongAnnotationOpen ? "is-open" : ""} ${shouldSplitSidePanels ? "is-split" : ""}`}
+              aria-label="Song Annotation"
+            >
+              <button className="lyrics-panel__close" type="button" onClick={handleSongAnnotationClose} aria-label="Đóng Song Annotation">
+                <RouteOffIcon />
+              </button>
+              <div className="lyrics-panel__body song-annotation-panel__body" ref={songAnnotationBodyRef}>
+                <h2 className="song-annotation-panel__title">
+                  SONG ANNOTATION
+                  <span className="song-annotation-panel__badge" aria-label={`${songAnnotations?.length ?? 0} mục`}>
+                    {songAnnotations?.length ?? 0}
+                  </span>
+                </h2>
+                {songAnnotations?.length ? songAnnotations.map((entry: SongAnnotationEntry) => (
+                  <article className="song-annotation-panel__item" key={`${entry.startTime}-${entry.seekLabels.join("-")}`}>
+                    <p className="song-annotation-panel__lyric">
+                      {renderSongAnnotationLyric(entry, handleLyricsLineClick)}
+                    </p>
+                    <p className="song-annotation-panel__explanation">{renderSongAnnotationExplanation(entry.explanation)}</p>
+                  </article>
+                )) : (
+                  <div className="lyrics-panel__empty">Song Annotation đang cập nhật ...</div>
+                )}
+              </div>
+            </aside>
+          )}
           </div>
       )}
       </div>
