@@ -10,7 +10,7 @@ Rồi sẽ có lúc tim thôi đơn côi
 Xót xa tôi nhìn, và tôi chợt thấy thương tôi vô cùng
 Rồi sẽ có lúc tôi thôi rong chơi
 Rồi sẽ có lúc tim thôi đơn côi
-Xót xa tôi nhìn, và tôi chợt thấy thương tôi vô...
+Xót xa tôi nhìn, và tôi chợt thấy thương tôi vô ... (cùng)
 (Ayy, ah-ah, ayy, ah-ah)
 (Ah-ah)
 "Em là gì của anh?", em hỏi anh khi mặt trời rạng
