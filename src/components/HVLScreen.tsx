@@ -144,7 +144,7 @@ const galleryItems: readonly GalleryItem[] = (
         lyric: "Chúng ngã vào nhau trong một tấm canvas",
         seekLabels: ["canvas"],
         startTime: 27.87,
-        explanation: "Canvas trong bài vừa mang ý nghĩa là **toan vẽ,** vừa biến con người/khung cảnh thành một “bức tranh” nhiều màu sắc trong lúc ánh sáng, cơ thể và chuyển động hòa vào nhau.",
+        explanation: "Canvas trong bài vừa mang ý nghĩa là toan vẽ, ** vừa biến con người/khung cảnh thành một “bức tranh” nhiều màu sắc trong lúc ánh sáng, cơ thể và chuyển động hòa vào nhau.",
       },
       {
         lyric: "Your aura, your vibe",
@@ -773,6 +773,7 @@ export function HVLScreen() {
   const lyricsClosingTimeoutRef = useRef<number | null>(null);
   const songAnnotationHasBeenOpenedRef = useRef(false);
   const songAnnotationClosingTimeoutRef = useRef<number | null>(null);
+  const pendingSongAnnotationOpenTimeoutRef = useRef<number | null>(null);
   const downloadResetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [repeatAnimationNonce, setRepeatAnimationNonce] = useState(0);
   const [isRepeatAnimating, setIsRepeatAnimating] = useState(false);
@@ -847,7 +848,7 @@ export function HVLScreen() {
   }, [isMobile]);
 
   const handleMobileDetailBlankPointerUp = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
-    if (!isMobile || isLyricsOpen || isLyricsClosing || isSongAnnotationOpen || isSongAnnotationClosing) return;
+    if (!isMobile || isLyricsOpen || isLyricsClosing || isSongAnnotationOpen) return;
 
     const viewportHeight = window.innerHeight;
     const topControlBand = Math.max(96, window.innerWidth * 0.16);
@@ -862,7 +863,7 @@ export function HVLScreen() {
     }
 
     setAreDetailButtonsVisible((visible) => !visible);
-  }, [isLyricsClosing, isLyricsOpen, isMobile, isSongAnnotationClosing, isSongAnnotationOpen]);
+  }, [isLyricsClosing, isLyricsOpen, isMobile, isSongAnnotationOpen]);
 
   const resetSceneControlsVisibility = useCallback(() => {
     if (isMobile) return;
@@ -1011,7 +1012,7 @@ export function HVLScreen() {
     resetLyricsAutoScrollPause();
     if (isLyricsOpen) {
       lyricsShouldReopenRef.current = false;
-      setIsLyricsClosing(true);
+      setIsLyricsClosing(isLyricsOpen);
       setIsLyricsOpen(false);
       return;
     }
@@ -1030,13 +1031,26 @@ export function HVLScreen() {
       return;
     }
 
-    resetLyricsAutoScrollPause();
-    lyricsShouldReopenRef.current = false;
-    setIsLyricsClosing(true);
-    setIsLyricsOpen(false);
-    setIsSongAnnotationClosing(false);
-    setIsSongAnnotationOpen(true);
-  }, [isSongAnnotationOpen, resetLyricsAutoScrollPause]);
+    const openSongAnnotation = () => {
+      pendingSongAnnotationOpenTimeoutRef.current = null;
+      resetLyricsAutoScrollPause();
+      lyricsShouldReopenRef.current = false;
+      setIsLyricsClosing(isLyricsOpen);
+      setIsLyricsOpen(false);
+      setIsSongAnnotationClosing(false);
+      setIsSongAnnotationOpen(true);
+    };
+
+    if (isMobile && isLyricsClosing) {
+      if (pendingSongAnnotationOpenTimeoutRef.current != null) {
+        window.clearTimeout(pendingSongAnnotationOpenTimeoutRef.current);
+      }
+      pendingSongAnnotationOpenTimeoutRef.current = window.setTimeout(openSongAnnotation, 420);
+      return;
+    }
+
+    openSongAnnotation();
+  }, [isLyricsClosing, isLyricsOpen, isMobile, isSongAnnotationOpen, resetLyricsAutoScrollPause]);
 
   useEffect(() => {
     if (lyricsClosingTimeoutRef.current != null) {
@@ -2068,6 +2082,7 @@ export function HVLScreen() {
       if (repeatToastTimeoutRef.current != null) window.clearTimeout(repeatToastTimeoutRef.current);
       if (lyricsAutoScrollPauseTimeoutRef.current != null) window.clearTimeout(lyricsAutoScrollPauseTimeoutRef.current);
       if (songAnnotationClosingTimeoutRef.current != null) window.clearTimeout(songAnnotationClosingTimeoutRef.current);
+      if (pendingSongAnnotationOpenTimeoutRef.current != null) window.clearTimeout(pendingSongAnnotationOpenTimeoutRef.current);
       clearFloatingPlayerHideTimeout();
     };
   }, [clearFloatingPlayerHideTimeout]);
