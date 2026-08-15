@@ -1411,7 +1411,6 @@ body {
 
 .song-annotation-panel__item:not(:last-child) {
   margin-bottom: 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
 }
 
 .song-annotation-panel__lyric {
