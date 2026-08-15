@@ -39,7 +39,7 @@ Tao đéo hiểu sao mà chúng mày vẫn khệnh được với mấy quả fl
 Thứ mà chúng mày nghĩ là sáng tạo
 Mấy thằng Mỹ đen nó đã làm rồi
 Bá hơn tất cả chúng mày, anh em tao càng đi càng xa thôi
-Nolabel gang cho chúng mày thu lu
+N0l4b3l gang cho chúng mày thu lu
 Send your loca, bố mày vẫn chu du
 Mấy dân chơi này cho vào stu' stu'
 Flow cho tao nghe, nếu mà ăn thì cứ thu thu

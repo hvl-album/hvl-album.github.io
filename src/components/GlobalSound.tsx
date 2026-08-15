@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useRef } from "react";
 
+const mobileMediaQuery = "(pointer: coarse), (max-width: 1199px)";
+
 type AudioPool = {
   nextIndex: number;
   clips: HTMLAudioElement[];
@@ -41,6 +43,8 @@ export function GlobalSound() {
   const scrollCurrentVolRef = useRef(0);
 
   useEffect(() => {
+    const isMobile = () => window.matchMedia(mobileMediaQuery).matches;
+
     clickPoolsRef.current = clickUrls.map((url) => makeAudioPool(url, 4, 0.35));
     const scrollAudio = new Audio(scrollUrl);
     scrollAudio.preload = "auto";
@@ -90,6 +94,7 @@ export function GlobalSound() {
     };
 
     const unlockScrollAudio = () => {
+      if (isMobile()) return;
       const audio = scrollAudioRef.current;
       if (!audio || isScrollAudioUnlockedRef.current || isUnlockingScrollAudioRef.current) return;
       isUnlockingScrollAudioRef.current = true;
@@ -104,6 +109,7 @@ export function GlobalSound() {
     };
 
     const onClickSound = () => {
+      if (isMobile()) return;
       unlockScrollAudio();
       const pools = clickPoolsRef.current;
       if (!pools?.length) return;
@@ -118,6 +124,7 @@ export function GlobalSound() {
     };
 
     const onScrollMotion = (delta: number) => {
+      if (isMobile()) return;
       const audio = scrollAudioRef.current;
       if (!audio) return;
       const now = performance.now();

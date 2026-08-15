@@ -90,6 +90,32 @@ const galleryItems: readonly GalleryItem[] = (
     videoUrl: "/videos/idk.mp4",
     type: "pulled",
     ...idkLyrics,
+    songAnnotations: [
+       {
+        lyric: "Gió thu, déjà vu, tưởng thấy em ở gần nhà",
+        seekLabels: ["déjà vu"],
+        startTime: 68.09,
+        explanation: "Déjà vu là một sự kiện **“đã từng thấy/đã từng trải qua” ở đâu đó mà người cảm nhận đã xảy ra trong quá khứ** dù chỉ vừa mới xảy ra trong hiện thực.",
+      },
+      {
+        lyric: "Cào cào trắng trong màn đêm đen, FMF xé không gian lặng im",
+        seekLabels: ["Cào cào trắng", "FMF"],
+        startTime: 87.7,
+        explanation: "FMF (viết tắt của Flying Machine Factory) là một thương hiệu nổi tiếng của Mỹ chuyên sản xuất ống xả (pô xe), cổ pô và các phụ tùng hiệu suất cao, đặc biệt dành cho xe cào cào (dirt bike), xe mô tô địa hình và xe phân khối lớn.",
+      },
+      {
+        lyric: "Càng đi theo em, anh lại càng xa, tiếng chim lợn kêu báo điềm chẳng lành",
+        seekLabels: ["tiếng chim lợn kêu"],
+        startTime: 96.38,
+        explanation: "Theo quan niệm dân gian, tiếng chim lợn kêu trong đêm thường được coi là điềm báo gở, gắn liền với bệnh tật, tai ương hoặc sự chết chóc.",
+      },
+      {
+        lyric: "Anh mang mùa thu ngày hôm qua\nEm mang ngày mai",
+        seekLabels: ["ngày hôm qua", "ngày mai"],
+        startTime: 118.95,
+        explanation: "Anh mãi mãi mắc kẹt trong quá khứ, còn em thuộc về tương lai.",
+      },
+    ],
   },
   {
     numberTrack: 3,
@@ -101,6 +127,32 @@ const galleryItems: readonly GalleryItem[] = (
     audioUrl: "/music/wtf-bby-im-lit.mp3",
     type: "pulled",
     ...wtfBbyImLitLyrics,
+    songAnnotations: [
+      {
+        lyric: "In the game, baby, I'm lit",
+        seekLabels: ["I'm lit"],
+        startTime: 15.1,
+        explanation: "Cảm giác đang rất “cháy”, phấn khích, high.",
+      },
+      {
+        lyric: "On the beat, anh lead em phiêu",
+        seekLabels: ["lead em phiêu"],
+        startTime: 20.7,
+        explanation: "Lead ở đây không chỉ đơn thuần là dẫn dắt, nó mang nghĩa người con trai là người chủ động dẫn nhịp, cầm nắm cảm xúc cô gái trong cuộc chơi.",
+      },
+      {
+        lyric: "Chúng ngã vào nhau trong một tấm canvas",
+        seekLabels: ["canvas"],
+        startTime: 27.87,
+        explanation: "Canvas trong bài vừa mang ý nghĩa là **toan vẽ,** vừa biến con người/khung cảnh thành một “bức tranh” nhiều màu sắc trong lúc ánh sáng, cơ thể và chuyển động hòa vào nhau.",
+      },
+      {
+        lyric: "Your aura, your vibe",
+        seekLabels: ["aura", "vibe"],
+        startTime: 122.23,
+        explanation: "“Khí chất/năng lượng” mà một người tỏa ra; không nhất thiết là hào quang theo nghĩa siêu nhiên.",
+      },
+    ],
   },
   {
     numberTrack: 4,
@@ -112,6 +164,32 @@ const galleryItems: readonly GalleryItem[] = (
     audioUrl: "/music/anh-khong-muon-no-de-dang.mp3",
     type: "pulled",
     ...anhKhongMuonNoDeDangLyrics,
+    songAnnotations: [
+      {
+        lyric: "Quit playin', I ain't get it",
+        seekLabels: ["Quit playin'", "I ain't get it"],
+        startTime: 54.61,
+        explanation: "“Quit playin’” là cách nói rút gọn của “Quit playing”: **“đừng có đùa/đừng chơi trò này nữa”**, trong bài là yêu cầu đối phương nói rõ tình cảm. Còn “I ain’t get it” thể hiện anh không hiểu, không biết cô gái muốn gì trong mối quan hệ.",
+      },
+      {
+        lyric: "Ten out of ten, đấy là feedback cho bộ mông của em",
+        seekLabels: ["Ten out of ten"],
+        startTime: 99.66,
+        explanation: "**10/10**, lời khen tuyệt đối.",
+      },
+      {
+        lyric: "Baby, let me hit that",
+        seekLabels: ["let me hit that"],
+        startTime: 102.9,
+        explanation: "Muốn được tiến tới với đối phương về mặt thể xác.",
+      },
+      {
+        lyric: "Và vì anh biết, baby, you're my ride or die",
+        seekLabels: ["ride or die"],
+        startTime: 135.16,
+        explanation: "Chỉ một người **luôn ở bên và đồng hành với mình bất kể hoàn cảnh**, kiểu “sống chết có nhau”.",
+      },
+    ],
   },
   {
     numberTrack: 5,
@@ -139,7 +217,7 @@ const galleryItems: readonly GalleryItem[] = (
     numberTrack: 7,
     durationSeconds: null,
     title: "Mắt Môi Tay Chân",
-    subtitle: "RPT MCK ft. Tage",
+    subtitle: "RPT MCK, Tage",
     imageUrl: "/images/mat-moi-tay-chan.png",
     bMobileBackground: 0.6,
     audioUrl: "/music/mat-moi-tay-chan.mp3",
@@ -572,6 +650,30 @@ function ListXIcon() {
   );
 }
 
+function RouteIcon() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="6" cy="19" r="3" />
+      <path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15" />
+      <circle cx="18" cy="5" r="3" />
+    </svg>
+  );
+}
+
+function RouteOffIcon() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="6" cy="19" r="3" />
+      <path d="M9 19h8.5c.4 0 .9-.1 1.3-.2" />
+      <path d="M5.2 5.2A3.5 3.5 0 0 0 6.5 12H12" />
+      <path d="m2 2 20 20" />
+      <path d="M21 15.3a3.5 3.5 0 0 0-3.3-3.3" />
+      <path d="M15 5h-4.3" />
+      <circle cx="18" cy="5" r="3" />
+    </svg>
+  );
+}
+
 function renderLyricsLine(line: string) {
   const parts: Array<string | React.ReactElement> = [];
   const linkPattern = /\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g;
@@ -656,6 +758,8 @@ export function HVLScreen() {
   const [repeatMode, setRepeatMode] = useState<RepeatMode>("off");
   const [isLyricsOpen, setIsLyricsOpen] = useState(false);
   const [isLyricsClosing, setIsLyricsClosing] = useState(false);
+  const [isSongAnnotationOpen, setIsSongAnnotationOpen] = useState(false);
+  const [isSongAnnotationClosing, setIsSongAnnotationClosing] = useState(false);
   const [isWebFullscreen, setIsWebFullscreen] = useState(false);
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
   const [isDownloadDisabled, setIsDownloadDisabled] = useState(false);
@@ -663,9 +767,12 @@ export function HVLScreen() {
   const [isDownloadSizeLoading, setIsDownloadSizeLoading] = useState(false);
   const [isLyricsAutoScrollPaused, setIsLyricsAutoScrollPaused] = useState(false);
   const lyricsBodyRef = useRef<HTMLDivElement>(null);
+  const songAnnotationBodyRef = useRef<HTMLDivElement>(null);
   const lyricsShouldReopenRef = useRef(false);
   const lyricsHasBeenOpenedRef = useRef(false);
   const lyricsClosingTimeoutRef = useRef<number | null>(null);
+  const songAnnotationHasBeenOpenedRef = useRef(false);
+  const songAnnotationClosingTimeoutRef = useRef<number | null>(null);
   const downloadResetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [repeatAnimationNonce, setRepeatAnimationNonce] = useState(0);
   const [isRepeatAnimating, setIsRepeatAnimating] = useState(false);
@@ -740,7 +847,7 @@ export function HVLScreen() {
   }, [isMobile]);
 
   const handleMobileDetailBlankPointerUp = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
-    if (!isMobile || isLyricsOpen || isLyricsClosing) return;
+    if (!isMobile || isLyricsOpen || isLyricsClosing || isSongAnnotationOpen || isSongAnnotationClosing) return;
 
     const viewportHeight = window.innerHeight;
     const topControlBand = Math.max(96, window.innerWidth * 0.16);
@@ -755,7 +862,7 @@ export function HVLScreen() {
     }
 
     setAreDetailButtonsVisible((visible) => !visible);
-  }, [isLyricsClosing, isLyricsOpen, isMobile]);
+  }, [isLyricsClosing, isLyricsOpen, isMobile, isSongAnnotationClosing, isSongAnnotationOpen]);
 
   const resetSceneControlsVisibility = useCallback(() => {
     if (isMobile) return;
@@ -871,6 +978,12 @@ export function HVLScreen() {
     setIsLyricsOpen(false);
   }, [resetLyricsAutoScrollPause]);
 
+  const handleSongAnnotationClose = useCallback(() => {
+    playClickSound();
+    setIsSongAnnotationClosing(true);
+    setIsSongAnnotationOpen(false);
+  }, []);
+
   const handleWebFullscreenToggle = useCallback(async () => {
     const fullscreenTarget = document.documentElement;
 
@@ -904,9 +1017,26 @@ export function HVLScreen() {
     }
 
     lyricsShouldReopenRef.current = true;
+    setIsSongAnnotationOpen(false);
     setIsLyricsClosing(false);
     setIsLyricsOpen(true);
   }, [isLyricsOpen, resetLyricsAutoScrollPause]);
+
+  const handleSongAnnotationToggle = useCallback(() => {
+    playClickSound();
+    if (isSongAnnotationOpen) {
+      setIsSongAnnotationClosing(true);
+      setIsSongAnnotationOpen(false);
+      return;
+    }
+
+    resetLyricsAutoScrollPause();
+    lyricsShouldReopenRef.current = false;
+    setIsLyricsClosing(true);
+    setIsLyricsOpen(false);
+    setIsSongAnnotationClosing(false);
+    setIsSongAnnotationOpen(true);
+  }, [isSongAnnotationOpen, resetLyricsAutoScrollPause]);
 
   useEffect(() => {
     if (lyricsClosingTimeoutRef.current != null) {
@@ -928,6 +1058,27 @@ export function HVLScreen() {
       lyricsClosingTimeoutRef.current = null;
     }, 420);
   }, [isLyricsOpen]);
+
+  useEffect(() => {
+    if (songAnnotationClosingTimeoutRef.current != null) {
+      window.clearTimeout(songAnnotationClosingTimeoutRef.current);
+      songAnnotationClosingTimeoutRef.current = null;
+    }
+
+    if (isSongAnnotationOpen) {
+      songAnnotationHasBeenOpenedRef.current = true;
+      setIsSongAnnotationClosing(false);
+      return;
+    }
+
+    if (!songAnnotationHasBeenOpenedRef.current) return;
+
+    setIsSongAnnotationClosing(true);
+    songAnnotationClosingTimeoutRef.current = window.setTimeout(() => {
+      setIsSongAnnotationClosing(false);
+      songAnnotationClosingTimeoutRef.current = null;
+    }, 420);
+  }, [isSongAnnotationOpen]);
 
   const handleDownloadOpen = useCallback(() => {
     const track = selectedProject ? galleryItems[selectedProject.index] : null;
@@ -1251,6 +1402,8 @@ export function HVLScreen() {
         : Boolean(shouldOpenLyrics);
       setIsLyricsClosing(false);
       setIsLyricsOpen(Boolean(shouldOpenLyrics));
+      setIsSongAnnotationClosing(false);
+      setIsSongAnnotationOpen(false);
       setIsDownloadModalOpen(false);
       setIsTrackVideoActive(Boolean(track?.videoUrl));
       isDetailMinimizedRef.current = nextPresentation === "minimized";
@@ -1847,13 +2000,17 @@ export function HVLScreen() {
         setIsWebFullscreen(false);
         return;
       }
+      if (isSongAnnotationOpen) {
+        handleSongAnnotationClose();
+        return;
+      }
       if (!isLyricsOpen) return;
       handleLyricsClose();
     };
 
     window.addEventListener("keydown", handleEscapeKeyDown);
     return () => window.removeEventListener("keydown", handleEscapeKeyDown);
-  }, [handleLyricsClose, isWebFullscreen, isLyricsOpen]);
+  }, [handleLyricsClose, handleSongAnnotationClose, isSongAnnotationOpen, isWebFullscreen, isLyricsOpen]);
 
   useEffect(() => {
     const handleFullscreenChange = () => {
@@ -1883,6 +2040,12 @@ export function HVLScreen() {
   }, [selectedProject?.index]);
 
   useEffect(() => {
+    if (selectedProject?.index == null) return;
+
+    songAnnotationBodyRef.current?.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [selectedProject?.index]);
+
+  useEffect(() => {
     if (!hasConfirmedAge || isAgeGateOpen || (selectedProject && !isDetailMinimized) || isMobile) {
       if (sceneControlsTimeoutRef.current != null) {
         window.clearTimeout(sceneControlsTimeoutRef.current);
@@ -1904,6 +2067,7 @@ export function HVLScreen() {
       if (repeatAnimationTimeoutRef.current != null) window.clearTimeout(repeatAnimationTimeoutRef.current);
       if (repeatToastTimeoutRef.current != null) window.clearTimeout(repeatToastTimeoutRef.current);
       if (lyricsAutoScrollPauseTimeoutRef.current != null) window.clearTimeout(lyricsAutoScrollPauseTimeoutRef.current);
+      if (songAnnotationClosingTimeoutRef.current != null) window.clearTimeout(songAnnotationClosingTimeoutRef.current);
       clearFloatingPlayerHideTimeout();
     };
   }, [clearFloatingPlayerHideTimeout]);
@@ -2228,6 +2392,8 @@ export function HVLScreen() {
         isDetailMinimized,
         isLyricsOpen,
         isLyricsClosing,
+        isSongAnnotationOpen,
+        isSongAnnotationClosing,
         areDetailButtonsVisible,
         isMobile,
         selectedTrack,
@@ -2240,9 +2406,12 @@ export function HVLScreen() {
         handleMobileDetailBlankPointerUp,
         handleSettingsOpen,
         handleLyricsToggle,
+        handleSongAnnotationToggle,
         handleDownloadOpen,
         ListXIcon,
         ListMusicIcon,
+        RouteIcon,
+        RouteOffIcon,
         detailPreviewTrack,
         areNextControlsVisible,
         detailNavigationPreview,
@@ -2269,9 +2438,11 @@ export function HVLScreen() {
         handleDetailPlayPauseButtonClick,
         handleNextButtonClick,
         handleLyricsClose,
+        handleSongAnnotationClose,
         handleWebFullscreenToggle,
         isWebFullscreen,
         lyricsBodyRef,
+        songAnnotationBodyRef,
         handleLyricsScroll,
         pauseLyricsAutoScroll,
         lyricsEntries,
@@ -2280,6 +2451,7 @@ export function HVLScreen() {
         handleLyricsLineClick,
         handleLyricsLineKeyDown,
         renderLyricsLine,
+        songAnnotations: selectedTrack?.songAnnotations,
       }} />
 
       <HVLDock {...{

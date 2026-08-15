@@ -23,7 +23,7 @@ Yeah tao thích bay dưới những đám mây, đéo thể nào cao hơn đư�
 Mày muốn respect của tao?
 Muốn trust của tao?
 Thử dành lấy đi bố mày xem nào
-NoLabel là công ty riêng, mấy thằng ngoài kia đừng cố mà xen vào
+N0l4b3l là công ty riêng, mấy thằng ngoài kia đừng cố mà xen vào
 Bởi vì tao không thích mấy thằng hai mặt đâu bitch
 Tao sẽ không gặp đâu bitch
 Trái tim chrome outfit, trái tim chrome outfit
