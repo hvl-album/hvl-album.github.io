@@ -31,18 +31,35 @@ function renderSongAnnotationLyric(entry: SongAnnotationEntry, onSeek: (startTim
         onClick={() => onSeek(entry.startTime)}
         aria-label={`Tua đến lời ${part}`}
       >
-        {part}
+        <span className="song-annotation-panel__seek-label">{part}</span>
       </button>
     ) : part;
   });
 }
 
 function renderSongAnnotationExplanation(explanation: string) {
-  return explanation.split(/(\*\*[^*]+\*\*)/g).map((part, index) => (
-    part.startsWith("**") && part.endsWith("**") ? (
-      <strong key={`${index}-${part}`}>{part.slice(2, -2)}</strong>
-    ) : part
-  ));
+  return explanation.split(/(\*\*[^*]+\*\*|\[[^\]]+\]\(https?:\/\/[^)]+\))/g).map((part, index) => {
+    if (part.startsWith("**") && part.endsWith("**")) {
+      return <strong key={`${index}-${part}`}>{part.slice(2, -2)}</strong>;
+    }
+
+    const linkMatch = part.match(/^\[([^\]]+)\]\((https?:\/\/[^)]+)\)$/);
+    if (linkMatch) {
+      return (
+        <a
+          className="song-annotation-panel__link"
+          href={linkMatch[2]}
+          key={`${index}-${part}`}
+          rel="noreferrer"
+          target="_blank"
+        >
+          {linkMatch[1]}
+        </a>
+      );
+    }
+
+    return part;
+  });
 }
 
 function renderArtistNames(subtitle: string, activeArtists: readonly string[]) {
@@ -298,16 +315,16 @@ export function HVLTrackDetail(props: Record<string, unknown>) {
               }}
             />
             {selectedTrack?.videoUrl && (
-              <video
-                className={`project-content__video ${isTrackVideoActive ? "is-media-visible" : ""}`}
-                src={selectedTrack.videoUrl}
-                autoPlay
-                loop
-                muted
-                playsInline
-                preload="auto"
-                aria-label={selectedProject.name}
-              />
+                <video
+                  className={`project-content__video ${isTrackVideoActive ? "is-media-visible" : ""}`}
+                  src={selectedTrack.videoUrl}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  preload="auto"
+                  aria-label={selectedProject.name}
+                />
             )}
           </div>
           <div
