@@ -49,7 +49,7 @@ Tao đang ăn sáng đã phải callin'
 Thiên thần sa lầy
 Muốn tao chứng kiến cảnh tượng này tiếp tục bao lần?
 Mỗi lần mày sống thay mặt bao lần?
-Thích thì cứ nói không phải ganh tị, tao phần
+Thích thì cứ nói không phải ganh tị, tao phắn
 Suốt ngày đòi gang gang gang
 Không có thông điệp rồi lại bảo chơi cho thật vui
 Kiếm tiền đầy túi nhớ dành cho mình đường lui
@@ -57,7 +57,7 @@ I'm boogeyman, bắt mày giấu đầu hở đuôi
 Cạn tình cạn nghĩa thì lí nào mà chả xuôi
 Xắn tay áo lên, nghĩ sau cùng cũng phải thôi
 Nằm gai nếm mật nên ong nào tao chả nuôi
-Nên cứ ghét tiếp đi
+Nên cứ ghét tiếp điiiiiiiii
 Swagged out, woah, swag (swag)
 (Oh oh) Take off my shit cho mày ghét luôn
 (Swagged out) Nhịn mày lần này gọi là xong

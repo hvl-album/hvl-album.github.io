@@ -1443,10 +1443,9 @@ body {
 }
 
 .song-annotation-panel__seek {
-  display: inline;
+  display: contents;
   padding: 0;
   border: 0;
-  border-bottom: 1px solid currentColor;
   background: transparent;
   color: inherit;
   font: inherit;
@@ -1455,18 +1454,35 @@ body {
   cursor: pointer;
 }
 
+.song-annotation-panel__seek-label {
+  border-bottom: 1px dashed currentColor;
+  cursor: pointer;
+}
+
 .song-annotation-panel__seek:focus-visible {
-  outline: 1px solid rgba(255, 255, 255, 0.7);
+  outline: 1px dashed rgba(255, 255, 255, 0.7);
+  outline-offset: 3px;
+}
+
+.song-annotation-panel__seek:focus-visible .song-annotation-panel__seek-label {
+  outline: 1px dashed rgba(255, 255, 255, 0.7);
   outline-offset: 3px;
 }
 
 .song-annotation-panel__explanation {
   margin: 12px 0 0;
   font-family: "Google Sans Flex", sans-serif;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 400;
   line-height: 1.65;
   color: rgba(255, 255, 255, 0.7);
+  white-space: pre-line;
+}
+
+.song-annotation-panel__link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .settings-modal {
@@ -2181,6 +2197,15 @@ body {
   opacity: 0;
   pointer-events: none;
   transition: opacity 220ms ease;
+}
+
+.project-content__video--external {
+  top: 50%;
+  left: 50%;
+  width: max(100vw, calc(100dvh * 16 / 9));
+  height: max(100dvh, calc(100vw * 9 / 16));
+  object-fit: cover;
+  transform: translate(-50%, -50%);
 }
 
 .project-content__image.is-media-hidden {
@@ -3830,7 +3855,10 @@ body {
     transition: opacity 500ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .detail-lyrics-layout.is-minimizing .project-single-view.is-minimized .project-content img {
+  .detail-lyrics-layout.is-minimizing
+    .project-single-view.is-minimized
+    .project-content
+    img {
     height: 100%;
     max-height: none;
   }
@@ -4287,7 +4315,7 @@ body {
     position: static;
   }
 
-.project-player.is-stream-track .detail-stream-platforms {
+  .project-player.is-stream-track .detail-stream-platforms {
     top: calc(100% + 56px);
     bottom: auto;
     left: 50%;
@@ -4296,20 +4324,20 @@ body {
     z-index: 4;
   }
 
-.project-player.is-stream-track .detail-stream-platforms__items {
+  .project-player.is-stream-track .detail-stream-platforms__items {
     gap: 14px;
     justify-content: center;
   }
 
-.project-player.is-stream-track .detail-stream-platforms__label {
+  .project-player.is-stream-track .detail-stream-platforms__label {
     font-size: 9px;
   }
 
-.project-player.is-stream-track .detail-stream-platforms {
+  .project-player.is-stream-track .detail-stream-platforms {
     gap: 8px;
   }
 
-.project-player.is-stream-track .detail-stream-platform-link {
+  .project-player.is-stream-track .detail-stream-platform-link {
     width: 26px;
     height: 26px;
     flex-basis: 26px;
@@ -4318,7 +4346,7 @@ body {
     backdrop-filter: none;
   }
 
-.project-player.is-stream-track .detail-stream-platform-link svg {
+  .project-player.is-stream-track .detail-stream-platform-link svg {
     width: 24px;
     height: 24px;
   }
@@ -4505,7 +4533,7 @@ body {
 
   .song-annotation-panel__explanation {
     margin-top: 9px;
-    font-size: 11px;
+    font-size: 13px;
   }
 }
 
@@ -4806,7 +4834,9 @@ body {
     transform: none;
   }
 
-  .project-single-view .project-player.is-stream-track .detail-stream-platforms {
+  .project-single-view
+    .project-player.is-stream-track
+    .detail-stream-platforms {
     position: fixed;
     top: auto;
     right: auto;
@@ -4818,11 +4848,12 @@ body {
     z-index: 4;
   }
 
-  .project-single-view .project-player.is-stream-track .detail-stream-platforms__items {
+  .project-single-view
+    .project-player.is-stream-track
+    .detail-stream-platforms__items {
     justify-content: center;
     gap: 14px;
   }
-
 
   .detail-media-toggle {
     transition: opacity 0.2s ease;
@@ -4915,7 +4946,9 @@ body {
     height: calc(60% - 25.2px);
   }
 
-  .detail-lyrics-layout .lyrics-panel__desktop-backdrop .song-annotation-panel.is-split {
+  .detail-lyrics-layout
+    .lyrics-panel__desktop-backdrop
+    .song-annotation-panel.is-split {
     top: calc(60% + 1.8px);
     height: calc(40% - 16.8px);
   }
@@ -4927,7 +4960,9 @@ body {
       opacity: 0;
     }
 
-    .detail-lyrics-layout .lyrics-panel__desktop-backdrop .lyrics-panel.is-open {
+    .detail-lyrics-layout
+      .lyrics-panel__desktop-backdrop
+      .lyrics-panel.is-open {
       opacity: 0;
       transform: translateY(12px);
     }

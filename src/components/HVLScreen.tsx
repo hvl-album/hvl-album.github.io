@@ -129,12 +129,6 @@ const galleryItems: readonly GalleryItem[] = (
     ...wtfBbyImLitLyrics,
     songAnnotations: [
       {
-        lyric: "In the game, baby, I'm lit",
-        seekLabels: ["I'm lit"],
-        startTime: 15.1,
-        explanation: "Cảm giác đang rất “cháy” / phấn khích / high.",
-      },
-      {
         lyric: "On the beat, anh lead em phiêu",
         seekLabels: ["lead em phiêu"],
         startTime: 20.7,
@@ -144,13 +138,13 @@ const galleryItems: readonly GalleryItem[] = (
         lyric: "Chúng ngã vào nhau trong một tấm canvas",
         seekLabels: ["canvas"],
         startTime: 27.87,
-        explanation: "Tấm Canvas trong bài vừa mang ý nghĩa là toan vẽ vừa biến con người / khung cảnh thành một “bức tranh” nhiều màu sắc trong lúc ánh sáng, cơ thể và chuyển động hòa vào nhau.",
+        explanation: "Tấm canvas vừa mang ý nghĩa là toan vẽ vừa đặc tả con người / khung cảnh tại đó thành một “bức tranh” mang nhiều màu sắc trong lúc ánh sáng, cơ thể và chuyển động hòa vào nhau.",
       },
       {
         lyric: "Your aura, your vibe",
         seekLabels: ["aura", "vibe"],
         startTime: 122.23,
-        explanation: "Aura mang nghĩa thần thái, sức hút. Vibe là năng lượng, cá tính hoặc cảm giác về tinh thần. Ở đây ý nói sự cuốn hút của cô gái."
+        explanation: "Aura mang nghĩa thần thái, sức hút. Vibe là năng lượng, cá tính hoặc cảm giác về tinh thần. Ở đây ý nói sự cuốn hút vô cùng của cô gái."
       },
     ],
   },
@@ -167,9 +161,9 @@ const galleryItems: readonly GalleryItem[] = (
     songAnnotations: [
       {
         lyric: "Quit playin', I ain't get it",
-        seekLabels: ["Quit playin'", "I ain't get it"],
+        seekLabels: ["Quit playin'"],
         startTime: 54.61,
-        explanation: "Là cách nói rút gọn của “Quit playing”: “đừng có đùa / đừng chơi trò này nữa”. Trong bài là yêu cầu đối phương nói rõ tình cảm. “I ain’t get it” thể hiện người con trai không hiểu, không biết cô gái muốn gì trong một mối quan hệ mập mờ.",
+        explanation: "Là cách nói rút gọn của “Quit playing”: “đừng có đùa / đừng chơi trò này nữa”. Trong bài là yêu cầu đối phương nói rõ tình cảm.",
       },
       {
         lyric: "Ten out of ten, đấy là feedback cho bộ mông của em",
@@ -227,27 +221,15 @@ const galleryItems: readonly GalleryItem[] = (
       },
       {
         lyric: "Things got real nhưng mà em hơi bớp",
-        seekLabels: ["Things got real", "hơi bớp"],
+        seekLabels: ["hơi bớp"],
         startTime: 38.65,
-        explanation: "**Mọi chuyện trở nên nghiêm túc/thật hơn dự định**. Ban đầu chỉ định gặp gỡ và vui vẻ, nhưng cảm xúc bắt đầu phát sinh một cách mạnh mẽ khiến cô gái trở nên “bớp” (chỉ trạng thái hơi hoảng sợ nhẹ, không biết phải xử sự như thế nào tiếp theo, tương đương với rất ngại ngùng).",
+        explanation: "Ban đầu chỉ định gặp gỡ và vui vẻ, nhưng cảm xúc bắt đầu phát sinh một cách mạnh mẽ khiến cô gái trở nên “bớp” (chỉ trạng thái hơi hoảng sợ nhẹ, không biết phải xử sự như thế nào tiếp theo, tương đương với rất ngại ngùng).",
       },
       {
         lyric: "Voodo Voo như là Shaman",
         seekLabels: ["Voodo Voo", "Shaman"],
         startTime: 45.97,
         explanation: "**“Voodoo”** gợi đến hình ảnh bùa chú, nghi lễ và sự mê hoặc, còn **“Shaman”** là người thực hành các nghi lễ tâm linh trong một số truyền thống. Hai hình ảnh này để ví sự cuốn hút giữa hai người như một thứ **bùa mê**, khiến họ bị hấp dẫn và cuốn vào nhau một cách khó kiểm soát.",
-      },
-      {
-        lyric: "Situationship này thật là quá toang",
-        seekLabels: ["Situationship"],
-        startTime: 49.66,
-        explanation: "Mối quan hệ mập mờ.",
-      },
-      {
-        lyric: "Keep it down, low, low, undercover",
-        seekLabels: ["Keep it down", "undercover"],
-        startTime: 106.81,
-        explanation: "Hãy giữ mối quan hệ này kín đáo, hạ thấp sự chú ý và ngầm xác nhận rằng đây là một mối quan hệ không công khai.",
       },
       {
         lyric: "Thích đi cửa sau nên là chạy đường vòng",
@@ -325,6 +307,14 @@ const galleryItems: readonly GalleryItem[] = (
     audioUrl: "/music/liem.mp3",
     type: "pulled",
     ...liemLyrics,
+    songAnnotations: [
+      {
+        lyric: "Và nếu cho anh quay ngược thời gian\nAnh sẽ yêu em như là yêu một người bạn\nNhư cách em đã từng yêu một người bạn",
+        seekLabels: ["Và nếu cho anh quay ngược thời gian", "Anh sẽ yêu em như là yêu một người bạn", "Như cách em đã từng yêu một người bạn"],
+        startTime: 73.92,
+        explanation: "Những ca từ này được cho là nhắm đến mối tình cũ với tlinh và tình bạn đã rạn nứt với Wxrdie.\n\nMCK và tlinh từng là một trong những cặp đôi được yêu thích nhất của giới Underground trước khi chia tay vào cuối năm 2021. Khi đó, Wxrdie cũng là bạn thân của MCK và từng hoạt động chung trong một nhóm với cả hai.\n\nĐến khoảng tháng 7/2022, tin đồn tlinh hẹn hò Wxrdie bắt đầu lan truyền. MCK sau đó hủy theo dõi cả hai trên mạng xã hội và đăng một dòng trạng thái được xem là lời đáp trực tiếp: “Quan điểm là không chơi được với mấy thằng yêu lại người yêu cũ của bạn”.\n\nKhông lâu sau, Wxrdie phát hành My Turn và MV Vẫn Đợi. Chi tiết anh đã “chờ đợi 420 ngày” khiến người nghe đặt câu hỏi liệu tình cảm giữa Wxrdie và tlinh có bắt đầu từ khi cô vẫn còn trong mối quan hệ với MCK hay không. Những tranh luận này càng được chú ý khi tlinh và Wxrdie đồng loạt thay ảnh đại diện bằng hai phần được cắt từ cùng một bức ảnh, qua đó được hiểu như một động thái ngầm xác nhận mối quan hệ.",
+      },
+    ],
   },
   {
     numberTrack: 13,
@@ -373,6 +363,14 @@ const galleryItems: readonly GalleryItem[] = (
     audioUrl: "/music/intepol.mp3",
     type: "pulled",
     ...intepolLyrics,
+    songAnnotations: [
+      {
+        lyric: "(MCK, MCK, MCK)",
+        seekLabels: ["(MCK, MCK, MCK)"],
+        startTime: 1.10,
+        explanation: "“Intenpol” là track thứ 16, đóng vai trò như một interlude nối tiếp các ca khúc trong [HVL](https://genius.com/albums/Rpt-mck/Hvl) (2026). Qua ca khúc, MCK phản hồi một cách châm biếm trước những ồn ào truyền thông và màn so sánh kéo dài giữa anh với [HIEUTHUHAI](https://genius.com/artists/Hieuthuhai). Những tranh luận này từng đạt đỉnh sau khi MCK giành giải Album của năm tại [WeChoice Awards 2023](https://2023.wechoice.vn/) với [99%](https://genius.com/albums/Rpt-mck/99), cũng như khi [“thap drill tu do”](https://genius.com/Rpt-mck-thap-drill-tu-do-lyrics) vươn lên vị trí số một trên bảng xếp hạng thịnh hành của YouTube Việt Nam, vượt qua [“Nước Mắt Cá Sấu”](https://genius.com/Hieuthuhai-nuoc-mat-ca-sau-lyrics) của HIEUTHUHAI.\n\nĐiểm đặc biệt nhất của track nằm ở việc MCK sử dụng các đoạn âm thanh thực tế được lấy từ truyền thông và những sự kiện công chúng. Đáng chú ý, nam rapper từng hé lộ quá trình chuẩn bị cho phần sampling này từ khá sớm. Ngày 20/8/2025, MCK đăng lời kêu gọi trên [Broadcast Channel](https://images.genius.com/966a0b08a91beaf4c1e1e5055d41ff8e.895x1000x1.png) Instagram, đề nghị người hâm mộ gửi các video edit, bản thu âm chất lượng cao từ khoảnh khắc xướng tên nhận giải tại [WeChoice Awards](https://wechoice.vn/), cùng “cả phốt phủng các kiểu luôn”.\n\nViệc chủ động thu thập và tái sử dụng những tư liệu xoay quanh chính mình biến “Intenpol” thành một màn “tự đào phốt” đầy chủ ý. MCK không né tránh các tranh cãi, mà trực tiếp chuyển hóa chúng thành chất liệu âm nhạc mang màu sắc giễu nhại. Đồng thời, động thái này cũng cho thấy HVL đã được chuẩn bị theo một định hướng dài hơi, ít nhất từ giữa năm 2025, với sự đầu tư rõ rệt vào cách xây dựng bối cảnh và mạch nội dung cho toàn bộ album.",
+      },
+    ],
   },
   {
     numberTrack: 17,
