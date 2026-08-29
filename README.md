@@ -1,20 +1,13 @@
-# HVL
+# PROJECT
 
-Trải nghiệm nhạc tương tác 3D của HVL.
+HVL Pulled Track Scroll-Driven 3D Gallery
 
-## Chạy dự án
+## RUN
 
-Yêu cầu Node.js 22.
+Node.js 22.
 
-```bash
-nvm use
-yarn dev
-```
+npm | yarninstall
+npm | yarn dev
 
-Mở [http://localhost:3000](http://localhost:3000).
-
-Để xem trên điện thoại cùng mạng Wi-Fi, chạy:
-
-```bash
-yarn dev --hostname 0.0.0.0
-```
+Browser
+http://localhost:3000
