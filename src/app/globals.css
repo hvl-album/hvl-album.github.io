@@ -4988,7 +4988,10 @@ body {
   }
 
   .floating-player-dock.is-collapsed {
-    pointer-events: none;
+    /* Keep a small hover target at the bottom edge so a hidden dock can
+       be restored with the mouse. */
+    height: 16px;
+    pointer-events: auto;
   }
 
   .floating-player-dock.is-expanded .floating-player {
