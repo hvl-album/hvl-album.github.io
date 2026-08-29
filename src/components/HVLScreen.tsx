@@ -1340,10 +1340,12 @@ export function HVLScreen() {
       -2,
       Math.min(2, tubeSpinVelocity.current + horizontalDragDelta * 0.0025),
     );
-    tubeScrollTarget.current = Math.max(
-      -tubeScrollLimit,
-      Math.min(tubeScrollLimit, tubeScrollTarget.current + deltaY * 0.0033),
-    );
+    tubeScrollTarget.current = displayStyle === "wave"
+      ? tubeScrollTarget.current + deltaY * 0.0033
+      : Math.max(
+          -tubeScrollLimit,
+          Math.min(tubeScrollLimit, tubeScrollTarget.current + deltaY * 0.0033),
+        );
     const now = performance.now();
     if (now - lastDragSoundAt.current >= 60) {
       lastDragSoundAt.current = now;
@@ -1404,10 +1406,12 @@ export function HVLScreen() {
   const onWheel = useCallback((event: React.WheelEvent<HTMLDivElement>) => {
     resetSceneControlsVisibility();
     const scrollDelta = event.deltaY;
-    tubeScrollTarget.current = Math.max(
-      -tubeScrollLimit,
-      Math.min(tubeScrollLimit, tubeScrollTarget.current - scrollDelta * tubeWheelScrollFactor),
-    );
+    tubeScrollTarget.current = displayStyle === "wave"
+      ? tubeScrollTarget.current - scrollDelta * tubeWheelScrollFactor
+      : Math.max(
+          -tubeScrollLimit,
+          Math.min(tubeScrollLimit, tubeScrollTarget.current - scrollDelta * tubeWheelScrollFactor),
+        );
     tubeSpinVelocity.current = Math.max(
       -2,
       Math.min(2, tubeSpinVelocity.current - scrollDelta * 0.0035),
@@ -1419,7 +1423,7 @@ export function HVLScreen() {
 
     if (scrollDelta < 0) tubeNaturalDir.current = 1;
     else if (scrollDelta > 0) tubeNaturalDir.current = -1;
-  }, [resetSceneControlsVisibility]);
+  }, [displayStyle, resetSceneControlsVisibility]);
 
   const handleMobileTrackListScroll = useCallback((event: React.UIEvent<HTMLDivElement>) => {
     const scrollTop = event.currentTarget.scrollTop;
@@ -2102,7 +2106,11 @@ export function HVLScreen() {
         setDisplayStyle("list");
       } else {
         const storedDisplayStyle = window.localStorage.getItem(displayStyleStorageKey);
-        setDisplayStyle(storedDisplayStyle === "list" || storedDisplayStyle === "art" ? storedDisplayStyle : "museum");
+        setDisplayStyle(
+          storedDisplayStyle === "list" || storedDisplayStyle === "art" || storedDisplayStyle === "wave"
+            ? storedDisplayStyle
+            : "museum",
+        );
       }
       setIsPresentationReady(true);
     };
@@ -2362,7 +2370,7 @@ export function HVLScreen() {
   return (
     <div className="sceneRoot">
       <div
-      className={`sceneRoot__content ${displayStyle === "art" ? "is-art-style" : ""} ${selectedProject && !isDetailMinimized ? "is-detail-open" : ""} ${!isAgeGateStateReady || isAgeGateOpen ? "is-blurred" : ""}`}
+      className={`sceneRoot__content ${displayStyle === "art" ? "is-art-style" : ""} ${displayStyle === "wave" ? "is-wave-style" : ""} ${selectedProject && !isDetailMinimized ? "is-detail-open" : ""} ${!isAgeGateStateReady || isAgeGateOpen ? "is-blurred" : ""}`}
       onPointerDown={isMobile || displayStyle === "list" || (selectedProject && !isDetailMinimized) ? undefined : onPointerDown}
       onPointerMove={isMobile || (selectedProject && !isDetailMinimized) ? undefined : handleScenePointerMove}
       onPointerUp={isMobile || displayStyle === "list" || (selectedProject && !isDetailMinimized) ? undefined : onPointerUp}
@@ -2744,6 +2752,14 @@ export function HVLScreen() {
                       aria-pressed={pendingDisplayStyle === "art"}
                     >
                       <span>BẢO TÀNG</span>
+                    </button>
+                    <button
+                      className={`settings-modal__choice ${pendingDisplayStyle === "wave" ? "is-selected" : ""}`}
+                      type="button"
+                      onClick={() => handleSettingsDisplayStyleChange("wave")}
+                      aria-pressed={pendingDisplayStyle === "wave"}
+                    >
+                      <span>DÒNG CHẢY</span>
                     </button>
                     <button
                       className={`settings-modal__choice ${pendingDisplayStyle === "list" ? "is-selected" : ""}`}

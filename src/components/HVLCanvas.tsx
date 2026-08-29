@@ -35,11 +35,16 @@ function setMaterialUniform(material: unknown, uniformName: string, value: numbe
 }
 
 const imageVertexShader = `
+  uniform float uBend;
   varying vec2 vUv;
 
   void main() {
     vUv = uv;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    vec3 transformed = position;
+    float edgeCurve = position.x * position.x;
+    transformed.x += uBend * edgeCurve * 0.22;
+    transformed.z -= abs(uBend) * edgeCurve * 0.12;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(transformed, 1.0);
   }
 `;
 
@@ -304,20 +309,22 @@ function SceneCamera({ displayStyle }: { displayStyle: DisplayStyle }) {
   const perspectiveCamera = camera as PerspectiveCamera;
   const previousStyleRef = useRef<DisplayStyle | null>(null);
   const transitionRef = useRef<{
-    kind: "initial" | "to-center" | "to-observatory";
+    kind: "initial" | "to-center" | "to-observatory" | "to-wave";
     elapsed: number;
     startZ: number;
     startFov: number;
-  }>({ kind: "initial", elapsed: 0, startZ: 14, startFov: 42 });
+    startY: number;
+  }>({ kind: "initial", elapsed: 0, startZ: 14, startFov: 42, startY: 0 });
 
   useEffect(() => {
-    const nextKind = displayStyle === "art" ? "to-center" : "to-observatory";
+    const nextKind = displayStyle === "art" ? "to-center" : displayStyle === "wave" ? "to-wave" : "to-observatory";
     if (previousStyleRef.current == null) {
       transitionRef.current = {
         kind: "initial",
         elapsed: 0,
         startZ: camera.position.z,
         startFov: perspectiveCamera.fov,
+        startY: camera.position.y,
       };
     } else if (previousStyleRef.current !== displayStyle) {
       transitionRef.current = {
@@ -325,14 +332,16 @@ function SceneCamera({ displayStyle }: { displayStyle: DisplayStyle }) {
         elapsed: 0,
         startZ: camera.position.z,
         startFov: perspectiveCamera.fov,
+        startY: camera.position.y,
       };
     }
     previousStyleRef.current = displayStyle;
   }, [camera, displayStyle]);
 
   useFrame((_, delta) => {
-    const targetZ = displayStyle === "art" ? 0.85 : 6;
-    const targetFov = displayStyle === "art" ? 62 : 50;
+    const targetZ = displayStyle === "art" ? 0.85 : displayStyle === "wave" ? 4.5 : 6;
+    const targetFov = displayStyle === "art" ? 62 : displayStyle === "wave" ? 52 : 50;
+    const targetY = displayStyle === "wave" ? -1.35 : 0;
     const transition = transitionRef.current;
     const duration = transition.kind === "initial" ? 1.8 : 1.45;
     transition.elapsed = Math.min(duration, transition.elapsed + delta);
@@ -354,9 +363,12 @@ function SceneCamera({ displayStyle }: { displayStyle: DisplayStyle }) {
       animatedZ = transition.startZ + (targetZ - transition.startZ) * easedProgress;
     }
 
-    camera.position.z = animatedZ;
+    // Keep the incoming Cuộn Trào move smooth, while never letting the camera
+    // pull far enough back for the cards to leave the viewport.
+    camera.position.z = displayStyle === "wave" ? Math.min(animatedZ, 5.4) : animatedZ;
+    camera.position.y = transition.startY + (targetY - transition.startY) * easedProgress;
     perspectiveCamera.fov = transition.startFov + (targetFov - transition.startFov) * easedProgress;
-    camera.lookAt(0, 0, 0);
+    camera.lookAt(0, displayStyle === "wave" ? -1 : 0, 0);
     camera.updateProjectionMatrix();
   });
 
@@ -401,8 +413,17 @@ function ImageTube({
   const itemGroupRefs = useRef<Array<Object3D | null>>([]);
   const itemMeshRefs = useRef<Array<Mesh | null>>([]);
   const itemBackMeshRefs = useRef<Array<Mesh | null>>([]);
+  const itemBendRefs = useRef<number[]>([]);
+  const waveItemGroupRefs = useRef<Array<Object3D | null>>([]);
+  const waveItemMeshRefs = useRef<Array<Mesh | null>>([]);
+  const waveItemBackMeshRefs = useRef<Array<Mesh | null>>([]);
+  const waveItemBendRefs = useRef<number[]>([]);
+  const waveItemVisibleRefs = useRef<boolean[]>([]);
+  const waveItemHasEnteredRefs = useRef<boolean[]>([]);
   const flashOverlayMeshRefs = useRef<Array<Mesh | null>>([]);
   const flashOverlayBackMeshRefs = useRef<Array<Mesh | null>>([]);
+  const waveFlashOverlayMeshRefs = useRef<Array<Mesh | null>>([]);
+  const waveFlashOverlayBackMeshRefs = useRef<Array<Mesh | null>>([]);
   const scrollCurrent = useRef(0);
   const angle = useRef(0);
   const focusAngleTarget = useRef<number | null>(null);
@@ -411,6 +432,7 @@ function ImageTube({
   const flashStartedAt = useRef(-1);
   const selectionSequence = useRef<{
     itemIndex: number;
+    textureIndex: number;
     projectName: string;
     imageUrl: string;
     holdStartedAt: number;
@@ -420,7 +442,13 @@ function ImageTube({
   const lastItemActivationAt = useRef(0);
   const itemVisibility = useRef(1);
   const displayTransition = useRef({ phase: "idle", start: -1, target: displayMode });
+  const styleTransition = useRef<{
+    phase: "idle" | "spin" | "fade-out" | "fade-in";
+    start: number;
+    target: DisplayStyle;
+  }>({ phase: "idle", start: -1, target: displayStyle });
   const [tubeLayoutMode, setTubeLayoutMode] = useState<DisplayMode>(displayMode);
+  const [renderedStyle, setRenderedStyle] = useState<DisplayStyle>(displayStyle);
 
   const imageUrls = useMemo(() => [...new Set(items.map((item) => item.imageUrl))], []);
 
@@ -434,12 +462,18 @@ function ImageTube({
     () => items.map((item, index) => ({ item, index })).filter(({ item }) => tubeLayoutMode === "full" || item.type === "pulled"),
     [tubeLayoutMode],
   );
-  const cols = Math.min(tubeCols, activeItems.length);
+  const isWaveStyle = renderedStyle === "wave";
+  const cols = Math.min(isWaveStyle ? 2 : tubeCols, activeItems.length);
   const rows = Math.ceil(activeItems.length / cols);
   const radius = 3.2;
   const tileH = 1.5;
   const ySpacing = tubeRowSpacing;
   const totalRows = rows;
+  const wavePairsPerScrollUnit = Math.max(
+    1,
+    (Math.max(rows - 1, 0) / Math.max(tubeScrollLimit, 0.001)),
+  );
+  const waveDepthSpacing = 1.1;
 
   const rowSpeed = useMemo(() => {
     const speeds: number[] = [];
@@ -459,6 +493,12 @@ function ImageTube({
       itemCount: number;
     }> = [];
     for (let rowIndex = 0; rowIndex < totalRows; rowIndex++) {
+      if (isWaveStyle) {
+        const baseRow = rowIndex;
+        const itemCount = Math.min(cols, activeItems.length - baseRow * cols);
+        out.push({ rowIndex, y: 0, baseRow, rowOffset: 0, itemCount });
+        continue;
+      }
       const y = (rowIndex - (totalRows - 1) / 2) * ySpacing;
       const baseRow = rowIndex % rows;
       const rowOffset = baseRow % 2 === 0 ? 0 : 0.5;
@@ -466,8 +506,25 @@ function ImageTube({
       out.push({ rowIndex, y, baseRow, rowOffset, itemCount });
     }
     return out.filter(({ itemCount }) => itemCount > 0);
-  }, [activeItems.length, cols, rows, totalRows, ySpacing]);
-  const targetViewTheta = displayStyle === "art" ? -Math.PI / 2 : Math.PI / 2;
+  }, [activeItems.length, cols, isWaveStyle, rows, totalRows, ySpacing]);
+  const waveItemInstances = useMemo(
+    () =>
+      isWaveStyle && activeItems.length > 0
+        ? Array.from({ length: activeItems.length }, (_, layoutIndex) => ({
+            layoutIndex,
+            groupIndex: Math.floor(layoutIndex / cols),
+            item: activeItems[layoutIndex],
+          }))
+        : [],
+    [activeItems, cols, isWaveStyle, rows, totalRows],
+  );
+  const targetViewTheta = renderedStyle === "art" ? -Math.PI / 2 : Math.PI / 2;
+
+  useEffect(() => {
+    if (displayStyle === renderedStyle) return;
+    if (styleTransition.current.target === displayStyle && styleTransition.current.phase !== "idle") return;
+    styleTransition.current = { phase: "spin", start: -1, target: displayStyle };
+  }, [displayStyle, renderedStyle]);
 
   useEffect(() => {
     if (displayMode === tubeLayoutMode) {
@@ -495,12 +552,19 @@ function ImageTube({
 
   useFrame((state, dt) => {
     const now = performance.now();
-    const scrollLerp = isDraggingRef.current ? 0.42 : 0.12;
+    const scrollResponse = isWaveStyle
+      ? isDraggingRef.current ? 16 : 5.2
+      : isDraggingRef.current ? 32 : 7.6;
+    // Frame-rate independent damping prevents wheel ticks from reading as
+    // separate steps in the Cuộn Trào path.
+    const scrollLerp = 1 - Math.exp(-scrollResponse * dt);
     scrollCurrent.current += (scrollTargetRef.current - scrollCurrent.current) * scrollLerp;
 
     const activeScrollLimit = ((rows - 1) * tubeRowSpacing) / 2;
-    scrollCurrent.current = Math.max(-activeScrollLimit, Math.min(activeScrollLimit, scrollCurrent.current));
-    scrollTargetRef.current = Math.max(-activeScrollLimit, Math.min(activeScrollLimit, scrollTargetRef.current));
+    if (!isWaveStyle) {
+      scrollCurrent.current = Math.max(-activeScrollLimit, Math.min(activeScrollLimit, scrollCurrent.current));
+      scrollTargetRef.current = Math.max(-activeScrollLimit, Math.min(activeScrollLimit, scrollTargetRef.current));
+    }
 
     const requestedFocusIndex = focusItemRef.current;
     if (requestedFocusIndex != null) {
@@ -510,7 +574,11 @@ function ImageTube({
         const targetRowIndex = Math.floor(activePosition / cols);
         const targetRow = rowPositions[targetRowIndex];
         const targetCol = activePosition % cols;
-        if (targetRow) {
+        if (targetRow && isWaveStyle) {
+          const currentProgress = -scrollCurrent.current * wavePairsPerScrollUnit;
+          const nearestCycle = Math.round((currentProgress - targetRowIndex) / rows);
+          scrollTargetRef.current = -(targetRowIndex + nearestCycle * rows) / wavePairsPerScrollUnit;
+        } else if (targetRow) {
           const targetTheta =
             Math.PI - ((targetCol + targetRow.rowOffset + 0.5) / targetRow.itemCount) * Math.PI * 2;
           const targetRowRotation = targetTheta - targetViewTheta;
@@ -564,7 +632,37 @@ function ImageTube({
       }
     }
 
-    const baseSpeed = naturalDirRef.current * (0.14 + displaySpinBoost);
+    const styleChange = styleTransition.current;
+    let styleSpinBoost = 0;
+    if (styleChange.phase !== "idle") {
+      if (styleChange.start < 0) styleChange.start = state.clock.elapsedTime;
+      const elapsed = state.clock.elapsedTime - styleChange.start;
+      if (styleChange.phase === "spin") {
+        styleSpinBoost = 3.6 * (1 - Math.min(1, elapsed / 0.28));
+        if (elapsed >= 0.28) {
+          styleChange.phase = "fade-out";
+          styleChange.start = -1;
+        }
+      } else if (styleChange.phase === "fade-out") {
+        const progress = Math.min(1, elapsed / 0.24);
+        itemVisibility.current = 1 - (progress * progress * (3 - 2 * progress));
+        if (progress >= 1) {
+          itemVisibility.current = 0;
+          setRenderedStyle(styleChange.target);
+          styleChange.phase = "fade-in";
+          styleChange.start = -1;
+        }
+      } else if (styleChange.phase === "fade-in") {
+        const progress = Math.min(1, elapsed / 0.46);
+        itemVisibility.current = progress * progress * (3 - 2 * progress);
+        if (progress >= 1) {
+          itemVisibility.current = 1;
+          styleChange.phase = "idle";
+        }
+      }
+    }
+
+    const baseSpeed = naturalDirRef.current * (0.14 + displaySpinBoost + styleSpinBoost);
     angle.current += dragDeltaRef.current;
     dragDeltaRef.current = 0;
     if (focusAngleTarget.current != null) {
@@ -599,7 +697,7 @@ function ImageTube({
       if (activeSelection.activatedAt < 0 && holdElapsed >= 500) {
         activeSelection.activatedAt = now;
         activeSelection.resumeAt = now + 250;
-        onImageClick(activeSelection.projectName, activeSelection.imageUrl, activeSelection.itemIndex);
+        onImageClick(activeSelection.projectName, activeSelection.imageUrl, activeSelection.textureIndex);
       }
 
       if (activeSelection.activatedAt > 0 && now >= activeSelection.resumeAt) {
@@ -609,37 +707,103 @@ function ImageTube({
     const group = groupRef.current;
     if (!group) return;
 
-    group.position.y = -scrollCurrent.current;
+    group.position.y = isWaveStyle ? 0 : -scrollCurrent.current;
 
     for (let rowIndex = 0; rowIndex < totalRows; rowIndex++) {
       const rowObj = rowGroupRefs.current[rowIndex];
       if (!rowObj) continue;
+      if (isWaveStyle) {
+        rowObj.rotation.y = 0;
+        continue;
+      }
       const baseRow = rowIndex % rows;
       rowObj.rotation.y = angle.current * rowSpeed[baseRow];
     }
 
+    if (isWaveStyle) {
+      const scrollProgress = -scrollCurrent.current * wavePairsPerScrollUnit;
+      waveItemInstances.forEach(({ groupIndex, layoutIndex }) => {
+        const itemGroup = waveItemGroupRefs.current[layoutIndex];
+        if (!itemGroup) return;
+
+        const lane = layoutIndex % cols === 0 ? -1 : 1;
+        const rawRelativeDepth = groupIndex - scrollProgress;
+        const relativeDepth = ((rawRelativeDepth + rows / 2) % rows + rows) % rows - rows / 2;
+        // A signed logarithmic rail keeps the velocity continuous as a card
+        // crosses the center. The old separate front/back formulas made that
+        // crossing read like a small step.
+        const smoothRelativeDepth =
+          Math.sign(relativeDepth) * (Math.log1p(Math.abs(relativeDepth)) / Math.LN2);
+        const behind = Math.max(smoothRelativeDepth, 0);
+        // Let the rear rail open just a little: left cards keep drifting left
+        // and right cards keep drifting right as their depth increases.
+        const depthOutset = Math.min(0.26, behind * 0.09);
+        const passed = Math.max(-relativeDepth, 0);
+        // A card advances toward the camera before beginning to part, which
+        // leaves the next group visible in the center for longer.
+        const spreadDistance = Math.max(0, passed - 0.56);
+        // This curve has zero velocity at the point where a card starts to
+        // part, then glides outward without a second, visible phase change.
+        const spreadEase =
+          1 - (1 + spreadDistance / 0.55) * Math.exp(-spreadDistance / 0.55);
+        const spreadDrop = spreadEase * 0.9;
+        const spreadDirection = lane;
+        const spreadOffset = spreadEase * 3.5;
+        const bend = -spreadDirection * Math.min(0.55, spreadEase * 0.55);
+
+        itemGroup.position.set(
+          lane * (1.18 + depthOutset) + spreadDirection * spreadOffset,
+          -1.22 + smoothRelativeDepth * 1.32 - spreadDrop + Math.abs(lane) * 0.1,
+          -smoothRelativeDepth * waveDepthSpacing - Math.abs(lane) * 0.22,
+        );
+        itemGroup.rotation.set(
+          0,
+          -spreadDirection * Math.min(0.42, spreadEase * 0.42),
+          spreadDirection * Math.min(0.16, spreadEase * 0.16),
+        );
+        waveItemBendRefs.current[layoutIndex] = bend;
+        // Do not reveal items from the preceding cycle on first load. Once an
+        // item has entered from the distant rail, keep it visible until it has
+        // actually travelled beyond the screen edge.
+        if (relativeDepth >= 0) waveItemHasEnteredRefs.current[layoutIndex] = true;
+        waveItemVisibleRefs.current[layoutIndex] =
+          waveItemHasEnteredRefs.current[layoutIndex] === true && relativeDepth > -2.2;
+      });
+    }
+
     const visibility = itemVisibility.current;
-    itemGroupRefs.current.forEach((itemGroup) => {
+    const activeGroupRefs = isWaveStyle ? waveItemGroupRefs.current : itemGroupRefs.current;
+    const activeMeshRefs = isWaveStyle ? waveItemMeshRefs.current : itemMeshRefs.current;
+    const activeBackMeshRefs = isWaveStyle ? waveItemBackMeshRefs.current : itemBackMeshRefs.current;
+    const activeBendRefs = isWaveStyle ? waveItemBendRefs.current : itemBendRefs.current;
+    const activeFlashOverlayRefs = isWaveStyle ? waveFlashOverlayMeshRefs.current : flashOverlayMeshRefs.current;
+    const activeFlashOverlayBackRefs = isWaveStyle
+      ? waveFlashOverlayBackMeshRefs.current
+      : flashOverlayBackMeshRefs.current;
+    activeGroupRefs.forEach((itemGroup, index) => {
       if (!itemGroup) return;
-      itemGroup.visible = visibility > 0.01;
+      const isVisibleInRail = !isWaveStyle || waveItemVisibleRefs.current[index] !== false;
+      itemGroup.visible = visibility > 0.01 && isVisibleInRail;
       itemGroup.scale.setScalar(Math.max(0.001, visibility));
     });
-    itemMeshRefs.current.forEach((mesh) => {
+    activeMeshRefs.forEach((mesh, index) => {
       if (!mesh) return;
       const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
       materials.forEach((material) => {
         material.transparent = true;
         material.opacity = visibility;
         setMaterialUniform(material, "uOpacity", visibility);
+        setMaterialUniform(material, "uBend", isWaveStyle ? activeBendRefs[index] ?? 0 : 0);
       });
     });
-    itemBackMeshRefs.current.forEach((mesh) => {
+    activeBackMeshRefs.forEach((mesh, index) => {
       if (!mesh) return;
       const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
       materials.forEach((material) => {
         material.transparent = true;
         material.opacity = visibility;
         setMaterialUniform(material, "uOpacity", visibility);
+        setMaterialUniform(material, "uBend", isWaveStyle ? activeBendRefs[index] ?? 0 : 0);
       });
     });
 
@@ -649,7 +813,7 @@ function ImageTube({
       const progress = Math.min(1, elapsed / flashDuration);
       const flashIntensity = Math.sin(progress * Math.PI);
       const flashIndex = flashItemIndex.current;
-      [itemMeshRefs.current[flashIndex], itemBackMeshRefs.current[flashIndex]].forEach((mesh) => {
+      [activeMeshRefs[flashIndex], activeBackMeshRefs[flashIndex]].forEach((mesh) => {
         if (!mesh) return;
         const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
         materials.forEach((material) => {
@@ -657,7 +821,7 @@ function ImageTube({
           setMaterialUniform(material, "uFlashIntensity", flashIntensity);
         });
       });
-      [flashOverlayMeshRefs.current[flashIndex], flashOverlayBackMeshRefs.current[flashIndex]].forEach((mesh) => {
+      [activeFlashOverlayRefs[flashIndex], activeFlashOverlayBackRefs[flashIndex]].forEach((mesh) => {
         if (!mesh) return;
         mesh.visible = true;
         const material = mesh.material as ShaderMaterial;
@@ -667,7 +831,7 @@ function ImageTube({
       });
 
       if (progress >= 1) {
-        [itemMeshRefs.current[flashIndex], itemBackMeshRefs.current[flashIndex]].forEach((mesh) => {
+        [activeMeshRefs[flashIndex], activeBackMeshRefs[flashIndex]].forEach((mesh) => {
           if (!mesh) return;
           const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
           materials.forEach((material) => {
@@ -675,7 +839,7 @@ function ImageTube({
             setMaterialUniform(material, "uFlashIntensity", 0);
           });
         });
-        [flashOverlayMeshRefs.current[flashIndex], flashOverlayBackMeshRefs.current[flashIndex]].forEach((mesh) => {
+        [activeFlashOverlayRefs[flashIndex], activeFlashOverlayBackRefs[flashIndex]].forEach((mesh) => {
           if (!mesh) return;
           mesh.visible = false;
           const material = mesh.material as ShaderMaterial;
@@ -699,10 +863,15 @@ function ImageTube({
         >
           {Array.from({ length: itemCount }).map((_, col) => {
             const theta = Math.PI - ((col + rowOffset + 0.5) / itemCount) * Math.PI * 2;
-            const x = Math.cos(theta) * radius;
-            const z = Math.sin(theta) * radius;
-            const ry = -(theta + Math.PI / 2);
-            const activeItem = activeItems[baseRow * cols + col];
+            const waveLane = col === 0 ? -1 : 1;
+            const waveInitialDepth = Math.log1p(baseRow) / Math.LN2;
+            const waveInitialOutset = Math.min(0.26, waveInitialDepth * 0.09);
+            const x = isWaveStyle ? waveLane * (1.18 + waveInitialOutset) : Math.cos(theta) * radius;
+            const z = isWaveStyle ? -waveInitialDepth * waveDepthSpacing - Math.abs(waveLane) * 0.22 : Math.sin(theta) * radius;
+            const ry = isWaveStyle ? 0 : -(theta + Math.PI / 2);
+            const layoutIndex = isWaveStyle ? rowIndex * cols + col : baseRow * cols + col;
+            const itemPosition = baseRow * cols + col;
+            const activeItem = activeItems[itemPosition];
             const { item, index: texIndex } = activeItem;
             const texture = texturesByUrl.get(item.imageUrl);
             const textureImage = texture?.image as { width?: number; height?: number } | undefined;
@@ -717,24 +886,31 @@ function ImageTube({
               const now = performance.now();
               if (now < suppressClickUntilRef.current || now - lastItemActivationAt.current < 100) return;
               lastItemActivationAt.current = now;
-              // A positive Y rotation moves the card's position from theta to
-              // theta - rowRotation. At rowRotation = theta - PI / 2, this
-              // card is on the camera's center axis and its back face points
-              // toward the camera.
-              const targetRowRotation = theta - targetViewTheta;
-              const targetAngle = targetRowRotation / rowSpeed[baseRow];
-              // Each row has its own angular speed, so its equivalent full
-              // rotations in `angle.current` are 2π / rowSpeed, not 2π.
-              const rowAnglePeriod = (Math.PI * 2) / rowSpeed[baseRow];
-              const nearestTurn = Math.round((angle.current - targetAngle) / rowAnglePeriod);
-              focusAngleTarget.current = targetAngle + nearestTurn * rowAnglePeriod;
-              focusStartedAt.current = now;
-              scrollTargetRef.current = y;
+              if (isWaveStyle) {
+                const currentProgress = -scrollCurrent.current * wavePairsPerScrollUnit;
+                const nearestCycle = Math.round((currentProgress - baseRow) / rows);
+                scrollTargetRef.current = -(baseRow + nearestCycle * rows) / wavePairsPerScrollUnit;
+              } else {
+                // A positive Y rotation moves the card's position from theta to
+                // theta - rowRotation. At rowRotation = theta - PI / 2, this
+                // card is on the camera's center axis and its back face points
+                // toward the camera.
+                const targetRowRotation = theta - targetViewTheta;
+                const targetAngle = targetRowRotation / rowSpeed[baseRow];
+                // Each row has its own angular speed, so its equivalent full
+                // rotations in `angle.current` are 2π / rowSpeed, not 2π.
+                const rowAnglePeriod = (Math.PI * 2) / rowSpeed[baseRow];
+                const nearestTurn = Math.round((angle.current - targetAngle) / rowAnglePeriod);
+                focusAngleTarget.current = targetAngle + nearestTurn * rowAnglePeriod;
+                focusStartedAt.current = now;
+                scrollTargetRef.current = y;
+              }
               selectionSequence.current = {
-                itemIndex: texIndex,
+                itemIndex: isWaveStyle ? layoutIndex : texIndex,
+                textureIndex: texIndex,
                 projectName: item.title,
                 imageUrl: item.imageUrl,
-                holdStartedAt: -1,
+                holdStartedAt: isWaveStyle ? now : -1,
                 activatedAt: -1,
                 resumeAt: -1,
               };
@@ -747,14 +923,16 @@ function ImageTube({
                 position={[x, 0, z]}
                 rotation={[0, ry, 0]}
                 ref={(obj) => {
-                  itemGroupRefs.current[texIndex] = obj;
+                  if (isWaveStyle) waveItemGroupRefs.current[layoutIndex] = obj;
+                  else itemGroupRefs.current[texIndex] = obj;
                 }}
                 visible={itemVisibility.current > 0.01}
                 scale={Math.max(0.001, itemVisibility.current)}
               >
                 <mesh
                   ref={(mesh) => {
-                    itemMeshRefs.current[texIndex] = mesh;
+                    if (isWaveStyle) waveItemMeshRefs.current[layoutIndex] = mesh;
+                    else itemMeshRefs.current[texIndex] = mesh;
                   }}
                   onPointerUp={openImageDetail}
                   onClick={openImageDetail}
@@ -770,6 +948,7 @@ function ImageTube({
                       uFlashProgress: { value: 0 },
                       uFlashIntensity: { value: 0 },
                       uOpacity: { value: itemVisibility.current },
+                      uBend: { value: 0 },
                     }}
                   />
                   <ItemCaption
@@ -785,7 +964,8 @@ function ImageTube({
                 </mesh>
                 <mesh
                   ref={(mesh) => {
-                    flashOverlayMeshRefs.current[texIndex] = mesh;
+                    if (isWaveStyle) waveFlashOverlayMeshRefs.current[layoutIndex] = mesh;
+                    else flashOverlayMeshRefs.current[texIndex] = mesh;
                   }}
                   position={[0, 0, 0.03]}
                   renderOrder={3}
@@ -807,7 +987,8 @@ function ImageTube({
                 </mesh>
                 <mesh
                   ref={(mesh) => {
-                    itemBackMeshRefs.current[texIndex] = mesh;
+                    if (isWaveStyle) waveItemBackMeshRefs.current[layoutIndex] = mesh;
+                    else itemBackMeshRefs.current[texIndex] = mesh;
                   }}
                   rotation={[0, Math.PI, 0]}
                   onPointerUp={openImageDetail}
@@ -824,6 +1005,7 @@ function ImageTube({
                       uFlashProgress: { value: 0 },
                       uFlashIntensity: { value: 0 },
                       uOpacity: { value: itemVisibility.current },
+                      uBend: { value: 0 },
                     }}
                   />
                   <ItemCaption
@@ -839,7 +1021,8 @@ function ImageTube({
                 </mesh>
                 <mesh
                   ref={(mesh) => {
-                    flashOverlayBackMeshRefs.current[texIndex] = mesh;
+                    if (isWaveStyle) waveFlashOverlayBackMeshRefs.current[layoutIndex] = mesh;
+                    else flashOverlayBackMeshRefs.current[texIndex] = mesh;
                   }}
                   position={[0, 0, 0.03]}
                   rotation={[0, Math.PI, 0]}
@@ -918,7 +1101,7 @@ export function HVLCanvas({
     >
       <SceneCamera displayStyle={displayStyle} />
       <Suspense fallback={null}>
-        {displayStyle !== "art" && <HVLTitle />}
+        {displayStyle === "museum" && <HVLTitle />}
         <ImageTube
           items={items}
           tubeCols={tubeCols}

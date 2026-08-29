@@ -1,6 +1,6 @@
 export type GalleryItemType = "stream" | "pulled";
 export type DisplayMode = "full" | "pulled";
-export type DisplayStyle = "museum" | "list" | "art";
+export type DisplayStyle = "museum" | "list" | "art" | "wave";
 export type RepeatMode = "off" | "one" | "all";
 export type TrackPresentation = "detail" | "minimized";
 export type StreamDisplayDelay = 5 | 10 | 15;
