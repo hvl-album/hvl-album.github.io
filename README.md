@@ -1,13 +1,14 @@
 # PROJECT
 
-HVL Pulled Track Scroll-Driven 3D Gallery
+HVL Pulled Track 
+Scroll-Driven 3D Gallery
 
 ## RUN
 
 Node.js 22.
 
-npm | yarninstall
+npm | yarn install
 npm | yarn dev
 
-Browser
+Open Browser
 http://localhost:3000
