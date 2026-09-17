@@ -2043,10 +2043,18 @@ export function HVLScreen() {
       const audio = audioRef.current;
       if (!audio || startTime == null || selectedTrack?.type !== "pulled" || !selectedTrack.audioUrl) return;
 
-      audio.pause();
-      completeAudioSeek(audio, startTime, true);
+      // Keep the seek and play inside the original touch/click task. iOS
+      // rejects the delayed `play()` used by the generic warm-up seek.
+      pendingAudioSeekCleanupRef.current?.();
+      audioSeekRequestRef.current += 1;
+      isSeekingRef.current = false;
+      resumeAfterSeekRef.current = false;
+      setIsSeeking(false);
+      audio.currentTime = startTime;
+      setCurrentTime(startTime);
+      void audio.play().catch(() => setIsPlaying(false));
     },
-    [completeAudioSeek, selectedTrack],
+    [selectedTrack],
   );
 
   const handleLyricsLineKeyDown = useCallback(
