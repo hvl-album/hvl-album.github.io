@@ -1536,6 +1536,14 @@ export function HVLScreen() {
         window.clearTimeout(closeOverlayTimeoutRef.current);
         closeOverlayTimeoutRef.current = null;
       }
+      // Cancel any in-flight lyric/progress seek before reusing the shared
+      // audio element for another track. Mobile WebKit can otherwise deliver
+      // the old seek callbacks after the source has already changed.
+      pendingAudioSeekCleanupRef.current?.();
+      audioSeekRequestRef.current += 1;
+      isSeekingRef.current = false;
+      resumeAfterSeekRef.current = false;
+      setIsSeeking(false);
       const audio = audioRef.current;
       const track = galleryItems[textureIndex];
       const isTrackStreamPreview = track?.type === "stream" && !track.audioUrl;
@@ -1837,8 +1845,20 @@ export function HVLScreen() {
   }, [isAutoNextEnabled, isAutoNextPaused, nextTrackResult?.index, selectedProject?.index, streamDisplayDelay, streamTimerRevision]);
 
   const handleTrackEnded = useCallback(() => {
+    const audio = audioRef.current;
+    // iOS/iPadOS can emit a stale `ended` event while a seek is settling.
+    // That event is not a real track completion and must not advance the
+    // playlist.
+    if (isSeekingRef.current || pendingAudioSeekCleanupRef.current || audio?.seeking) return;
+
+    // Ignore an `ended` event queued for the previous source while the shared
+    // audio element is being switched to the next track.
+    if (audio?.currentSrc && selectedTrack?.audioUrl) {
+      const expectedSrc = new URL(selectedTrack.audioUrl, window.location.href).href;
+      if (audio.currentSrc !== expectedSrc) return;
+    }
+
     if (repeatMode === "all" || repeatMode === "one") {
-      const audio = audioRef.current;
       if (!audio) return;
 
       // "all" is the UI's single-repeat mode: consume it after replaying once.
@@ -1853,7 +1873,7 @@ export function HVLScreen() {
 
     setIsPlaying(false);
     handleNextTrack();
-  }, [handleNextTrack, repeatMode]);
+  }, [handleNextTrack, repeatMode, selectedTrack]);
 
   const handlePlayPause = useCallback(async () => {
     const audio = audioRef.current;
